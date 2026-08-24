@@ -1,26 +1,139 @@
 @import "tailwindcss";
 
+/* Brand palette sampled from the KlassHub logo: deep navy wordmark running
+   through royal blue into violet. */
+@theme {
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #4f46e5;
+  --color-brand-600: #3730d8;
+  --color-brand-700: #2c25b0;
+  --color-brand-800: #201b80;
+  --color-brand-900: #14134a;
+  --color-brand-950: #0b0a2b;
+
+  --color-accent-400: #a855f7;
+  --color-accent-500: #8b5cf6;
+  --color-accent-600: #7c3aed;
+
+  --color-sky-brand: #3b82f6;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --shadow-brand: 0 18px 40px -14px rgb(79 70 229 / 0.45);
+  --shadow-card: 0 1px 2px 0 rgb(15 16 53 / 0.04), 0 8px 24px -12px rgb(15 16 53 / 0.12);
+  --shadow-card-hover: 0 2px 4px 0 rgb(15 16 53 / 0.05), 0 16px 36px -16px rgb(15 16 53 / 0.22);
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #0f1035;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Brand gradient used on the logo mark, primary buttons and hero accents. */
+.bg-brand-gradient {
+  background-image: linear-gradient(120deg, #2563eb 0%, #4f46e5 45%, #7c3aed 100%);
+}
+
+.text-brand-gradient {
+  background-image: linear-gradient(120deg, #2563eb 0%, #4f46e5 45%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Shell layout.
+   Desktop uses a grid track for the sidebar rather than a fixed element plus
+   matching content padding — one source of truth for the width, and no
+   offset to keep in sync. Mobile keeps the sidebar as an overlay drawer. */
+.kh-shell {
+  display: block;
+}
+
+.kh-sidebar {
+  position: fixed;
+  inset-block: 0;
+  left: 0;
+  width: 16rem;
+  z-index: 40;
+}
+
+@media (min-width: 1024px) {
+  .kh-shell {
+    display: grid;
+    grid-template-columns: var(--kh-sidebar-w, 16rem) minmax(0, 1fr);
+    transition: grid-template-columns 300ms ease;
+  }
+
+  .kh-sidebar {
+    position: sticky;
+    width: auto;
+    height: 100vh;
+    transform: none;
+  }
+}
+
+/* Report card printing: strip the app chrome and print only the sheet, so a
+   school gets a clean A4 page rather than a screenshot of the dashboard. */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  .kh-no-print {
+    display: none !important;
+  }
+
+  .kh-shell {
+    display: block !important;
+    background: #fff !important;
+  }
+
+  .kh-print-sheet {
+    box-shadow: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none;
+  }
 }
