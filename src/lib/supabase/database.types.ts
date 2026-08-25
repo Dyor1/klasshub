@@ -575,6 +575,189 @@ export type Database = {
         }
         Relationships: []
       }
+      cbt_exams: {
+        Row: {
+          academic_year: string
+          class_id: string
+          closes_at: string | null
+          created_at: string
+          created_by: string | null
+          duration_minutes: number
+          id: string
+          instructions: string | null
+          opens_at: string | null
+          reveal_score: boolean
+          school_id: string
+          shuffle_questions: boolean
+          status: Database["public"]["Enums"]["cbt_status"]
+          subject_id: string | null
+          term: Database["public"]["Enums"]["term"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          academic_year: string
+          class_id: string
+          closes_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          duration_minutes?: number
+          id?: string
+          instructions?: string | null
+          opens_at?: string | null
+          reveal_score?: boolean
+          school_id: string
+          shuffle_questions?: boolean
+          status?: Database["public"]["Enums"]["cbt_status"]
+          subject_id?: string | null
+          term: Database["public"]["Enums"]["term"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string
+          class_id?: string
+          closes_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          duration_minutes?: number
+          id?: string
+          instructions?: string | null
+          opens_at?: string | null
+          reveal_score?: boolean
+          school_id?: string
+          shuffle_questions?: boolean
+          status?: Database["public"]["Enums"]["cbt_status"]
+          subject_id?: string | null
+          term?: Database["public"]["Enums"]["term"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cbt_questions: {
+        Row: {
+          correct_option: Database["public"]["Enums"]["cbt_option"]
+          created_at: string
+          exam_id: string
+          id: string
+          marks: number
+          option_a: string
+          option_b: string
+          option_c: string | null
+          option_d: string | null
+          question_number: number
+          question_text: string
+          school_id: string
+          updated_at: string
+        }
+        Insert: {
+          correct_option: Database["public"]["Enums"]["cbt_option"]
+          created_at?: string
+          exam_id: string
+          id?: string
+          marks?: number
+          option_a: string
+          option_b: string
+          option_c?: string | null
+          option_d?: string | null
+          question_number: number
+          question_text: string
+          school_id: string
+          updated_at?: string
+        }
+        Update: {
+          correct_option?: Database["public"]["Enums"]["cbt_option"]
+          created_at?: string
+          exam_id?: string
+          id?: string
+          marks?: number
+          option_a?: string
+          option_b?: string
+          option_c?: string | null
+          option_d?: string | null
+          question_number?: number
+          question_text?: string
+          school_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cbt_sessions: {
+        Row: {
+          created_at: string
+          exam_id: string
+          expires_at: string
+          id: string
+          percentage: number | null
+          school_id: string
+          score: number | null
+          started_at: string
+          status: Database["public"]["Enums"]["cbt_session_status"]
+          student_id: string
+          submitted_at: string | null
+          total_marks: number | null
+        }
+        Insert: {
+          created_at?: string
+          exam_id: string
+          expires_at: string
+          id?: string
+          percentage?: number | null
+          school_id: string
+          score?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["cbt_session_status"]
+          student_id: string
+          submitted_at?: string | null
+          total_marks?: number | null
+        }
+        Update: {
+          created_at?: string
+          exam_id?: string
+          expires_at?: string
+          id?: string
+          percentage?: number | null
+          school_id?: string
+          score?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["cbt_session_status"]
+          student_id?: string
+          submitted_at?: string | null
+          total_marks?: number | null
+        }
+        Relationships: []
+      }
+      cbt_answers: {
+        Row: {
+          answered_at: string
+          id: string
+          is_correct: boolean | null
+          question_id: string
+          school_id: string
+          selected: Database["public"]["Enums"]["cbt_option"] | null
+          session_id: string
+        }
+        Insert: {
+          answered_at?: string
+          id?: string
+          is_correct?: boolean | null
+          question_id: string
+          school_id: string
+          selected?: Database["public"]["Enums"]["cbt_option"] | null
+          session_id: string
+        }
+        Update: {
+          answered_at?: string
+          id?: string
+          is_correct?: boolean | null
+          question_id?: string
+          school_id?: string
+          selected?: Database["public"]["Enums"]["cbt_option"] | null
+          session_id?: string
+        }
+        Relationships: []
+      }
       classes: {
         Row: {
           academic_year: string
@@ -1131,6 +1314,38 @@ export type Database = {
         Args: { p_bands: Json }
         Returns: undefined
       }
+      cbt_start: { Args: { p_exam_id: string }; Returns: string }
+      cbt_paper: {
+        Args: { p_session_id: string }
+        Returns: {
+          question_id: string
+          question_number: number
+          question_text: string
+          option_a: string
+          option_b: string
+          option_c: string | null
+          option_d: string | null
+          marks: number
+          selected: Database["public"]["Enums"]["cbt_option"] | null
+        }[]
+      }
+      cbt_answer: {
+        Args: {
+          p_session_id: string
+          p_question_id: string
+          p_selected: Database["public"]["Enums"]["cbt_option"]
+        }
+        Returns: undefined
+      }
+      cbt_submit: {
+        Args: { p_session_id: string }
+        Returns: {
+          score: number
+          total_marks: number
+          percentage: number
+          revealed: boolean
+        }[]
+      }
       send_fee_reminders: {
         Args: {
           p_term: Database["public"]["Enums"]["term"]
@@ -1150,6 +1365,9 @@ export type Database = {
     Enums: {
       announcement_audience: "everyone" | "staff" | "students" | "parents"
       attendance_status: "present" | "absent" | "late" | "excused"
+      cbt_option: "a" | "b" | "c" | "d"
+      cbt_session_status: "in_progress" | "submitted" | "expired"
+      cbt_status: "draft" | "published" | "closed"
       board_status: "not_boarded" | "boarded" | "dropped_off"
       route_status: "active" | "inactive"
       lesson_note_status: "draft" | "submitted" | "approved" | "rejected"
@@ -1307,6 +1525,9 @@ export const Constants = {
     Enums: {
       announcement_audience: ["everyone", "staff", "students", "parents"],
       attendance_status: ["present", "absent", "late", "excused"],
+      cbt_option: ["a", "b", "c", "d"],
+      cbt_session_status: ["in_progress", "submitted", "expired"],
+      cbt_status: ["draft", "published", "closed"],
       board_status: ["not_boarded", "boarded", "dropped_off"],
       route_status: ["active", "inactive"],
       lesson_note_status: ["draft", "submitted", "approved", "rejected"],
