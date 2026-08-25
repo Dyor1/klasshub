@@ -201,6 +201,16 @@ export function IconBus({ className = base }: IconProps) {
   );
 }
 
+export function IconWallet({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H18a2 2 0 0 1 2 2v1" />
+      <path d="M3 8.5v8A2.5 2.5 0 0 0 5.5 19H19a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H5.5A2.5 2.5 0 0 1 3 8.5z" />
+      <circle cx="16.5" cy="14" r="1.2" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export const navIcons = {
   overview: IconGrid,
   classes: IconSchool,
@@ -217,6 +227,7 @@ export const navIcons = {
   classNotes: IconFolder,
   lessonNotes: IconNotebook,
   transport: IconBus,
+  fees: IconWallet,
 } as const;
 
 export type NavIconKey = keyof typeof navIcons;

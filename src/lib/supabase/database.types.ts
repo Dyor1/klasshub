@@ -377,6 +377,168 @@ export type Database = {
         }
         Relationships: []
       }
+      fee_items: {
+        Row: {
+          academic_year: string
+          amount: number
+          class_id: string | null
+          created_at: string
+          id: string
+          is_optional: boolean
+          name: string
+          school_id: string
+          sort_order: number
+          term: Database["public"]["Enums"]["term"]
+          updated_at: string
+        }
+        Insert: {
+          academic_year: string
+          amount: number
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          is_optional?: boolean
+          name: string
+          school_id: string
+          sort_order?: number
+          term: Database["public"]["Enums"]["term"]
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string
+          amount?: number
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          is_optional?: boolean
+          name?: string
+          school_id?: string
+          sort_order?: number
+          term?: Database["public"]["Enums"]["term"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          academic_year: string
+          class_id: string | null
+          created_at: string
+          discount: number
+          id: string
+          issued_at: string
+          issued_by: string | null
+          note: string | null
+          school_id: string
+          student_id: string
+          term: Database["public"]["Enums"]["term"]
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          academic_year: string
+          class_id?: string | null
+          created_at?: string
+          discount?: number
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          note?: string | null
+          school_id: string
+          student_id: string
+          term: Database["public"]["Enums"]["term"]
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string
+          class_id?: string | null
+          created_at?: string
+          discount?: number
+          id?: string
+          issued_at?: string
+          issued_by?: string | null
+          note?: string | null
+          school_id?: string
+          student_id?: string
+          term?: Database["public"]["Enums"]["term"]
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      invoice_lines: {
+        Row: {
+          amount: number
+          description: string
+          id: string
+          invoice_id: string
+          school_id: string
+          sort_order: number
+        }
+        Insert: {
+          amount: number
+          description: string
+          id?: string
+          invoice_id: string
+          school_id: string
+          sort_order?: number
+        }
+        Update: {
+          amount?: number
+          description?: string
+          id?: string
+          invoice_id?: string
+          school_id?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string
+          method: Database["public"]["Enums"]["payment_method"]
+          note: string | null
+          paid_at: string
+          receipt_no: string
+          recorded_by: string | null
+          reference: string | null
+          school_id: string
+          student_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id: string
+          method?: Database["public"]["Enums"]["payment_method"]
+          note?: string | null
+          paid_at?: string
+          receipt_no?: string
+          recorded_by?: string | null
+          reference?: string | null
+          school_id: string
+          student_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string
+          method?: Database["public"]["Enums"]["payment_method"]
+          note?: string | null
+          paid_at?: string
+          receipt_no?: string
+          recorded_by?: string | null
+          reference?: string | null
+          school_id?: string
+          student_id?: string
+        }
+        Relationships: []
+      }
       classes: {
         Row: {
           academic_year: string
@@ -870,6 +1032,27 @@ export type Database = {
       }
     }
     Views: {
+      invoice_balances: {
+        Row: {
+          academic_year: string
+          amount_paid: number
+          balance: number
+          class_id: string | null
+          created_at: string
+          discount: number
+          id: string
+          issued_at: string
+          issued_by: string | null
+          note: string | null
+          payment_status: string
+          school_id: string
+          student_id: string
+          term: Database["public"]["Enums"]["term"]
+          total_amount: number
+          updated_at: string
+        }
+        Relationships: []
+      }
       results_ranked: {
         Row: {
           academic_year: string
@@ -912,6 +1095,14 @@ export type Database = {
         Args: { p_bands: Json }
         Returns: undefined
       }
+      generate_invoices: {
+        Args: {
+          p_class_id: string
+          p_term: Database["public"]["Enums"]["term"]
+          p_academic_year: string
+        }
+        Returns: { created: number; skipped: number }[]
+      }
     }
     Enums: {
       announcement_audience: "everyone" | "staff" | "students" | "parents"
@@ -919,6 +1110,13 @@ export type Database = {
       board_status: "not_boarded" | "boarded" | "dropped_off"
       route_status: "active" | "inactive"
       lesson_note_status: "draft" | "submitted" | "approved" | "rejected"
+      payment_method:
+        | "cash"
+        | "transfer"
+        | "pos"
+        | "online"
+        | "cheque"
+        | "waiver"
       school_plan: "trial" | "starter" | "standard" | "group"
       student_status: "active" | "graduated" | "withdrawn" | "suspended"
       term: "first" | "second" | "third"
@@ -1062,6 +1260,7 @@ export const Constants = {
       board_status: ["not_boarded", "boarded", "dropped_off"],
       route_status: ["active", "inactive"],
       lesson_note_status: ["draft", "submitted", "approved", "rejected"],
+      payment_method: ["cash", "transfer", "pos", "online", "cheque", "waiver"],
       school_plan: ["trial", "starter", "standard", "group"],
       student_status: ["active", "graduated", "withdrawn", "suspended"],
       term: ["first", "second", "third"],
