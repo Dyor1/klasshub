@@ -41,6 +41,7 @@ const NAV: NavItem[] = [
   { href: "/dashboard/transport", label: "Transport", icon: "transport", roles: ALL },
   { href: "/dashboard/guardians", label: "Guardians", icon: "team", roles: STAFF },
   { href: "/dashboard/team", label: "Team", icon: "team", roles: STAFF },
+  { href: "/dashboard/notifications", label: "Notifications", icon: "bell", roles: ALL },
   { href: "/dashboard/settings", label: "Settings", icon: "settings", roles: ["admin"] },
 ];
 
@@ -50,6 +51,7 @@ export default function AppShell({
   userName,
   userRole,
   isStaff,
+  unreadCount = 0,
   signOutAction,
   children,
 }: {
@@ -58,6 +60,7 @@ export default function AppShell({
   userName: string;
   userRole: string;
   isStaff: boolean;
+  unreadCount?: number;
   signOutAction: () => Promise<void>;
   children: ReactNode;
 }) {
@@ -154,7 +157,7 @@ export default function AppShell({
                 href={item.href}
                 title={collapsed ? item.label : undefined}
                 aria-current={active ? "page" : undefined}
-                className={`group flex items-center gap-3 rounded-xl transition-all duration-200 ${
+                className={`group relative flex items-center gap-3 rounded-xl transition-all duration-200 ${
                   collapsed ? "justify-center px-2.5 py-2.5" : "px-3 py-2.5"
                 } ${
                   active
@@ -172,6 +175,15 @@ export default function AppShell({
                 {!collapsed && (
                   <span className="whitespace-nowrap text-sm font-semibold">
                     {item.label}
+                  </span>
+                )}
+                {item.href === "/dashboard/notifications" && unreadCount > 0 && (
+                  <span
+                    className={`ml-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold ${
+                      active ? "bg-white/25 text-white" : "bg-brand-600 text-white"
+                    } ${collapsed ? "absolute right-1 top-1" : ""}`}
+                  >
+                    {unreadCount > 99 ? "99+" : unreadCount}
                   </span>
                 )}
               </Link>

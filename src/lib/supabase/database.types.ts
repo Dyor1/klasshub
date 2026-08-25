@@ -539,6 +539,42 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          link: string | null
+          read_at: string | null
+          recipient_id: string
+          school_id: string
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          link?: string | null
+          read_at?: string | null
+          recipient_id: string
+          school_id: string
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          link?: string | null
+          read_at?: string | null
+          recipient_id?: string
+          school_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       classes: {
         Row: {
           academic_year: string
@@ -1095,6 +1131,13 @@ export type Database = {
         Args: { p_bands: Json }
         Returns: undefined
       }
+      send_fee_reminders: {
+        Args: {
+          p_term: Database["public"]["Enums"]["term"]
+          p_academic_year: string
+        }
+        Returns: { students: number; recipients: number }[]
+      }
       generate_invoices: {
         Args: {
           p_class_id: string
@@ -1110,6 +1153,13 @@ export type Database = {
       board_status: "not_boarded" | "boarded" | "dropped_off"
       route_status: "active" | "inactive"
       lesson_note_status: "draft" | "submitted" | "approved" | "rejected"
+      notification_kind:
+        | "announcement"
+        | "result"
+        | "attendance"
+        | "fees"
+        | "lesson_note"
+        | "general"
       payment_method:
         | "cash"
         | "transfer"
@@ -1260,6 +1310,7 @@ export const Constants = {
       board_status: ["not_boarded", "boarded", "dropped_off"],
       route_status: ["active", "inactive"],
       lesson_note_status: ["draft", "submitted", "approved", "rejected"],
+      notification_kind: ["announcement","result","attendance","fees","lesson_note","general"],
       payment_method: ["cash", "transfer", "pos", "online", "cheque", "waiver"],
       school_plan: ["trial", "starter", "standard", "group"],
       student_status: ["active", "graduated", "withdrawn", "suspended"],

@@ -7,10 +7,14 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
   const viewer = await requireViewer();
   const supabase = await createClient();
 
-  const { data: school } = await supabase
-    .from("schools")
-    .select("name, plan")
-    .single();
+  const [{ data: school }, { count: unread }] = await Promise.all([
+    supabase.from("schools").select("name, plan").single(),
+    // RLS scopes this to the caller's own inbox.
+    supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .is("read_at", null),
+  ]);
 
   return (
     <AppShell
@@ -19,6 +23,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
       userName={viewer.fullName ?? "Member"}
       userRole={viewer.role}
       isStaff={viewer.isStaff}
+      unreadCount={unread ?? 0}
       signOutAction={signOut}
     >
       {children}
