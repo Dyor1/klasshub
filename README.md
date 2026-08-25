@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KlassHub
 
-## Getting Started
+Multi-tenant school management portal. Schools register, invite their staff,
+and run classes, attendance, results and report cards from one place.
 
-First, run the development server:
+Next.js 16 · React 19 · TypeScript · Tailwind v4 · Supabase.
+
+---
+
+## Running locally
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in from Supabase → Project Settings → API
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 and register a school.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | Notes |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | yes | Project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | yes | Publishable key (`sb_publishable_…`) |
+| `NEXT_PUBLIC_SITE_URL` | no | Only needed if the public URL differs from the request host, e.g. behind a proxy. Invite links otherwise derive from the request. |
 
-## Learn More
+Never put the `service_role` key in a `NEXT_PUBLIC_` variable — it ships to the
+browser and bypasses RLS entirely.
 
-To learn more about Next.js, take a look at the following resources:
+## Database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Migrations live in `supabase/migrations` and are applied in filename order.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npx supabase link --project-ref <ref>
+npx supabase db push
+npx supabase db advisors      # check for RLS/perf issues after any change
+```
 
-## Deploy on Vercel
+### Tenancy model
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Every tenant-owned row carries `school_id`. RLS resolves the caller's school
+through `SECURITY DEFINER` helpers in an unexposed `private` schema.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Two rules the whole design rests on:
+
+1. **`school_id` is never read from the JWT.** Supabase's `raw_user_meta_data`
+   is user-editable and surfaces in `auth.jwt()`, so trusting it would let any
+   user re-point themselves at another school. `public.profiles` is the only
+   source of truth.
+2. **Every FK between tenant tables is composite and carries `school_id`** —
+   e.g. `(subject_id, school_id) → subjects(id, school_id)`. A row in school A
+   therefore cannot reference school B even if application code is wrong. This
+   is enforced by Postgres, so it holds for `service_role` and backend jobs
+   too.
+
+RLS constrains *rows*, not *columns*. Where a column needs protecting —
+`profiles.role`, `lesson_notes.status` — there is an explicit trigger.
+
+### Roles
+
+| Role | Sees |
+| --- | --- |
+| `admin` | Everything in their school, plus settings and invitations |
+| `teacher` | Everything academic; only their own lesson notes |
+| `student` | Their own record and **published** results only |
+| `parent` | Only children linked via `student_guardians`, published results only |
+
+### Storage
+
+One private bucket, `school-files`, with the tenant baked into the object path:
+
+```
+{school_id}/{class-notes|lesson-notes}/{file}
+```
+
+Storage RLS reads the school from the first path segment and the kind from the
+second, so class notes are readable by the whole school while lesson notes stay
+staff-only. Downloads use short-lived signed URLs.
+
+## Deploying
+
+1. Set the two required environment variables on the host.
+2. Point the host at `main`; the build command is `npm run build`.
+3. Add your production URL to Supabase → Authentication → URL Configuration,
+   otherwise auth redirects will fail.

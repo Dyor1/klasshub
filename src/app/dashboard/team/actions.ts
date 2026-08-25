@@ -1,6 +1,7 @@
 "use server";
 
 import { randomBytes, createHash } from "node:crypto";
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
@@ -14,6 +15,21 @@ export type InviteState = {
 };
 
 const INVITABLE_ROLES: Role[] = ["admin", "teacher", "student", "parent"];
+
+/** Where invite links point. Derived from the incoming request so it is
+ *  correct on any host without configuration — an unset env var used to make
+ *  production quietly hand out http://localhost:3000 links. An explicit
+ *  NEXT_PUBLIC_SITE_URL still wins, for custom domains behind a proxy. */
+async function siteOrigin(): Promise<string> {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+  if (explicit) return explicit;
+
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
+  const proto =
+    h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
+}
 
 /** Creates an invitation and returns the one-time link.
  *
@@ -73,8 +89,7 @@ export async function inviteMember(
 
   revalidatePath("/dashboard/team");
 
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  return { error: null, inviteUrl: `${base}/invite/${rawToken}`, email };
+  return { error: null, inviteUrl: `${await siteOrigin()}/invite/${rawToken}`, email };
 }
 
 export async function revokeInvitation(formData: FormData) {
