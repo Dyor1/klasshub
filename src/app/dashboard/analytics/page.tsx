@@ -514,8 +514,11 @@ export default async function AnalyticsPage({
                       </span>
                     </td>
                     <td className="px-4 py-3">
+                      {/* Chip capitalises each word, which turned "3 of 4"
+                          into "3 Of 4". A slash sidesteps it and reads
+                          better in a chip anyway. */}
                       <Chip tone={s.failed >= 3 ? "red" : "amber"}>
-                        {s.failed} of {s.taken}
+                        {s.failed}/{s.taken}
                       </Chip>
                     </td>
                     <td className="px-4 py-3 text-right">

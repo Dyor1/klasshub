@@ -30,22 +30,25 @@ export function BarRow({
   const pct = Math.max(0, Math.min(100, value));
   const tone = toneFor(value);
 
+  // Stacked rather than a single row: the sublabel carries the entry count and
+  // the min-max spread, which a fixed-width label column truncated away on
+  // anything narrower than a desktop.
   return (
-    <div className="flex items-center gap-3 py-2">
-      <div className="w-36 shrink-0 sm:w-44">
+    <div className="py-2.5">
+      <div className="flex items-baseline justify-between gap-3">
         <p className="truncate text-sm font-medium text-slate-800">{label}</p>
-        {sublabel && <p className="truncate text-[11px] text-slate-400">{sublabel}</p>}
+        <span className={`shrink-0 text-sm font-bold tabular-nums ${tone.text}`}>
+          {value.toFixed(1)}
+          {suffix}
+        </span>
       </div>
-      <div className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-100">
+      {sublabel && <p className="mt-0.5 text-[11px] text-slate-400">{sublabel}</p>}
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
         <div
           className="h-full rounded-full transition-all"
           style={{ width: `${pct}%`, backgroundColor: color ?? tone.bar }}
         />
       </div>
-      <span className={`w-14 shrink-0 text-right text-sm font-bold tabular-nums ${tone.text}`}>
-        {value.toFixed(1)}
-        {suffix}
-      </span>
     </div>
   );
 }
