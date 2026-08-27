@@ -230,6 +230,16 @@ export function IconQuiz({ className = base }: IconProps) {
   );
 }
 
+export function IconClipboard({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="4" width="14" height="17" rx="2.5" />
+      <path d="M9 4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5v.5H9z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
 export const navIcons = {
   overview: IconGrid,
   classes: IconSchool,
@@ -249,6 +259,7 @@ export const navIcons = {
   fees: IconWallet,
   bell: IconBell,
   cbt: IconQuiz,
+  assignments: IconClipboard,
 } as const;
 
 export type NavIconKey = keyof typeof navIcons;

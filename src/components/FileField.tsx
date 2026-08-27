@@ -23,6 +23,7 @@ export type UploadedFile = {
 export default function FileField({
   schoolId,
   kind,
+  owner,
   value,
   onChange,
   label = "File",
@@ -30,6 +31,9 @@ export default function FileField({
 }: {
   schoolId: string;
   kind: FileKind;
+  /** Required for assignment uploads — storage RLS confines a student to a
+   *  folder named after their own profile id. */
+  owner?: string;
   value: UploadedFile | null;
   onChange: (f: UploadedFile | null) => void;
   label?: string;
@@ -50,7 +54,7 @@ export default function FileField({
 
     setBusy(true);
     const supabase = createClient();
-    const path = buildFilePath(schoolId, kind, file.name);
+    const path = buildFilePath(schoolId, kind, file.name, owner);
 
     const { error: upErr } = await supabase.storage
       .from(FILE_BUCKET)

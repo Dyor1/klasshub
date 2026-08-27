@@ -758,6 +758,117 @@ export type Database = {
         }
         Relationships: []
       }
+      assignments: {
+        Row: {
+          academic_year: string
+          allow_file: boolean
+          allow_text: boolean
+          class_id: string
+          created_at: string
+          due_at: string | null
+          id: string
+          instructions: string | null
+          max_score: number
+          school_id: string
+          status: Database["public"]["Enums"]["assignment_status"]
+          subject_id: string | null
+          teacher_id: string | null
+          term: Database["public"]["Enums"]["term"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          academic_year: string
+          allow_file?: boolean
+          allow_text?: boolean
+          class_id: string
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          instructions?: string | null
+          max_score?: number
+          school_id: string
+          status?: Database["public"]["Enums"]["assignment_status"]
+          subject_id?: string | null
+          teacher_id?: string | null
+          term: Database["public"]["Enums"]["term"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string
+          allow_file?: boolean
+          allow_text?: boolean
+          class_id?: string
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          instructions?: string | null
+          max_score?: number
+          school_id?: string
+          status?: Database["public"]["Enums"]["assignment_status"]
+          subject_id?: string | null
+          teacher_id?: string | null
+          term?: Database["public"]["Enums"]["term"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      assignment_submissions: {
+        Row: {
+          assignment_id: string
+          body: string | null
+          feedback: string | null
+          file_name: string | null
+          file_path: string | null
+          file_size: number | null
+          graded_at: string | null
+          graded_by: string | null
+          id: string
+          is_late: boolean
+          school_id: string
+          score: number | null
+          student_id: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          assignment_id: string
+          body?: string | null
+          feedback?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          is_late?: boolean
+          school_id: string
+          score?: number | null
+          student_id: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          assignment_id?: string
+          body?: string | null
+          feedback?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          is_late?: boolean
+          school_id?: string
+          score?: number | null
+          student_id?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       classes: {
         Row: {
           academic_year: string
@@ -1364,6 +1475,7 @@ export type Database = {
     }
     Enums: {
       announcement_audience: "everyone" | "staff" | "students" | "parents"
+      assignment_status: "draft" | "published" | "closed"
       attendance_status: "present" | "absent" | "late" | "excused"
       cbt_option: "a" | "b" | "c" | "d"
       cbt_session_status: "in_progress" | "submitted" | "expired"
@@ -1524,6 +1636,7 @@ export const Constants = {
   public: {
     Enums: {
       announcement_audience: ["everyone", "staff", "students", "parents"],
+      assignment_status: ["draft", "published", "closed"],
       attendance_status: ["present", "absent", "late", "excused"],
       cbt_option: ["a", "b", "c", "d"],
       cbt_session_status: ["in_progress", "submitted", "expired"],
