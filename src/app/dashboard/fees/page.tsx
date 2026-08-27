@@ -92,7 +92,7 @@ export default async function FeesPage({
                   <tr key={b.id} className="hover:bg-slate-50/60">
                     {showWho && (
                       <td className="px-4 py-3 font-medium text-slate-900">
-                        {name.get(b.student_id) ?? "—"}
+                        {name.get(b.student_id ?? "") ?? "—"}
                       </td>
                     )}
                     <td className="px-4 py-3 capitalize text-slate-600">
@@ -101,8 +101,10 @@ export default async function FeesPage({
                     <td className="px-4 py-3 text-slate-600">
                       {naira(Number(b.total_amount) - Number(b.discount))}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{naira(b.amount_paid)}</td>
-                    <td className="px-4 py-3 font-semibold text-slate-900">{naira(b.balance)}</td>
+                    <td className="px-4 py-3 text-slate-600">{naira(b.amount_paid ?? 0)}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-900">
+                      {naira(b.balance ?? 0)}
+                    </td>
                     <td className="px-4 py-3">
                       <Chip tone={statusTone[b.payment_status as keyof typeof statusTone] ?? "slate"}>
                         {b.payment_status}
@@ -297,7 +299,7 @@ export default async function FeesPage({
 
           <Table head={["Student", "Class", "Billed", "Paid", "Balance", "Status", ""]}>
             {filtered.map((b) => {
-              const s = studentById.get(b.student_id);
+              const s = studentById.get(b.student_id ?? "");
               const name = s ? `${s.surname} ${s.first_name}` : "Unknown";
               const netBilled = Number(b.total_amount) - Number(b.discount);
               return (
@@ -317,15 +319,17 @@ export default async function FeesPage({
                     {b.class_id ? className.get(b.class_id) ?? "—" : "—"}
                   </td>
                   <td className="px-4 py-3 text-slate-600">{naira(netBilled)}</td>
-                  <td className="px-4 py-3 text-slate-600">{naira(b.amount_paid)}</td>
-                  <td className="px-4 py-3 font-semibold text-slate-900">{naira(b.balance)}</td>
+                  <td className="px-4 py-3 text-slate-600">{naira(b.amount_paid ?? 0)}</td>
+                  <td className="px-4 py-3 font-semibold text-slate-900">
+                    {naira(b.balance ?? 0)}
+                  </td>
                   <td className="px-4 py-3">
                     <Chip tone={statusTone[b.payment_status as keyof typeof statusTone] ?? "slate"}>
                       {b.payment_status}
                     </Chip>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {viewer.isAdmin && Number(b.balance) > 0 && (
+                    {viewer.isAdmin && b.id && Number(b.balance) > 0 && (
                       <PaymentForm
                         invoiceId={b.id}
                         studentName={name}

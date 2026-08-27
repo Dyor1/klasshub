@@ -36,6 +36,7 @@ const NAV: NavItem[] = [
   { href: "/dashboard/assignments", label: "Assignments", icon: "assignments", roles: ALL },
   { href: "/dashboard/cbt", label: "Tests (CBT)", icon: "cbt", roles: ALL },
   { href: "/dashboard/report-cards", label: "Report cards", icon: "reports", roles: ALL },
+  { href: "/dashboard/analytics", label: "Analytics", icon: "analytics", roles: STAFF },
   { href: "/dashboard/class-notes", label: "Class notes", icon: "classNotes", roles: ALL },
   { href: "/dashboard/lesson-notes", label: "Lesson notes", icon: "lessonNotes", roles: STAFF },
   { href: "/dashboard/announcements", label: "Announcements", icon: "announcements", roles: ALL },

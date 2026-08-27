@@ -240,6 +240,15 @@ export function IconClipboard({ className = base }: IconProps) {
   );
 }
 
+export function IconTrend({ className = base }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 17l5.5-5.5 3.5 3.5L21 6" />
+      <path d="M15 6h6v6" />
+    </svg>
+  );
+}
+
 export const navIcons = {
   overview: IconGrid,
   classes: IconSchool,
@@ -260,6 +269,7 @@ export const navIcons = {
   bell: IconBell,
   cbt: IconQuiz,
   assignments: IconClipboard,
+  analytics: IconTrend,
 } as const;
 
 export type NavIconKey = keyof typeof navIcons;

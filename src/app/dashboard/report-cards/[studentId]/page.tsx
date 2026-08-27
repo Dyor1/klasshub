@@ -65,7 +65,9 @@ export default async function ReportCardPage({
   const subjectName = new Map((subjects ?? []).map((s) => [s.id, s.name]));
 
   const results = (rows ?? []).sort((a, b) =>
-    (subjectName.get(a.subject_id) ?? "").localeCompare(subjectName.get(b.subject_id) ?? "")
+    (subjectName.get(a.subject_id ?? "") ?? "").localeCompare(
+      subjectName.get(b.subject_id ?? "") ?? ""
+    )
   );
 
   const fullName = [student.surname, student.first_name, student.other_names]
@@ -185,7 +187,7 @@ export default async function ReportCardPage({
               {results.map((r) => (
                 <tr key={r.subject_id}>
                   <td className="py-2 font-medium text-slate-900">
-                    {subjectName.get(r.subject_id) ?? "—"}
+                    {subjectName.get(r.subject_id ?? "") ?? "—"}
                   </td>
                   <td className="py-2 text-right text-slate-600">{r.ca_score}</td>
                   <td className="py-2 text-right text-slate-600">{r.exam_score}</td>

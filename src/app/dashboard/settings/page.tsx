@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card } from "@/components/ui";
 import GradingScaleForm from "./GradingScaleForm";
+import PassMarkForm from "./PassMarkForm";
 
 export const metadata = { title: "Settings — KlassHub" };
 
@@ -19,6 +20,8 @@ export default async function SettingsPage() {
   const { count: resultCount } = await supabase
     .from("results")
     .select("id", { count: "exact", head: true });
+
+  const { data: school } = await supabase.from("schools").select("pass_mark").single();
 
   return (
     <>
@@ -40,6 +43,14 @@ export default async function SettingsPage() {
         ) : null}
 
         <GradingScaleForm bands={bands ?? []} />
+      </Card>
+
+      <Card
+        title="Pass mark"
+        description="The score at or above which a result counts as a pass. Analytics uses this for every pass rate and for the students-needing-attention list."
+        className="mt-6"
+      >
+        <PassMarkForm passMark={Number(school?.pass_mark ?? 40)} />
       </Card>
     </>
   );

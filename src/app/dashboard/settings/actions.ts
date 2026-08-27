@@ -115,6 +115,36 @@ export async function saveGradingScale(
   return { error: null, ok: true, saved: ordered.length };
 }
 
+/** The line between a pass and a fail, used by every analytics view. Stored on
+ *  the school rather than inferred from the grading scale, because the lowest
+ *  non-fail band and the pass mark are not always the same number. */
+export async function savePassMark(
+  _prev: ScaleState,
+  formData: FormData
+): Promise<ScaleState> {
+  const viewer = await requireViewer();
+  if (!viewer.isAdmin) {
+    return { error: "Only administrators can change the pass mark." };
+  }
+
+  const passMark = Number(formData.get("pass_mark"));
+  if (!Number.isFinite(passMark) || passMark < 0 || passMark > 100) {
+    return { error: "The pass mark must be a number between 0 and 100." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("schools")
+    .update({ pass_mark: passMark })
+    .eq("id", viewer.schoolId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard/analytics");
+  return { error: null, ok: true };
+}
+
 export async function resetGradingScale(): Promise<void> {
   const viewer = await requireViewer();
   if (!viewer.isAdmin) return;

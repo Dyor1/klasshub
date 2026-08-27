@@ -130,7 +130,9 @@ export async function recordPayment(
     .eq("id", invoiceId)
     .single();
 
-  if (!inv) return { error: "That invoice could not be found." };
+  // Every column off a view is nullable as far as the types know, so checking
+  // the student doubles as the "row exists" check.
+  if (!inv?.student_id) return { error: "That invoice could not be found." };
   if (Number(inv.balance) <= 0) return { error: "That invoice is already settled." };
   if (amount > Number(inv.balance)) {
     return {
