@@ -45,6 +45,7 @@ const NAV: NavItem[] = [
   { href: "/dashboard/guardians", label: "Guardians", icon: "team", roles: STAFF },
   { href: "/dashboard/team", label: "Team", icon: "team", roles: STAFF },
   { href: "/dashboard/notifications", label: "Notifications", icon: "bell", roles: ALL },
+  { href: "/dashboard/billing", label: "Billing", icon: "fees", roles: ["admin"] },
   { href: "/dashboard/settings", label: "Settings", icon: "settings", roles: ["admin"] },
 ];
 

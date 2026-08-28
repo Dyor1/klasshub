@@ -1523,6 +1523,33 @@ export type Database = {
           },
         ]
       }
+      plan_limits: {
+        Row: {
+          label: string
+          max_students: number | null
+          plan: Database["public"]["Enums"]["school_plan"]
+          price_kobo: number | null
+          self_serve: boolean
+          sort_order: number
+        }
+        Insert: {
+          label: string
+          max_students?: number | null
+          plan: Database["public"]["Enums"]["school_plan"]
+          price_kobo?: number | null
+          self_serve?: boolean
+          sort_order?: number
+        }
+        Update: {
+          label?: string
+          max_students?: number | null
+          plan?: Database["public"]["Enums"]["school_plan"]
+          price_kobo?: number | null
+          self_serve?: boolean
+          sort_order?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -1671,6 +1698,7 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          paid_until: string | null
           pass_mark: number
           plan: Database["public"]["Enums"]["school_plan"]
           slug: string
@@ -1680,6 +1708,7 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          paid_until?: string | null
           pass_mark?: number
           plan?: Database["public"]["Enums"]["school_plan"]
           slug: string
@@ -1689,6 +1718,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          paid_until?: string | null
           pass_mark?: number
           plan?: Database["public"]["Enums"]["school_plan"]
           slug?: string
@@ -1922,6 +1952,69 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "subjects_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          initiated_by: string | null
+          paid_at: string | null
+          paystack_ref: string | null
+          period_end: string | null
+          period_start: string | null
+          plan: Database["public"]["Enums"]["school_plan"]
+          reference: string
+          school_id: string
+          status: Database["public"]["Enums"]["payment_attempt_status"]
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          initiated_by?: string | null
+          paid_at?: string | null
+          paystack_ref?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          plan: Database["public"]["Enums"]["school_plan"]
+          reference: string
+          school_id: string
+          status?: Database["public"]["Enums"]["payment_attempt_status"]
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          initiated_by?: string | null
+          paid_at?: string | null
+          paystack_ref?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          plan?: Database["public"]["Enums"]["school_plan"]
+          reference?: string
+          school_id?: string
+          status?: Database["public"]["Enums"]["payment_attempt_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_payments_initiated_by_school_id_fkey"
+            columns: ["initiated_by", "school_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id", "school_id"]
+          },
+          {
+            foreignKeyName: "subscription_payments_school_id_fkey"
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
@@ -2490,6 +2583,14 @@ export type Database = {
           reference: string
         }[]
       }
+      create_subscription_attempt: {
+        Args: { p_plan: Database["public"]["Enums"]["school_plan"] }
+        Returns: {
+          amount: number
+          payer_email: string
+          reference: string
+        }[]
+      }
       enqueue_email: {
         Args: { p_body: string; p_subject: string; p_to: string }
         Returns: string
@@ -2521,10 +2622,31 @@ export type Database = {
           school_name: string
         }[]
       }
+      my_school_billing: {
+        Args: never
+        Returns: {
+          access: Database["public"]["Enums"]["school_access_state"]
+          label: string
+          max_students: number
+          paid_until: string
+          plan: Database["public"]["Enums"]["school_plan"]
+          price_kobo: number
+          student_count: number
+          trial_ends_at: string
+        }[]
+      }
       record_paystack_payment: {
         Args: {
           p_amount_kobo: number
           p_channel?: string
+          p_paystack_ref: string
+          p_reference: string
+        }
+        Returns: string
+      }
+      record_subscription_payment: {
+        Args: {
+          p_amount_kobo: number
           p_paystack_ref: string
           p_reference: string
         }
@@ -2569,6 +2691,7 @@ export type Database = {
         | "cheque"
         | "waiver"
       route_status: "active" | "inactive"
+      school_access_state: "trial" | "active" | "grace" | "locked"
       school_plan: "trial" | "starter" | "standard" | "group"
       student_status: "active" | "graduated" | "withdrawn" | "suspended"
       term: "first" | "second" | "third"
@@ -2728,6 +2851,7 @@ export const Constants = {
       payment_attempt_status: ["pending", "success", "failed", "abandoned"],
       payment_method: ["cash", "transfer", "pos", "online", "cheque", "waiver"],
       route_status: ["active", "inactive"],
+      school_access_state: ["trial", "active", "grace", "locked"],
       school_plan: ["trial", "starter", "standard", "group"],
       student_status: ["active", "graduated", "withdrawn", "suspended"],
       term: ["first", "second", "third"],

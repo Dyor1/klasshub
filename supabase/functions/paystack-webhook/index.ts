@@ -105,16 +105,29 @@ Deno.serve(async (req) => {
       return Response.json({ handled: "wrong currency" });
     }
 
-    const { data, error } = await supabase.rpc("record_paystack_payment", {
-      p_reference: reference,
-      p_paystack_ref: String(event.data.reference),
-      p_amount_kobo: event.data.amount ?? 0,
-      p_channel: event.data.channel ?? null,
-    });
+    // Two kinds of money arrive on this one endpoint: a parent paying a
+    // school's fee invoice, and a school paying KlassHub. Both are Paystack
+    // charges, so they are told apart by the reference prefix that we — not
+    // Paystack — chose when the attempt was created. One webhook URL to
+    // register, and no way for one kind to be credited as the other.
+    const isSubscription = reference.startsWith("KHSUB-");
+
+    const { data, error } = isSubscription
+      ? await supabase.rpc("record_subscription_payment", {
+          p_reference: reference,
+          p_paystack_ref: String(event.data.reference),
+          p_amount_kobo: event.data.amount ?? 0,
+        })
+      : await supabase.rpc("record_paystack_payment", {
+          p_reference: reference,
+          p_paystack_ref: String(event.data.reference),
+          p_amount_kobo: event.data.amount ?? 0,
+          p_channel: event.data.channel ?? null,
+        });
 
     if (error) {
       // A genuine database failure is the one case worth retrying.
-      console.error(`record_paystack_payment failed for ${reference}: ${error.message}`);
+      console.error(`recording ${reference} failed: ${error.message}`);
       return Response.json({ error: error.message }, { status: 500 });
     }
 

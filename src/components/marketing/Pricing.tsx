@@ -1,6 +1,9 @@
 import Link from "next/link";
 
-/** Placeholder tiers — amounts are illustrative and need the real numbers. */
+/** These figures are live: the biller charges them and the student caps are
+ *  enforced by a database trigger. The source of truth is the plan_limits
+ *  table — change a price there and this page must be edited to match, or the
+ *  two will disagree about what a plan costs. */
 const plans = [
   {
     name: "Starter",
