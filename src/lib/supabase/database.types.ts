@@ -1358,6 +1358,90 @@ export type Database = {
           },
         ]
       }
+      payment_attempts: {
+        Row: {
+          amount: number
+          channel: string | null
+          created_at: string
+          id: string
+          initiated_by: string | null
+          invoice_id: string
+          paid_at: string | null
+          paystack_ref: string | null
+          reference: string
+          school_id: string
+          status: Database["public"]["Enums"]["payment_attempt_status"]
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          channel?: string | null
+          created_at?: string
+          id?: string
+          initiated_by?: string | null
+          invoice_id: string
+          paid_at?: string | null
+          paystack_ref?: string | null
+          reference: string
+          school_id: string
+          status?: Database["public"]["Enums"]["payment_attempt_status"]
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          channel?: string | null
+          created_at?: string
+          id?: string
+          initiated_by?: string | null
+          invoice_id?: string
+          paid_at?: string | null
+          paystack_ref?: string | null
+          reference?: string
+          school_id?: string
+          status?: Database["public"]["Enums"]["payment_attempt_status"]
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_attempts_initiated_by_school_id_fkey"
+            columns: ["initiated_by", "school_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id", "school_id"]
+          },
+          {
+            foreignKeyName: "payment_attempts_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoice_balances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_attempts_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_attempts_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_attempts_student_id_school_id_fkey"
+            columns: ["student_id", "school_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id", "school_id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -2398,8 +2482,23 @@ export type Database = {
           subject: string
         }[]
       }
+      create_payment_attempt: {
+        Args: { p_invoice_id: string }
+        Returns: {
+          amount: number
+          payer_email: string
+          reference: string
+        }[]
+      }
       enqueue_email: {
         Args: { p_body: string; p_subject: string; p_to: string }
+        Returns: string
+      }
+      fail_payment_attempt: {
+        Args: {
+          p_reference: string
+          p_status?: Database["public"]["Enums"]["payment_attempt_status"]
+        }
         Returns: string
       }
       generate_invoices: {
@@ -2421,6 +2520,15 @@ export type Database = {
           invited_role: Database["public"]["Enums"]["user_role"]
           school_name: string
         }[]
+      }
+      record_paystack_payment: {
+        Args: {
+          p_amount_kobo: number
+          p_channel?: string
+          p_paystack_ref: string
+          p_reference: string
+        }
+        Returns: string
       }
       replace_grade_bands: { Args: { p_bands: Json }; Returns: undefined }
       send_fee_reminders: {
@@ -2452,6 +2560,7 @@ export type Database = {
         | "fees"
         | "lesson_note"
         | "general"
+      payment_attempt_status: "pending" | "success" | "failed" | "abandoned"
       payment_method:
         | "cash"
         | "transfer"
@@ -2616,6 +2725,7 @@ export const Constants = {
         "lesson_note",
         "general",
       ],
+      payment_attempt_status: ["pending", "success", "failed", "abandoned"],
       payment_method: ["cash", "transfer", "pos", "online", "cheque", "waiver"],
       route_status: ["active", "inactive"],
       school_plan: ["trial", "starter", "standard", "group"],

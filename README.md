@@ -135,6 +135,48 @@ an admin can confirm a notice went out without being able to read anyone's mail.
 > grant rather than narrowing it — the outbox has to `REVOKE ALL` first. See
 > `20260827064500_messaging_outbox_revoke_default_grants.sql`.
 
+## Online fee payment (Paystack)
+
+The rule that shapes this: **the browser is never told a payment succeeded.**
+Paystack redirects the payer back to `/dashboard/fees/callback` after checkout,
+but that redirect is only a URL — anyone can visit it having paid nothing, and
+Paystack appends the same reference whether the card cleared or was declined.
+So the callback page just reads the ledger, and the ledger is written by one
+thing only: the signed webhook.
+
+```
+payer ─▶ create_payment_attempt (their RLS) ─▶ Paystack checkout
+                                                     │
+                    ledger ◀── record_paystack_payment ◀── signed webhook
+```
+
+| | |
+|---|---|
+| `paystack-init` | `verify_jwt: true`. Forwards the payer's own session, so `create_payment_attempt` runs under their RLS — another family's invoice id returns "could not be found" from the database, not from a check in the function. |
+| `paystack-webhook` | `verify_jwt: false`. Paystack sends no Supabase JWT; the HMAC-SHA512 signature over the raw body is the authentication. Fails closed if the key is unset. |
+
+Idempotency is a conditional `UPDATE ... RETURNING` that claims the attempt only
+while it is still `pending`, so Paystack's webhook retries cannot credit a bill
+twice. The amount is re-checked against what we asked for, and a mismatch is
+recorded as a failed attempt rather than raised — an exception would roll back
+the very record that tells you it happened.
+
+```bash
+supabase functions deploy paystack-init
+supabase functions deploy paystack-webhook --no-verify-jwt
+supabase secrets set PAYSTACK_SECRET_KEY=sk_live_...
+```
+
+Then add the webhook URL in the Paystack dashboard under Settings → API Keys &
+Webhooks:
+
+```
+https://<ref>.supabase.co/functions/v1/paystack-webhook
+```
+
+Use `sk_test_` keys and a test card first. Nothing else needs configuring — the
+Pay button appears by itself on any bill with a balance.
+
 ## Deploying
 
 1. Set the two required environment variables on the host.

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui";
 import { IconWallet, IconCheckCircle, IconChart, IconUsers } from "@/components/icons";
 import { FeeItemForm, RaiseInvoicesForm, PaymentForm } from "./FeeForms";
+import PayButton from "./PayButton";
 import { deleteFeeItem } from "./actions";
 
 export const metadata = { title: "Fees — KlassHub" };
@@ -87,7 +88,17 @@ export default async function FeesPage({
             </div>
 
             <Card title="Bills" className="mb-6">
-              <Table head={[...(showWho ? ["Student"] : []), "Term", "Billed", "Paid", "Balance", "Status"]}>
+              <Table
+                head={[
+                  ...(showWho ? ["Student"] : []),
+                  "Term",
+                  "Billed",
+                  "Paid",
+                  "Balance",
+                  "Status",
+                  "",
+                ]}
+              >
                 {(bills ?? []).map((b) => (
                   <tr key={b.id} className="hover:bg-slate-50/60">
                     {showWho && (
@@ -109,6 +120,14 @@ export default async function FeesPage({
                       <Chip tone={statusTone[b.payment_status as keyof typeof statusTone] ?? "slate"}>
                         {b.payment_status}
                       </Chip>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {b.id && Number(b.balance ?? 0) > 0 && (
+                        <PayButton
+                          invoiceId={b.id}
+                          amount={naira(Number(b.balance ?? 0))}
+                        />
+                      )}
                     </td>
                   </tr>
                 ))}
