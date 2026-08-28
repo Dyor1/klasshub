@@ -79,6 +79,62 @@ Storage RLS reads the school from the first path segment and the kind from the
 second, so class notes are readable by the whole school while lesson notes stay
 staff-only. Downloads use short-lived signed URLs.
 
+## Email and SMS
+
+Notifications are created by database triggers, so at the moment a notice comes
+into existence there is no HTTP request to piggyback a send onto — and sending
+from inside the trigger would put a network call in the transaction that records
+a result or marks a register. Instead the trigger writes to `message_outbox` and
+commits; a worker drains it.
+
+```
+notification row ─trigger─▶ message_outbox ─worker─▶ Brevo (email) / Termii (SMS)
+```
+
+Two independent switches decide whether a row is ever queued, and both must
+agree:
+
+| | Who controls it | Where |
+|---|---|---|
+| `notification_routes` | the school, per event | Settings → Email and SMS delivery |
+| `notification_preferences` | the individual, per channel | Notifications → How you hear from us |
+
+A school cannot force SMS onto someone who has turned it off.
+
+**Setup.** The worker is the Edge Function in `supabase/functions/dispatch-messages`.
+Its credentials are function secrets, never Next.js env vars, so they cannot
+reach the browser bundle:
+
+```bash
+supabase functions deploy dispatch-messages
+supabase secrets set BREVO_API_KEY=... TERMII_API_KEY=... \
+  DISPATCH_SECRET="$(openssl rand -hex 32)" \
+  MAIL_FROM=no-reply@yourdomain.ng MAIL_FROM_NAME="Your School"
+```
+
+Then schedule it. The function refuses any request without either the service
+role key or `x-dispatch-secret`, so it is safe to leave publicly routable:
+
+```sql
+select cron.schedule('dispatch-messages', '* * * * *', $$
+  select net.http_post(
+    url     := 'https://<ref>.supabase.co/functions/v1/dispatch-messages',
+    headers := '{"x-dispatch-secret":"<the secret you set>"}'::jsonb
+  );
+$$);
+```
+
+Before the provider keys exist the pipeline still runs end to end and marks each
+message `skipped` with the reason, which surfaces under Settings → Recent
+deliveries. That page shows delivery *status only* — `message_outbox` withholds
+`subject`, `body` and `destination` from every role via a column-level grant, so
+an admin can confirm a notice went out without being able to read anyone's mail.
+
+> Note: Supabase's default privileges grant ALL on every new table in `public` to
+> `anon` and `authenticated`. A column-level `GRANT` therefore *adds to* a total
+> grant rather than narrowing it — the outbox has to `REVOKE ALL` first. See
+> `20260827064500_messaging_outbox_revoke_default_grants.sql`.
+
 ## Deploying
 
 1. Set the two required environment variables on the host.

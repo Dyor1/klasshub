@@ -4,6 +4,8 @@ import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card } from "@/components/ui";
 import GradingScaleForm from "./GradingScaleForm";
 import PassMarkForm from "./PassMarkForm";
+import DeliveryRoutesForm from "./DeliveryRoutesForm";
+import DeliveryLog from "./DeliveryLog";
 
 export const metadata = { title: "Settings — KlassHub" };
 
@@ -22,6 +24,21 @@ export default async function SettingsPage() {
     .select("id", { count: "exact", head: true });
 
   const { data: school } = await supabase.from("schools").select("pass_mark").single();
+
+  const [{ data: routes }, { data: deliveries }, { count: reachableBySms }] =
+    await Promise.all([
+      supabase.from("notification_routes").select("kind, email, sms"),
+      supabase
+        .from("message_delivery_log")
+        .select("id, channel, status, attempts, error, provider, queued_at, sent_at")
+        .order("queued_at", { ascending: false })
+        .limit(50),
+      // Drives the cost estimate: only people with a number can be texted.
+      supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .not("phone", "is", null),
+    ]);
 
   return (
     <>
@@ -51,6 +68,29 @@ export default async function SettingsPage() {
         className="mt-6"
       >
         <PassMarkForm passMark={Number(school?.pass_mark ?? 40)} />
+      </Card>
+
+      <Card
+        title="Email and SMS delivery"
+        description="Which events leave the portal, and by which channel. Everything still appears in the in-app inbox regardless."
+        className="mt-6"
+      >
+        <DeliveryRoutesForm
+          routes={(routes ?? []).map((r) => ({
+            kind: r.kind,
+            email: r.email,
+            sms: r.sms,
+          }))}
+          recipientCount={reachableBySms ?? 0}
+        />
+      </Card>
+
+      <Card
+        title="Recent deliveries"
+        description="Status only. Message content is withheld from every role, including yours — the same rule that stops an admin reading another person's inbox."
+        className="mt-6"
+      >
+        <DeliveryLog rows={deliveries ?? []} />
       </Card>
     </>
   );

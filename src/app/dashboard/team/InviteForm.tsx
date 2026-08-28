@@ -76,9 +76,16 @@ export default function InviteForm() {
             Invite created for {state.email}
           </p>
           <p className="mt-1 text-xs text-emerald-700">
-            Copy this link and send it to them — it is shown once and expires in
-            7 days.
+            {state.mailQueued
+              ? "We've queued an email to them with this link. Keep a copy anyway — it is shown once here and expires in 7 days."
+              : "Copy this link and send it to them — it is shown once and expires in 7 days."}
           </p>
+          {state.mailQueued === false && (
+            <p className="mt-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              The invitation was created, but the email could not be queued. Send
+              the link below yourself.
+            </p>
+          )}
           <div className="mt-3 flex gap-2">
             <input
               readOnly

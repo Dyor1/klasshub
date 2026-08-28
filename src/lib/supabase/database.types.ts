@@ -1154,6 +1154,159 @@ export type Database = {
           },
         ]
       }
+      message_outbox: {
+        Row: {
+          attempts: number
+          body: string
+          channel: Database["public"]["Enums"]["message_channel"]
+          claimed_at: string | null
+          destination: string
+          error: string | null
+          id: string
+          notification_id: string | null
+          provider: string | null
+          provider_ref: string | null
+          queued_at: string
+          recipient_id: string | null
+          school_id: string
+          sent_at: string | null
+          status: Database["public"]["Enums"]["message_status"]
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          body: string
+          channel: Database["public"]["Enums"]["message_channel"]
+          claimed_at?: string | null
+          destination: string
+          error?: string | null
+          id?: string
+          notification_id?: string | null
+          provider?: string | null
+          provider_ref?: string | null
+          queued_at?: string
+          recipient_id?: string | null
+          school_id: string
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["message_status"]
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          body?: string
+          channel?: Database["public"]["Enums"]["message_channel"]
+          claimed_at?: string | null
+          destination?: string
+          error?: string | null
+          id?: string
+          notification_id?: string | null
+          provider?: string | null
+          provider_ref?: string | null
+          queued_at?: string
+          recipient_id?: string | null
+          school_id?: string
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["message_status"]
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_outbox_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_outbox_recipient_id_school_id_fkey"
+            columns: ["recipient_id", "school_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id", "school_id"]
+          },
+          {
+            foreignKeyName: "message_outbox_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          email_enabled: boolean
+          profile_id: string
+          school_id: string
+          sms_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          email_enabled?: boolean
+          profile_id: string
+          school_id: string
+          sms_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          email_enabled?: boolean
+          profile_id?: string
+          school_id?: string
+          sms_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_preferences_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_routes: {
+        Row: {
+          email: boolean
+          kind: Database["public"]["Enums"]["notification_kind"]
+          school_id: string
+          sms: boolean
+          updated_at: string
+        }
+        Insert: {
+          email?: boolean
+          kind: Database["public"]["Enums"]["notification_kind"]
+          school_id: string
+          sms?: boolean
+          updated_at?: string
+        }
+        Update: {
+          email?: boolean
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          school_id?: string
+          sms?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_routes_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           body: string | null
@@ -1292,6 +1445,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          phone: string | null
           role: Database["public"]["Enums"]["user_role"]
           school_id: string
         }
@@ -1300,6 +1454,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           school_id: string
         }
@@ -1308,6 +1463,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           school_id?: string
         }
@@ -2040,6 +2196,60 @@ export type Database = {
           },
         ]
       }
+      message_delivery_log: {
+        Row: {
+          attempts: number | null
+          channel: Database["public"]["Enums"]["message_channel"] | null
+          error: string | null
+          id: string | null
+          provider: string | null
+          queued_at: string | null
+          recipient_id: string | null
+          school_id: string | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["message_status"] | null
+        }
+        Insert: {
+          attempts?: number | null
+          channel?: Database["public"]["Enums"]["message_channel"] | null
+          error?: string | null
+          id?: string | null
+          provider?: string | null
+          queued_at?: string | null
+          recipient_id?: string | null
+          school_id?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["message_status"] | null
+        }
+        Update: {
+          attempts?: number | null
+          channel?: Database["public"]["Enums"]["message_channel"] | null
+          error?: string | null
+          id?: string | null
+          provider?: string | null
+          queued_at?: string | null
+          recipient_id?: string | null
+          school_id?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["message_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_outbox_recipient_id_school_id_fkey"
+            columns: ["recipient_id", "school_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id", "school_id"]
+          },
+          {
+            foreignKeyName: "message_outbox_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       results_ranked: {
         Row: {
           academic_year: string | null
@@ -2177,6 +2387,21 @@ export type Database = {
           total_marks: number
         }[]
       }
+      claim_outbox_batch: {
+        Args: { p_limit?: number }
+        Returns: {
+          attempts: number
+          body: string
+          channel: Database["public"]["Enums"]["message_channel"]
+          destination: string
+          id: string
+          subject: string
+        }[]
+      }
+      enqueue_email: {
+        Args: { p_body: string; p_subject: string; p_to: string }
+        Returns: string
+      }
       generate_invoices: {
         Args: {
           p_academic_year: string
@@ -2218,6 +2443,8 @@ export type Database = {
       cbt_session_status: "in_progress" | "submitted" | "expired"
       cbt_status: "draft" | "published" | "closed"
       lesson_note_status: "draft" | "submitted" | "approved" | "rejected"
+      message_channel: "email" | "sms"
+      message_status: "queued" | "sending" | "sent" | "failed" | "skipped"
       notification_kind:
         | "announcement"
         | "result"
@@ -2379,6 +2606,8 @@ export const Constants = {
       cbt_session_status: ["in_progress", "submitted", "expired"],
       cbt_status: ["draft", "published", "closed"],
       lesson_note_status: ["draft", "submitted", "approved", "rejected"],
+      message_channel: ["email", "sms"],
+      message_status: ["queued", "sending", "sent", "failed", "skipped"],
       notification_kind: [
         "announcement",
         "result",

@@ -12,6 +12,7 @@ export type InviteState = {
   error: string | null;
   inviteUrl?: string;
   email?: string;
+  mailQueued?: boolean;
 };
 
 const INVITABLE_ROLES: Role[] = ["admin", "teacher", "student", "parent"];
@@ -87,9 +88,35 @@ export async function inviteMember(
     return { error: error.message };
   }
 
+  const inviteUrl = `${await siteOrigin()}/invite/${rawToken}`;
+
+  // Queue the invite mail. The link is deliberately still returned to the
+  // caller: the outbox is drained by a worker on a schedule, so if mail is not
+  // configured yet, or Brevo is having a bad day, the admin can still copy the
+  // link rather than being stuck waiting for an email that never comes.
+  const { data: school } = await supabase.from("schools").select("name").single();
+  const schoolName = school?.name ?? "your school";
+
+  const { error: mailError } = await supabase.rpc("enqueue_email", {
+    p_to: email,
+    p_subject: `You have been invited to join ${schoolName}`,
+    p_body:
+      `${schoolName} has invited you to join their portal on KlassHub as a ${role}.\n\n` +
+      `Open this link to set up your account:\n${inviteUrl}\n\n` +
+      `The link expires in 7 days and can only be used once. ` +
+      `If you were not expecting this, you can ignore it.`,
+  });
+
   revalidatePath("/dashboard/team");
 
-  return { error: null, inviteUrl: `${await siteOrigin()}/invite/${rawToken}`, email };
+  return {
+    error: null,
+    inviteUrl,
+    email,
+    // Surfaced rather than swallowed: the invitation itself succeeded, so this
+    // is not an error, but the admin needs to know to send the link by hand.
+    mailQueued: !mailError,
+  };
 }
 
 export async function revokeInvitation(formData: FormData) {

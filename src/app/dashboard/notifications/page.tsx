@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Chip, btnGhost } from "@/components/ui";
 import ReminderForm from "./ReminderForm";
+import PreferencesForm from "./PreferencesForm";
 import { markAllRead, markRead, dismiss } from "./actions";
 
 export const metadata = { title: "Notifications — KlassHub" };
@@ -33,11 +34,19 @@ export default async function NotificationsPage() {
 
   // RLS restricts this to the caller's own inbox — even an admin cannot read
   // anyone else's.
-  const { data: items } = await supabase
-    .from("notifications")
-    .select("id, kind, title, body, link, read_at, created_at")
-    .order("created_at", { ascending: false })
-    .limit(100);
+  const [{ data: items }, { data: profile }, { data: prefs }] = await Promise.all([
+    supabase
+      .from("notifications")
+      .select("id, kind, title, body, link, read_at, created_at")
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase.from("profiles").select("email, phone").eq("id", viewer.id).single(),
+    supabase
+      .from("notification_preferences")
+      .select("email_enabled, sms_enabled")
+      .eq("profile_id", viewer.id)
+      .maybeSingle(),
+  ]);
 
   const unread = (items ?? []).filter((n) => !n.read_at).length;
 
@@ -66,6 +75,20 @@ export default async function NotificationsPage() {
           <ReminderForm defaultYear={currentAcademicYear()} />
         </Card>
       )}
+
+      <Card
+        title="How you hear from us"
+        description="These notices always appear here. Email and SMS are extra — and no school setting can switch a channel back on once you turn it off."
+        className="mb-6"
+      >
+        <PreferencesForm
+          email={profile?.email ?? null}
+          phone={profile?.phone ?? null}
+          // No preference row means nothing has been opted out of yet.
+          emailEnabled={prefs?.email_enabled ?? true}
+          smsEnabled={prefs?.sms_enabled ?? true}
+        />
+      </Card>
 
       {!items || items.length === 0 ? (
         <EmptyState
