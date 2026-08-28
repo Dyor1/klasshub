@@ -96,12 +96,18 @@ export default async function BillingPage() {
             </Chip>
           </div>
           <p className="mt-2 text-sm text-slate-500">
+            {/* Tense matters: in grace the date is already in the past, and
+                "Runs until 26 August" reads as though it still does. */}
             {access === "locked"
               ? "Read-only until renewed."
               : endsAt
-                ? `${access === "trial" ? "Trial ends" : "Runs until"} ${new Date(
-                    endsAt
-                  ).toLocaleDateString("en-GB", {
+                ? `${
+                    access === "trial"
+                      ? "Trial ends"
+                      : access === "grace"
+                        ? "Ended"
+                        : "Runs until"
+                  } ${new Date(endsAt).toLocaleDateString("en-GB", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
