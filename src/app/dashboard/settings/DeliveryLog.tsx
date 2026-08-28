@@ -13,6 +13,9 @@ export type LogRow = {
   sent_at: string | null;
 };
 
+// An initialism, so CSS `capitalize` renders it "Sms". Spell both out.
+const channelLabel: Record<string, string> = { email: "Email", sms: "SMS" };
+
 const statusTone = {
   sent: "green",
   queued: "slate",
@@ -77,7 +80,9 @@ export default function DeliveryLog({ rows }: { rows: LogRow[] }) {
           <tbody className="divide-y divide-slate-50">
             {rows.slice(0, 15).map((r) => (
               <tr key={r.id}>
-                <td className="py-2.5 capitalize text-slate-700">{r.channel ?? "—"}</td>
+                <td className="py-2.5 text-slate-700">
+                  {r.channel ? channelLabel[r.channel] ?? r.channel : "—"}
+                </td>
                 <td className="py-2.5">
                   <Chip tone={statusTone[r.status as keyof typeof statusTone] ?? "slate"}>
                     {r.status ?? "—"}
