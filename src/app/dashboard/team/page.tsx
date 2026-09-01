@@ -97,7 +97,7 @@ export default async function TeamPage() {
           {members?.map((m) => (
             <li key={m.id} className="flex items-center justify-between gap-4 py-3 first:pt-0">
               <div className="flex min-w-0 items-center gap-3">
-                <Avatar name={m.full_name ?? m.email ?? "?"} tone="slate" />
+                <Avatar name={m.full_name ?? m.email ?? "?"} tone="muted" />
                 <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-slate-900">
                   {m.full_name ?? "—"}

@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
-/* Brand palette sampled from the KlassHub logo: deep navy wordmark running
-   through royal blue into violet. */
+/* Dark mode is driven by a data attribute rather than the `dark:` media query,
+   so a person's choice beats their operating system's. The attribute is set on
+   <html> before first paint by an inline script in the root layout. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
+  /* Brand: the KlassHub logo — deep navy running through royal blue into
+     violet. */
   --color-brand-50: #eef2ff;
   --color-brand-100: #e0e7ff;
   --color-brand-200: #c7d2fe;
@@ -19,24 +24,163 @@
   --color-accent-500: #8b5cf6;
   --color-accent-600: #7c3aed;
 
-  --color-sky-brand: #3b82f6;
+  /* Warm neutrals rather than blue-grey slate. A school portal is looked at
+     all day by people who did not choose to be looking at software; a faintly
+     warm paper tone is easier to sit with than cold grey. */
+  --color-sand-50: #faf9f7;
+  --color-sand-100: #f4f2ee;
+  --color-sand-200: #e9e5df;
+  --color-sand-300: #d8d2c8;
+  --color-sand-400: #b3aa9c;
+  --color-sand-500: #8b8173;
+  --color-sand-600: #6b6257;
+  --color-sand-700: #4f4841;
+  --color-sand-800: #332e2a;
+  --color-sand-900: #201d1a;
+  --color-sand-950: #141210;
+
+  /* Section hues. Each area of the school gets its own tint so the sidebar and
+     the cards are navigable by colour as well as by reading — which matters
+     when the same person uses this every day and stops reading labels. */
+  --color-hue-people: #6366f1;
+  --color-hue-learning: #0ea5e9;
+  --color-hue-time: #14b8a6;
+  --color-hue-money: #f59e0b;
+  --color-hue-comms: #ec4899;
+  --color-hue-admin: #8b5cf6;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  --shadow-brand: 0 18px 40px -14px rgb(79 70 229 / 0.45);
-  --shadow-card: 0 1px 2px 0 rgb(15 16 53 / 0.04), 0 8px 24px -12px rgb(15 16 53 / 0.12);
-  --shadow-card-hover: 0 2px 4px 0 rgb(15 16 53 / 0.05), 0 16px 36px -16px rgb(15 16 53 / 0.22);
+  /* Rounder than before: 16–20px on cards, full on pills. */
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.125rem;
+  --radius-3xl: 1.5rem;
+
+  --shadow-brand: 0 14px 32px -12px rgb(79 70 229 / 0.42);
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #0f1035;
+/* ---------------------------------------------------------------------------
+   Semantic surface tokens.
+   Components reference these, never a raw colour, which is what lets one
+   theme swap without touching a single component.
+   --------------------------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --surface-page: #faf9f7;
+  --surface-card: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f4f2ee;
+  --surface-hover: #f4f2ee;
+
+  --line-soft: #ece8e2;
+  --line: #e2ddd5;
+  --line-strong: #d8d2c8;
+
+  --ink: #201d1a;
+  --ink-muted: #6b6257;
+  --ink-subtle: #8b8173;
+  --ink-inverse: #ffffff;
+
+  --shadow-card: 0 1px 2px 0 rgb(32 29 26 / 0.04), 0 8px 20px -12px rgb(32 29 26 / 0.14);
+  --shadow-card-hover: 0 2px 6px 0 rgb(32 29 26 / 0.06), 0 18px 34px -16px rgb(32 29 26 / 0.22);
+
+  /* How strongly a hue tints a surface. Dark mode needs a different figure
+     entirely — a 10% tint that reads as a gentle wash on white becomes mud on
+     near-black. */
+  --tint-strength: 10%;
+  --tint-text-strength: 34%;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --surface-page: #141210;
+  --surface-card: #201d1a;
+  --surface-raised: #292522;
+  --surface-sunken: #1a1714;
+  --surface-hover: #292522;
+
+  --line-soft: #2d2926;
+  --line: #383330;
+  --line-strong: #4a443f;
+
+  --ink: #f4f2ee;
+  --ink-muted: #b3aa9c;
+  --ink-subtle: #8b8173;
+  --ink-inverse: #201d1a;
+
+  /* Shadows do almost nothing on a dark background; borders carry the
+     separation instead, so these stay subtle rather than being scaled up. */
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 8px 20px -12px rgb(0 0 0 / 0.6);
+  --shadow-card-hover: 0 2px 6px 0 rgb(0 0 0 / 0.5), 0 18px 34px -16px rgb(0 0 0 / 0.7);
+
+  --tint-strength: 18%;
+  --tint-text-strength: 72%;
+}
+
+@theme inline {
+  --color-page: var(--surface-page);
+  --color-card: var(--surface-card);
+  --color-raised: var(--surface-raised);
+  --color-sunken: var(--surface-sunken);
+  --color-hover: var(--surface-hover);
+
+  --color-line-soft: var(--line-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-ink-inverse: var(--ink-inverse);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+}
+
+html {
+  background: var(--surface-page);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface-page);
+  color: var(--ink);
+}
+
+/* Stops the whole page flashing white before the theme script runs. */
+[data-theme] {
+  transition: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Tinted surfaces. `data-hue` on any element mixes that section's colour into
+   its background and text at a strength the current theme decides.
+   --------------------------------------------------------------------------- */
+[data-hue] {
+  --hue: var(--color-brand-500);
+}
+[data-hue="people"]   { --hue: var(--color-hue-people); }
+[data-hue="learning"] { --hue: var(--color-hue-learning); }
+[data-hue="time"]     { --hue: var(--color-hue-time); }
+[data-hue="money"]    { --hue: var(--color-hue-money); }
+[data-hue="comms"]    { --hue: var(--color-hue-comms); }
+[data-hue="admin"]    { --hue: var(--color-hue-admin); }
+
+.kh-tint {
+  background: color-mix(in oklab, var(--hue) var(--tint-strength), var(--surface-card));
+  color: color-mix(in oklab, var(--hue) var(--tint-text-strength), var(--ink));
+}
+.kh-tint-strong {
+  background: color-mix(in oklab, var(--hue) calc(var(--tint-strength) * 1.8), var(--surface-card));
+}
+.kh-hue-text {
+  color: color-mix(in oklab, var(--hue) var(--tint-text-strength), var(--ink));
+}
+.kh-hue-bg {
+  background: var(--hue);
 }
 
 /* Brand gradient used on the logo mark, primary buttons and hero accents. */
@@ -83,11 +227,20 @@ body {
 }
 
 /* Report card printing: strip the app chrome and print only the sheet, so a
-   school gets a clean A4 page rather than a screenshot of the dashboard. */
+   school gets a clean A4 page rather than a screenshot of the dashboard.
+   Forced to light regardless of theme — nobody wants a dark-mode report card
+   emptying a toner cartridge. */
 @media print {
   @page {
     size: A4;
     margin: 14mm;
+  }
+
+  :root {
+    --surface-card: #fff;
+    --surface-page: #fff;
+    --ink: #000;
+    --ink-muted: #333;
   }
 
   .kh-no-print {
@@ -108,6 +261,7 @@ body {
 
   body {
     background: #fff !important;
+    color: #000 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

@@ -340,27 +340,27 @@ export default async function AnalyticsPage({
             <StatCard
               label={`Average of ${entries} result${entries === 1 ? "" : "s"}`}
               value={avgPct == null ? "—" : `${avgPct.toFixed(1)}%`}
-              tone="brand"
+              hue="people"
               icon={<IconTrend />}
             />
             <StatCard
               label="Pass rate"
               value={passRate == null ? "—" : `${passRate.toFixed(1)}%`}
-              tone="green"
+              hue="time"
               icon={<IconCheckCircle />}
             />
             <StatCard
               label={`Attendance, last ${attDays?.length ?? 0} days`}
               value={attRate == null ? "—" : `${attRate.toFixed(1)}%`}
               href="/dashboard/attendance"
-              tone="blue"
+              hue="learning"
               icon={<IconUsers />}
             />
             <StatCard
               label="Fees collected"
               value={collectionRate == null ? "—" : `${collectionRate.toFixed(0)}%`}
               href="/dashboard/fees"
-              tone="amber"
+              hue="money"
               icon={<IconWallet />}
             />
           </div>

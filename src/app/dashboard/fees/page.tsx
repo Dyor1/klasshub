@@ -77,14 +77,19 @@ export default async function FeesPage({
         ) : (
           <>
             <div className="mb-6 grid gap-4 sm:grid-cols-3">
-              <StatCard label="Outstanding" value={naira(owed)} tone={owed > 0 ? "amber" : "green"} icon={<IconWallet />} />
+              <StatCard
+                label="Outstanding"
+                value={naira(owed)}
+                hue={owed > 0 ? "money" : "time"}
+                icon={<IconWallet />}
+              />
               <StatCard
                 label="Paid"
                 value={naira((bills ?? []).reduce((s, b) => s + Number(b.amount_paid), 0))}
-                tone="green"
+                hue="time"
                 icon={<IconCheckCircle />}
               />
-              <StatCard label="Invoices" value={(bills ?? []).length} tone="brand" icon={<IconChart />} />
+              <StatCard label="Invoices" value={(bills ?? []).length} hue="people" icon={<IconChart />} />
             </div>
 
             <Card title="Bills" className="mb-6">
@@ -223,10 +228,10 @@ export default async function FeesPage({
       </Card>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Billed" value={naira(billedTotal)} tone="brand" icon={<IconWallet />} />
-        <StatCard label="Collected" value={naira(collected)} tone="green" icon={<IconCheckCircle />} />
-        <StatCard label="Outstanding" value={naira(outstanding)} tone="amber" icon={<IconUsers />} />
-        <StatCard label="Collection rate" value={`${rate}%`} tone="blue" icon={<IconChart />} />
+        <StatCard label="Billed" value={naira(billedTotal)} hue="people" icon={<IconWallet />} />
+        <StatCard label="Collected" value={naira(collected)} hue="time" icon={<IconCheckCircle />} />
+        <StatCard label="Outstanding" value={naira(outstanding)} hue="money" icon={<IconUsers />} />
+        <StatCard label="Collection rate" value={`${rate}%`} hue="learning" icon={<IconChart />} />
       </div>
 
       {viewer.isAdmin && (

@@ -46,13 +46,40 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+/** Runs before the first paint so the page never renders in one theme and then
+ *  snaps to the other. It has to be inline and synchronous for that — anything
+ *  deferred is too late, and a white flash on a dark theme is exactly the kind
+ *  of small thing that makes software feel cheap.
+ *
+ *  Wrapped in try/catch because localStorage throws outright in some privacy
+ *  modes, and a theme preference is not worth a blank page. */
+const themeScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem('kh:theme');
+    var theme = stored === 'dark' || stored === 'light'
+      ? stored
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      // The theme attribute is written by the script below before React
+      // hydrates, so the server markup will not match. That is the point.
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-white font-sans text-slate-800">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="flex min-h-full flex-col bg-page font-sans text-ink">
         {children}
       </body>
     </html>

@@ -95,7 +95,7 @@ export default async function GuardiansPage() {
             <tr key={l.id} className="hover:bg-slate-50/60">
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
-                  <Avatar name={parentLabel.get(l.profile_id) ?? "?"} tone="slate" />
+                  <Avatar name={parentLabel.get(l.profile_id) ?? "?"} tone="muted" />
                   <span className="font-medium text-slate-900">
                     {parentLabel.get(l.profile_id) ?? "Unknown"}
                   </span>
