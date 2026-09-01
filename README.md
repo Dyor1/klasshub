@@ -79,6 +79,46 @@ Storage RLS reads the school from the first path segment and the kind from the
 second, so class notes are readable by the whole school while lesson notes stay
 staff-only. Downloads use short-lived signed URLs.
 
+## Tests
+
+```bash
+DATABASE_URL="postgresql://postgres:PASS@HOST:5432/postgres" npm run test:db
+```
+
+The suites in `supabase/tests/` cover the properties that fail silently: nothing
+here throws a stack trace when it breaks, it just quietly shows one school
+another school's children.
+
+| Suite | Covers |
+|---|---|
+| `01_tenant_isolation` | Two complete schools. Neither can read, aggregate or write the other's rows — tables and analytics views alike. Plus `anon` seeing nothing at all. |
+| `02_role_and_column_guards` | Rules RLS cannot express: a pupil owns their submission row but must not write the score on it, cannot edit after marking, cannot promote themselves. An admin sees delivery *status* but never message bodies or phone numbers. |
+| `03_billing_enforcement` | The trial→grace→locked machine, plan caps, and that a locked school keeps every byte readable and deletable. |
+
+Three conventions make these worth having:
+
+**Every refusal names the error it expects.** `assert_denied` takes a pattern
+and fails if the operation was refused for a *different* reason. This is not
+pedantry — `create_subscription_attempt` once shipped completely broken behind
+two probes that both errored and both looked like passes, until the messages
+were read and turned out to be the same wrong error.
+
+**Every refusal has a positive control beside it.** A suite of denials passes
+just as well when the feature is broken outright. If a pupil is blocked from
+grading themselves, the teacher must be shown succeeding at it.
+
+**Silent denials are asserted on counts, not exceptions.** A cross-tenant
+`UPDATE` does not raise; RLS matches no rows and reports success. The only
+honest check is that the other school's row is unchanged.
+
+Suites run inside a transaction that ends in `ROLLBACK`, so pointing them at a
+database with real data is safe — that is also why they can create entire
+schools. The harness lives in a `tests` schema no production role can reach;
+each suite lends itself access for the length of its own transaction.
+
+To confirm the suite can still fail, break something on purpose — swap a policy
+for `using (true)` inside a transaction and watch `01` catch it.
+
 ## Email and SMS
 
 Notifications are created by database triggers, so at the moment a notice comes
