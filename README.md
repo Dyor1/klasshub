@@ -82,8 +82,15 @@ staff-only. Downloads use short-lived signed URLs.
 ## Tests
 
 ```bash
-DATABASE_URL="postgresql://postgres:PASS@HOST:5432/postgres" npm run test:db
+npm test                                                    # parsing and import rules
+DATABASE_URL="postgresql://..." npm run test:db             # RLS and enforcement
 ```
+
+`npm test` uses Node's built-in runner — no framework, matching everything else
+here. It covers the CSV parser (quoted commas, embedded newlines, Excel's BOM
+and CRLF) and the import rules, where the dangerous failures are silent: a
+month-first reading of `03/04/2014` does not error, it just records a birthday
+four months out.
 
 The suites in `supabase/tests/` cover the properties that fail silently: nothing
 here throws a stack trace when it breaks, it just quietly shows one school

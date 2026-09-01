@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
-import { PageHeader, Card, EmptyState, Table, Chip, Avatar } from "@/components/ui";
+import { PageHeader, Card, EmptyState, Table, Chip, Avatar, btnGhost } from "@/components/ui";
 import StudentForm from "./StudentForm";
 import { deleteStudent } from "./actions";
 
@@ -44,7 +44,16 @@ export default async function StudentsPage({
             ? "Everyone enrolled at your school."
             : "Your student record."
         }
-        action={viewer.isStaff ? <StudentForm classes={classes ?? []} /> : undefined}
+        action={
+          viewer.isStaff ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <Link href="/dashboard/students/import" className={btnGhost}>
+                Import CSV
+              </Link>
+              <StudentForm classes={classes ?? []} />
+            </div>
+          ) : undefined
+        }
       />
 
       {viewer.isStaff && classes && classes.length > 0 && (
