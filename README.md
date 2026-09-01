@@ -226,7 +226,61 @@ Pay button appears by itself on any bill with a balance.
 
 ## Deploying
 
-1. Set the two required environment variables on the host.
-2. Point the host at `main`; the build command is `npm run build`.
-3. Add your production URL to Supabase → Authentication → URL Configuration,
-   otherwise auth redirects will fail.
+Target is Vercel. Next.js is detected automatically, so `vercel.json` pins only
+the one thing that is not a default:
+
+```json
+{ "regions": ["dub1"] }
+```
+
+**This matters more than it looks.** The Supabase project is in `eu-west-1`
+(Ireland) and Vercel defaults to `iad1` (Washington DC). Every page here is
+server-rendered and queries the database several times — the analytics page
+makes eleven in parallel — so a US East function talking to an Irish database
+puts a transatlantic round trip on each one. `dub1` puts the function beside its
+database. It also happens to be the closer of the two to Nigeria.
+
+If you ever move the Supabase project, move this with it.
+
+### Steps
+
+1. **Import the repo** at vercel.com/new. Framework and build command are
+   detected; leave them alone.
+
+2. **Set environment variables** (Settings → Environment Variables), for
+   Production, Preview and Development:
+
+   | Variable | Value |
+   |---|---|
+   | `NEXT_PUBLIC_SUPABASE_URL` | `https://<ref>.supabase.co` |
+   | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | the publishable key |
+   | `NEXT_PUBLIC_SITE_URL` | `https://klasshub.ng` — only once the domain is live |
+
+   Nothing secret belongs here. The keys that move money and send mail live as
+   Supabase function secrets, because the worker and the webhooks are Edge
+   Functions, not part of this app.
+
+3. **Add the domain** (Settings → Domains) and point DNS at Vercel. Add both
+   `klasshub.ng` and `www`, and let Vercel redirect one to the other.
+
+4. **Tell Supabase about the domain.** Authentication → URL Configuration:
+   set Site URL to `https://klasshub.ng` and add
+   `https://klasshub.ng/**` plus your `*.vercel.app` preview domain to Redirect
+   URLs. Miss this and sign-in appears to work but bounces back to localhost.
+
+5. **Set the function secrets** — see the Email/SMS and Paystack sections
+   above — and add the Paystack webhook URL in their dashboard.
+
+6. **Schedule the message worker** with the `pg_cron` snippet above. Without it
+   mail queues and never sends.
+
+### Before you point a real school at it
+
+- [ ] `npm test` and `npm run test:db` both pass against production
+- [ ] A real sign-up creates a school and lands on the dashboard
+- [ ] An invite email actually arrives
+- [ ] A test-card payment reaches the ledger, and the webhook shows a 200
+- [ ] Supabase → Authentication → Leaked password protection is on
+- [ ] A paid Supabase plan if this holds real records — the free tier has no
+      point-in-time recovery, and a school roll is not something to restore
+      from a week-old snapshot
