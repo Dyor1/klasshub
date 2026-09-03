@@ -230,7 +230,7 @@ export default async function ResultsPage({
               </label>
               <button
                 type="submit"
-                className="h-11 rounded-lg border border-line bg-white px-5 text-sm font-semibold text-ink hover:bg-hover"
+                className="h-11 rounded-lg border border-line bg-card px-5 text-sm font-semibold text-ink hover:bg-hover"
               >
                 Load
               </button>
@@ -250,7 +250,7 @@ export default async function ResultsPage({
           ) : (
             <>
               {hasExisting && (
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-white px-5 py-4">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-card px-5 py-4">
                   <div>
                     <p className="text-sm font-semibold text-ink">
                       {anyPublished ? "Published to students" : "Draft — not visible to students"}
@@ -271,7 +271,7 @@ export default async function ResultsPage({
                       type="submit"
                       className={`h-10 rounded-lg px-5 text-sm font-semibold transition-colors ${
                         anyPublished
-                          ? "border border-line bg-white text-ink hover:bg-hover"
+                          ? "border border-line bg-card text-ink hover:bg-hover"
                           : "bg-emerald-600 text-white hover:bg-emerald-700"
                       }`}
                     >

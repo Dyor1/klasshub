@@ -139,7 +139,7 @@ export default async function TimetablePage({
                   <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">
                     {day}
                   </h2>
-                  <div className="overflow-hidden rounded-xl border border-line bg-white">
+                  <div className="overflow-hidden rounded-xl border border-line bg-card">
                     <ul className="divide-y divide-line-soft">
                       {(byDay.get(day) ?? []).map((s) => (
                         <li

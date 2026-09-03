@@ -81,7 +81,7 @@ export default function Register({
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-line bg-white">
+      <div className="overflow-hidden rounded-xl border border-line bg-card">
         <ul className="divide-y divide-line-soft">
           {rows.map((r) => (
             <li
@@ -114,7 +114,7 @@ export default function Register({
                         setMarks((m) => ({ ...m, [r.studentId]: o.value }))
                       }
                       className={`px-3 py-1.5 text-xs font-semibold transition-colors ${
-                        active ? o.on : `bg-white ${o.off}`
+                        active ? o.on : `bg-card ${o.off}`
                       }`}
                     >
                       {o.label}

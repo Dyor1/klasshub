@@ -322,7 +322,7 @@ export default async function AnalyticsPage({
           </label>
           <button
             type="submit"
-            className="h-11 rounded-lg border border-line bg-white px-5 text-sm font-semibold text-ink hover:bg-hover"
+            className="h-11 rounded-lg border border-line bg-card px-5 text-sm font-semibold text-ink hover:bg-hover"
           >
             Apply
           </button>
@@ -442,7 +442,7 @@ export default async function AnalyticsPage({
                 <StackedBar
                   segments={[
                     { label: "Collected", value: fees.collected, color: "#059669" },
-                    { label: "Outstanding", value: fees.outstanding, color: "#e2e8f0" },
+                    { label: "Outstanding", value: fees.outstanding, color: "var(--surface-sunken)" },
                   ]}
                 />
                 <p className="mt-4 text-sm text-ink-muted">

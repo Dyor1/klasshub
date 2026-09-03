@@ -184,7 +184,7 @@ export default async function AttendancePage({
           ) : (
             <>
               {existingByStudent.size > 0 && (
-                <p className="mb-4 rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-ink-muted">
+                <p className="mb-4 rounded-lg border border-line bg-card px-3.5 py-2.5 text-sm text-ink-muted">
                   A register already exists for this date — saving will update it.
                 </p>
               )}

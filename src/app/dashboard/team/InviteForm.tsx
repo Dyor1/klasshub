@@ -31,7 +31,7 @@ export default function InviteForm() {
   const [copied, setCopied] = useState(false);
 
   return (
-    <div className="rounded-xl border border-line bg-white p-5 shadow-card">
+    <div className="rounded-xl border border-line bg-card p-5 shadow-card">
       <h2 className="text-sm font-bold text-brand-900">Invite someone</h2>
       <p className="mt-0.5 text-xs text-ink-muted">
         They&apos;ll join your school with the role you choose here.
@@ -58,7 +58,7 @@ export default function InviteForm() {
           <select
             name="role"
             defaultValue="teacher"
-            className="h-11 rounded-lg border border-line bg-white px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+            className="h-11 rounded-lg border border-line bg-card px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
           >
             {roles.map((r) => (
               <option key={r.value} value={r.value}>
@@ -91,7 +91,7 @@ export default function InviteForm() {
               readOnly
               value={state.inviteUrl}
               onFocus={(e) => e.currentTarget.select()}
-              className="h-10 flex-1 rounded-md border border-emerald-300 bg-white px-3 font-mono text-xs text-ink"
+              className="h-10 flex-1 rounded-md border border-emerald-300 bg-card px-3 font-mono text-xs text-ink"
             />
             <button
               type="button"

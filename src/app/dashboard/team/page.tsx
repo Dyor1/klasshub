@@ -33,7 +33,7 @@ export default async function TeamPage() {
           <InviteForm />
         </div>
       ) : (
-        <p className="mb-8 rounded-lg border border-line bg-white px-4 py-3 text-sm text-ink-muted">
+        <p className="mb-8 rounded-lg border border-line bg-card px-4 py-3 text-sm text-ink-muted">
           Only administrators can invite people.
         </p>
       )}
@@ -49,7 +49,7 @@ export default async function TeamPage() {
               return (
                 <li
                   key={inv.id}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white px-4 py-3"
+                  className="flex items-center justify-between gap-4 rounded-xl border border-line bg-card px-4 py-3"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-ink">

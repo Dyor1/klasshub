@@ -208,7 +208,7 @@ export default async function TransportPage() {
                     </form>
                   </div>
 
-                  <div className="overflow-hidden rounded-xl border border-line bg-white">
+                  <div className="overflow-hidden rounded-xl border border-line bg-card">
                     {list.length === 0 ? (
                       <p className="px-4 py-5 text-sm text-ink-muted">
                         No riders on this route yet.
@@ -274,7 +274,7 @@ export default async function TransportPage() {
           </div>
 
           {unassigned.length > 0 && (
-            <p className="mt-6 rounded-lg border border-line bg-white px-4 py-3 text-sm text-ink-muted">
+            <p className="mt-6 rounded-lg border border-line bg-card px-4 py-3 text-sm text-ink-muted">
               {unassigned.length} student{unassigned.length === 1 ? "" : "s"} not on any route.
             </p>
           )}

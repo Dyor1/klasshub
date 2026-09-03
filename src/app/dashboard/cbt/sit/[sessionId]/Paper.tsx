@@ -90,7 +90,7 @@ export default function Paper({
       </div>
 
       {questions.map((q) => (
-        <div key={q.question_id} className="rounded-xl border border-line bg-white p-5">
+        <div key={q.question_id} className="rounded-xl border border-line bg-card p-5">
           <p className="mb-3 text-sm font-semibold text-brand-900">
             {q.question_number}. {q.question_text}
             <span className="ml-2 text-xs font-normal text-ink-subtle">

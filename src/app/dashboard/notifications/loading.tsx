@@ -7,7 +7,7 @@ export default function Loading() {
       </div>
       <div className="space-y-2">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="h-20 animate-pulse rounded-xl bg-white ring-1 ring-line" />
+          <div key={i} className="h-20 animate-pulse rounded-xl bg-card ring-1 ring-line" />
         ))}
       </div>
     </>

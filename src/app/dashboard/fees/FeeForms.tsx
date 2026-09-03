@@ -206,7 +206,7 @@ export function PaymentForm({
         <select
           name="method"
           defaultValue="transfer"
-          className="h-10 rounded-lg border border-line bg-white px-3 text-sm"
+          className="h-10 rounded-lg border border-line bg-card px-3 text-sm"
         >
           <option value="transfer">Transfer</option>
           <option value="cash">Cash</option>

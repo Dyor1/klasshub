@@ -48,7 +48,7 @@ export default function PlanCard({
       className={`flex flex-col rounded-2xl border p-6 ${
         isCurrent
           ? "border-brand-300 bg-brand-500/8 ring-1 ring-brand-500/30"
-          : "border-line bg-white shadow-card"
+          : "border-line bg-card shadow-card"
       }`}
     >
       <div className="flex items-baseline justify-between gap-2">

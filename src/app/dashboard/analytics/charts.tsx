@@ -139,7 +139,7 @@ export function Sparkline({
             x2={W}
             y1={y(g)}
             y2={y(g)}
-            stroke="#e2e8f0"
+            stroke="var(--line)"
             strokeWidth="1"
             vectorEffect="non-scaling-stroke"
           />

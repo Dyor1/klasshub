@@ -130,7 +130,7 @@ export default async function ReportCardPage({
           }
         />
       ) : (
-        <article className="kh-print-sheet mx-auto max-w-3xl rounded-2xl border border-line-soft bg-white p-8 shadow-card">
+        <article className="kh-print-sheet mx-auto max-w-3xl rounded-2xl border border-line-soft bg-card p-8 shadow-card">
           {/* Masthead */}
           <header className="flex items-start justify-between gap-4 border-b-2 border-brand-900 pb-4">
             <div className="flex items-center gap-3">

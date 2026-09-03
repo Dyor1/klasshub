@@ -102,7 +102,7 @@ export default async function NotificationsPage() {
               key={n.id}
               className={`flex items-start gap-4 rounded-xl border px-4 py-3.5 transition-colors ${
                 n.read_at
-                  ? "border-line bg-white"
+                  ? "border-line bg-card"
                   : "border-brand-500/35 bg-brand-500/8"
               }`}
             >
