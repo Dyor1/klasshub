@@ -92,7 +92,7 @@ export default async function LessonNotesPage() {
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                      <h2 className="text-base font-bold text-brand-900">{n.topic}</h2>
+                      <h2 className="text-base font-bold text-ink">{n.topic}</h2>
                       <Chip tone={statusTone[n.status] ?? "slate"}>{n.status}</Chip>
                       {n.week_number && <Chip tone="slate">Week {n.week_number}</Chip>}
                     </div>

@@ -114,7 +114,7 @@ export default async function ExamDetailPage({
             <Card key={q.id}>
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-brand-900">
+                  <p className="text-sm font-semibold text-ink">
                     {q.question_number}. {q.question_text}
                   </p>
                   <ul className="mt-2 space-y-1">

@@ -81,7 +81,9 @@
 
   --ink: #201d1a;
   --ink-muted: #6b6257;
-  --ink-subtle: #8b8173;
+  /* Darker than the dark theme's, because these must clear 4.5 against
+     white. The same hex cannot serve both. */
+  --ink-subtle: #776d5f;
   --ink-inverse: #ffffff;
 
   --shadow-card: 0 1px 2px 0 rgb(32 29 26 / 0.04), 0 8px 20px -12px rgb(32 29 26 / 0.14);
@@ -109,7 +111,7 @@
 
   --ink: #f4f2ee;
   --ink-muted: #b3aa9c;
-  --ink-subtle: #8b8173;
+  --ink-subtle: #8d8375;
   --ink-inverse: #201d1a;
 
   /* Shadows do almost nothing on a dark background; borders carry the

@@ -184,7 +184,7 @@ export default async function TransportPage() {
                 <section key={route.id}>
                   <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-sm font-bold text-brand-900">{route.name}</h2>
+                      <h2 className="text-sm font-bold text-ink">{route.name}</h2>
                       {route.vehicle_number && <Chip tone="slate">{route.vehicle_number}</Chip>}
                       <Chip tone={full ? "amber" : "slate"}>
                         {list.length}

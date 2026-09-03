@@ -32,7 +32,7 @@ export default function InviteForm() {
 
   return (
     <div className="rounded-xl border border-line bg-card p-5 shadow-card">
-      <h2 className="text-sm font-bold text-brand-900">Invite someone</h2>
+      <h2 className="text-sm font-bold text-ink">Invite someone</h2>
       <p className="mt-0.5 text-xs text-ink-muted">
         They&apos;ll join your school with the role you choose here.
       </p>

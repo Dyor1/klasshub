@@ -70,7 +70,7 @@ export default async function AssignmentsPage() {
                     <div className="min-w-0 flex-1">
                       <Link
                         href={`/dashboard/assignments/${a.id}`}
-                        className="text-base font-bold text-brand-900 hover:underline"
+                        className="text-base font-bold text-ink hover:underline"
                       >
                         {a.title}
                       </Link>

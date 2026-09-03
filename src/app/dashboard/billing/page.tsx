@@ -86,7 +86,7 @@ export default async function BillingPage() {
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
         <Card title="Current plan">
           <div className="flex items-center gap-3">
-            <span className="text-2xl font-extrabold text-brand-900">{billing.label}</span>
+            <span className="text-2xl font-extrabold text-ink">{billing.label}</span>
             <Chip
               tone={
                 access === "active" ? "green" : access === "trial" ? "brand" : access === "grace" ? "amber" : "red"
@@ -117,7 +117,7 @@ export default async function BillingPage() {
         </Card>
 
         <Card title="Students">
-          <p className="text-2xl font-extrabold text-brand-900">
+          <p className="text-2xl font-extrabold text-ink">
             {students}
             {cap !== null && (
               <span className="text-base font-semibold text-ink-subtle"> / {cap}</span>

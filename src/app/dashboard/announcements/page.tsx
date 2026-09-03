@@ -61,7 +61,7 @@ export default async function AnnouncementsPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                    <h2 className="text-base font-bold text-brand-900">{p.title}</h2>
+                    <h2 className="text-base font-bold text-ink">{p.title}</h2>
                     {viewer.isStaff && (
                       <Chip tone={audienceTone[p.audience] ?? "slate"}>{p.audience}</Chip>
                     )}

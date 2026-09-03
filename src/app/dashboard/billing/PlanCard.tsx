@@ -52,7 +52,7 @@ export default function PlanCard({
       }`}
     >
       <div className="flex items-baseline justify-between gap-2">
-        <h3 className="text-base font-bold text-brand-900">{label}</h3>
+        <h3 className="text-base font-bold text-ink">{label}</h3>
         {isCurrent && (
           <span className="rounded-full bg-brand-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
             Current
@@ -60,7 +60,7 @@ export default function PlanCard({
         )}
       </div>
 
-      <p className="mt-3 text-2xl font-extrabold text-brand-900">{price}</p>
+      <p className="mt-3 text-2xl font-extrabold text-ink">{price}</p>
       <p className="mt-1 text-xs text-ink-muted">
         {maxStudents === null ? "Unlimited students" : `Up to ${maxStudents} students`}
       </p>

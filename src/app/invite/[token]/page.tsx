@@ -34,7 +34,7 @@ export default async function AcceptInvitePage({
 
         {!invite ? (
           <>
-            <h1 className="text-2xl font-extrabold tracking-tight text-brand-900">
+            <h1 className="text-2xl font-extrabold tracking-tight text-ink">
               This invitation isn&apos;t valid
             </h1>
             <p className="mt-2 text-sm leading-relaxed text-slate-500">
@@ -51,7 +51,7 @@ export default async function AcceptInvitePage({
           </>
         ) : (
           <>
-            <h1 className="text-2xl font-extrabold tracking-tight text-brand-900">
+            <h1 className="text-2xl font-extrabold tracking-tight text-ink">
               Join {invite.school_name}
             </h1>
             <p className="mt-2 text-sm text-slate-500">

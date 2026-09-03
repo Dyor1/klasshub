@@ -71,7 +71,7 @@ export default async function EventsPage() {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-bold text-brand-900">{e.title}</h3>
+                        <h3 className="font-bold text-ink">{e.title}</h3>
                         <p className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-ink-muted">
                           <span>{formatDay(e.event_date)}</span>
                           {e.event_time && <span>{e.event_time.slice(0, 5)}</span>}

@@ -102,7 +102,7 @@ export default async function AssignmentDetailPage({
 
         {mine?.graded_at && (
           <Card title="Your grade" className="mb-6">
-            <p className="text-3xl font-extrabold text-brand-900">
+            <p className="text-3xl font-extrabold text-ink">
               {mine.score} <span className="text-lg text-ink-subtle">/ {a.max_score}</span>
             </p>
             {mine.feedback && (

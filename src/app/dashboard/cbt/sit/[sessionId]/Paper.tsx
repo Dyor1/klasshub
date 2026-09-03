@@ -83,7 +83,7 @@ export default function Paper({
     <div className="space-y-6">
       <div className="sticky top-16 z-10 flex items-center justify-between gap-4 rounded-xl border border-line bg-white/95 px-4 py-3 backdrop-blur">
         <p className="text-sm text-ink-muted">
-          <span className="font-semibold text-brand-900">{answered}</span> of{" "}
+          <span className="font-semibold text-ink">{answered}</span> of{" "}
           {questions.length} answered
         </p>
         <Countdown expiresAt={expiresAt} />
@@ -91,7 +91,7 @@ export default function Paper({
 
       {questions.map((q) => (
         <div key={q.question_id} className="rounded-xl border border-line bg-card p-5">
-          <p className="mb-3 text-sm font-semibold text-brand-900">
+          <p className="mb-3 text-sm font-semibold text-ink">
             {q.question_number}. {q.question_text}
             <span className="ml-2 text-xs font-normal text-ink-subtle">
               ({q.marks} mark{Number(q.marks) === 1 ? "" : "s"})
@@ -114,7 +114,7 @@ export default function Paper({
                     onClick={() => setChosen((c) => ({ ...c, [q.question_id]: l }))}
                     className={`flex w-full items-center gap-3 rounded-lg border-2 px-3.5 py-2.5 text-left text-sm transition-colors ${
                       picked
-                        ? "border-brand-500 bg-brand-500/10 text-brand-900"
+                        ? "border-brand-500 bg-brand-500/10 text-ink"
                         : "border-line text-ink hover:border-line-strong hover:bg-hover"
                     }`}
                   >

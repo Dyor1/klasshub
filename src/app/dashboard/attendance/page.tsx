@@ -66,7 +66,7 @@ export default async function AttendancePage({
                 { label: "Late", value: summary.late ?? 0 },
               ].map((s) => (
                 <Card key={s.label}>
-                  <p className="text-2xl font-extrabold text-brand-900">{s.value}</p>
+                  <p className="text-2xl font-extrabold text-ink">{s.value}</p>
                   <p className="mt-0.5 text-xs text-ink-muted">{s.label}</p>
                 </Card>
               ))}

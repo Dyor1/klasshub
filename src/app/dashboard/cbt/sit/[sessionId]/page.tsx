@@ -45,7 +45,7 @@ export default async function SitPage({
           {reveal ? (
             <div className="text-center">
               <p className="text-xs uppercase tracking-wide text-ink-subtle">Your score</p>
-              <p className="mt-1 text-4xl font-extrabold text-brand-900">
+              <p className="mt-1 text-4xl font-extrabold text-ink">
                 {session.score} <span className="text-2xl text-ink-subtle">/ {session.total_marks}</span>
               </p>
               <p className="mt-1 text-lg font-semibold text-ink-muted">{session.percentage}%</p>

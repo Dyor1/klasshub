@@ -76,7 +76,7 @@ export default async function ClassNotesPage() {
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                      <h2 className="text-base font-bold text-brand-900">{n.title}</h2>
+                      <h2 className="text-base font-bold text-ink">{n.title}</h2>
                       {n.class_id && <Chip tone="brand">{className.get(n.class_id) ?? "class"}</Chip>}
                       {n.subject_id && <Chip tone="slate">{subjectName.get(n.subject_id) ?? ""}</Chip>}
                       {n.term && <Chip tone="slate">{n.term} term</Chip>}

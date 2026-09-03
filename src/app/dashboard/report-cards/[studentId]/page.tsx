@@ -136,7 +136,7 @@ export default async function ReportCardPage({
             <div className="flex items-center gap-3">
               <LogoMark className="h-12 w-12" />
               <div>
-                <h1 className="text-xl font-extrabold leading-tight text-brand-900">
+                <h1 className="text-xl font-extrabold leading-tight text-ink">
                   {school?.name ?? "School"}
                 </h1>
                 <p className="text-[11px] uppercase tracking-widest text-ink-muted">
@@ -221,13 +221,13 @@ export default async function ReportCardPage({
                 <p className="text-[10px] uppercase tracking-wide text-ink-subtle">
                   {item.label}
                 </p>
-                <p className="text-sm font-bold text-brand-900">{item.value}</p>
+                <p className="text-sm font-bold text-ink">{item.value}</p>
               </div>
             ))}
           </div>
 
           {overallGrade?.remark && (
-            <p className="mt-4 rounded-xl border border-brand-500/25 bg-brand-500/10 px-4 py-3 text-sm text-brand-900">
+            <p className="mt-4 rounded-xl border border-brand-500/25 bg-brand-500/10 px-4 py-3 text-sm text-ink">
               <span className="font-semibold">Overall remark:</span> {overallGrade.remark}
             </p>
           )}

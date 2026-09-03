@@ -72,7 +72,7 @@ export default async function CbtPage({
                 <Card key={e.id}>
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">
-                      <h2 className="text-base font-bold text-brand-900">{e.title}</h2>
+                      <h2 className="text-base font-bold text-ink">{e.title}</h2>
                       <p className="mt-0.5 text-xs text-ink-muted">
                         {e.subject_id ? subjectName.get(e.subject_id) ?? "—" : "General"} ·{" "}
                         {e.duration_minutes} minutes · <span className="capitalize">{e.term}</span>{" "}

@@ -14,11 +14,18 @@ type Row = {
   status: string;
 };
 
+/** Selected fills are chosen for legibility, not just for hue.
+ *
+ *  White on emerald-600 measures 3.77:1 and white on amber-500 only 2.15:1 —
+ *  both below the 4.5 a small label needs, and amber-on-white is the classic
+ *  version of this mistake. Emerald goes one step darker. Amber keeps its
+ *  brightness, which is what makes "late" scannable down a column of thirty
+ *  pupils, and takes dark text instead: 7.81:1. */
 const OPTIONS = [
-  { value: "present", label: "Present", on: "bg-emerald-600 text-white", off: "text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/12" },
+  { value: "present", label: "Present", on: "bg-emerald-700 text-white", off: "text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/12" },
   { value: "absent", label: "Absent", on: "bg-red-600 text-white", off: "text-red-700 dark:text-red-300 hover:bg-red-500/10" },
-  { value: "late", label: "Late", on: "bg-amber-500 text-white", off: "text-amber-700 dark:text-amber-300 hover:bg-amber-500/12" },
-  { value: "excused", label: "Excused", on: "bg-ink-muted text-white", off: "text-ink-muted hover:bg-hover" },
+  { value: "late", label: "Late", on: "bg-amber-500 text-sand-950", off: "text-amber-700 dark:text-amber-300 hover:bg-amber-500/12" },
+  { value: "excused", label: "Excused", on: "bg-ink-muted text-ink-inverse", off: "text-ink-muted hover:bg-hover" },
 ];
 
 function Submit() {

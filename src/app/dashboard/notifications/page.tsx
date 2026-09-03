@@ -115,7 +115,7 @@ export default async function NotificationsPage() {
 
               <div className="min-w-0 flex-1">
                 <div className="mb-0.5 flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-semibold text-brand-900">{n.title}</p>
+                  <p className="text-sm font-semibold text-ink">{n.title}</p>
                   <Chip tone={kindTone[n.kind] ?? "slate"}>{n.kind.replace("_", " ")}</Chip>
                   <span className="text-xs text-ink-subtle">{ago(n.created_at)}</span>
                 </div>
