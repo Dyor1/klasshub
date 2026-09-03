@@ -56,16 +56,16 @@ const plans = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="scroll-mt-24 border-t border-slate-100 bg-slate-50/60 py-24">
+    <section id="pricing" className="scroll-mt-24 border-t border-line-soft bg-hover py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">
             Pricing
           </span>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-brand-900 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
             Priced per term, not per headache
           </h2>
-          <p className="mt-4 text-slate-600">
+          <p className="mt-4 text-ink-muted">
             Every plan starts with a free 30-day trial. No card required to begin.
           </p>
         </div>
@@ -76,8 +76,8 @@ export default function Pricing() {
               key={plan.name}
               className={`relative flex flex-col rounded-2xl border p-7 ${
                 plan.featured
-                  ? "border-brand-300 bg-white shadow-brand ring-1 ring-brand-200"
-                  : "border-slate-200 bg-white shadow-card"
+                  ? "border-brand-300 bg-card shadow-brand ring-1 ring-brand-200"
+                  : "border-line bg-card shadow-card"
               }`}
             >
               {plan.featured && (
@@ -86,20 +86,20 @@ export default function Pricing() {
                 </span>
               )}
 
-              <h3 className="text-lg font-bold text-brand-900">{plan.name}</h3>
-              <p className="mt-1 text-sm text-slate-500">{plan.blurb}</p>
+              <h3 className="text-lg font-bold text-ink">{plan.name}</h3>
+              <p className="mt-1 text-sm text-ink-muted">{plan.blurb}</p>
 
               <div className="mt-5 flex items-baseline gap-1.5">
-                <span className="text-3xl font-extrabold text-brand-900">{plan.price}</span>
+                <span className="text-3xl font-extrabold text-ink">{plan.price}</span>
                 {plan.cadence && (
-                  <span className="text-sm text-slate-500">{plan.cadence}</span>
+                  <span className="text-sm text-ink-muted">{plan.cadence}</span>
                 )}
               </div>
               <p className="mt-1 text-xs font-medium text-brand-600">{plan.limit}</p>
 
               <ul className="mt-6 flex-1 space-y-3">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-600">
+                  <li key={feature} className="flex items-start gap-2.5 text-sm text-ink-muted">
                     <svg viewBox="0 0 20 20" className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" fill="currentColor">
                       <path
                         fillRule="evenodd"
@@ -117,7 +117,7 @@ export default function Pricing() {
                 className={`mt-7 rounded-xl px-5 py-3 text-center text-sm font-semibold transition-all ${
                   plan.featured
                     ? "bg-brand-gradient text-white shadow-brand hover:brightness-110"
-                    : "border border-slate-200 text-slate-700 hover:bg-slate-50"
+                    : "border border-line text-ink hover:bg-sunken"
                 }`}
               >
                 {plan.cta}

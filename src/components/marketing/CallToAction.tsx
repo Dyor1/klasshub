@@ -23,13 +23,13 @@ export default function CallToAction() {
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href="/register"
-              className="rounded-xl bg-white px-7 py-4 text-sm font-semibold text-brand-700 transition-all hover:bg-brand-50"
+              className="rounded-xl bg-card px-7 py-4 text-sm font-semibold text-brand-700 transition-all hover:bg-brand-50"
             >
               Register your school
             </Link>
             <Link
               href="/contact"
-              className="rounded-xl border border-white/25 px-7 py-4 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+              className="rounded-xl border border-white/25 px-7 py-4 text-sm font-semibold text-white transition-colors hover:bg-card/10"
             >
               Book a walkthrough
             </Link>

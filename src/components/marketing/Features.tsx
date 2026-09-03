@@ -35,16 +35,16 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="scroll-mt-24 border-t border-slate-100 bg-slate-50/60 py-24">
+    <section id="features" className="scroll-mt-24 border-t border-line-soft bg-hover py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">
             Everything in one place
           </span>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-brand-900 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
             The admin work, handled
           </h2>
-          <p className="mt-4 text-slate-600">
+          <p className="mt-4 text-ink-muted">
             KlassHub replaces the spreadsheets, WhatsApp groups and paper registers
             that most schools are still stitching together.
           </p>
@@ -54,7 +54,7 @@ export default function Features() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-card transition-all hover:-translate-y-0.5 hover:border-brand-200"
+              className="group rounded-2xl border border-line bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:border-brand-200"
             >
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-gradient group-hover:text-white">
                 <svg
@@ -69,8 +69,8 @@ export default function Features() {
                   {feature.icon}
                 </svg>
               </div>
-              <h3 className="mt-5 text-base font-bold text-brand-900">{feature.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{feature.body}</p>
+              <h3 className="mt-5 text-base font-bold text-ink">{feature.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted">{feature.body}</p>
             </div>
           ))}
         </div>

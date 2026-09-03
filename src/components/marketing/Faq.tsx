@@ -33,23 +33,23 @@ export default function Faq() {
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">
             FAQ
           </span>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-brand-900 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
             Questions schools ask us
           </h2>
         </div>
 
-        <div className="mt-12 divide-y divide-slate-200 border-y border-slate-200">
+        <div className="mt-12 divide-y divide-line border-y border-line">
           {faqs.map((item) => (
             <details key={item.q} className="group py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
-                <span className="text-base font-semibold text-brand-900">{item.q}</span>
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-transform group-open:rotate-45">
+                <span className="text-base font-semibold text-ink">{item.q}</span>
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sunken text-ink-muted transition-transform group-open:rotate-45">
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M12 5v14M5 12h14" strokeLinecap="round" />
                   </svg>
                 </span>
               </summary>
-              <p className="mt-3 pr-11 text-sm leading-relaxed text-slate-600">{item.a}</p>
+              <p className="mt-3 pr-11 text-sm leading-relaxed text-ink-muted">{item.a}</p>
             </details>
           ))}
         </div>

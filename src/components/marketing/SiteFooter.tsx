@@ -29,12 +29,12 @@ const columns = [
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-white">
+    <footer className="border-t border-line bg-card">
       <div className="mx-auto max-w-7xl px-6 py-14">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <Logo showTagline />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-muted">
               School management software for Nigerian schools — results, admissions,
               attendance and parent communication in one portal.
             </p>
@@ -42,7 +42,7 @@ export default function SiteFooter() {
 
           {columns.map((col) => (
             <div key={col.heading}>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-brand-900">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-ink">
                 {col.heading}
               </h3>
               <ul className="mt-4 space-y-2.5">
@@ -50,7 +50,7 @@ export default function SiteFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-slate-500 transition-colors hover:text-brand-600"
+                      className="text-sm text-ink-muted transition-colors hover:text-brand-600"
                     >
                       {link.label}
                     </Link>
@@ -61,11 +61,11 @@ export default function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-slate-100 pt-7 sm:flex-row">
-          <p className="text-xs text-slate-400">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-line-soft pt-7 sm:flex-row">
+          <p className="text-xs text-ink-subtle">
             &copy; {new Date().getFullYear()} KlassHub. All rights reserved.
           </p>
-          <p className="text-xs text-slate-400">Made in Nigeria 🇳🇬</p>
+          <p className="text-xs text-ink-subtle">Made in Nigeria 🇳🇬</p>
         </div>
       </div>
     </footer>

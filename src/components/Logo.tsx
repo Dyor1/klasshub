@@ -15,7 +15,7 @@ export function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
           <stop offset="100%" stopColor="#a855f7" />
         </linearGradient>
         <linearGradient id={letter} x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0%" stopColor="#1e3a8a" />
+          <stop offset="0%" stopColor="#3b6fe0" />
           <stop offset="100%" stopColor="#4f46e5" />
         </linearGradient>
       </defs>
@@ -66,11 +66,11 @@ export default function Logo({
       <LogoMark />
       <span className="leading-none">
         <span className="block text-xl font-extrabold tracking-tight">
-          <span className="text-brand-900">Klass</span>
+          <span className="text-ink">Klass</span>
           <span className="text-brand-gradient">Hub</span>
         </span>
         {showTagline && (
-          <span className="mt-1 block text-[9px] font-medium uppercase tracking-[0.18em] text-slate-400">
+          <span className="mt-1 block text-[9px] font-medium uppercase tracking-[0.18em] text-ink-subtle">
             School Management Portal
           </span>
         )}

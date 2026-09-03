@@ -12,10 +12,10 @@ export default function RegisterPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-extrabold tracking-tight text-brand-900">
+      <h1 className="text-2xl font-extrabold tracking-tight text-ink">
         Register your school
       </h1>
-      <p className="mt-2 text-sm text-slate-500">
+      <p className="mt-2 text-sm text-ink-muted">
         Create your school&apos;s space on KlassHub. Free for 30 days.
       </p>
 
@@ -52,13 +52,13 @@ export default function RegisterPage() {
 
         <SubmitButton>Create school account</SubmitButton>
 
-        <p className="text-center text-xs leading-relaxed text-slate-400">
+        <p className="text-center text-xs leading-relaxed text-ink-subtle">
           You&apos;ll be the administrator for this school. Teachers, students and
           parents are added from your dashboard.
         </p>
       </form>
 
-      <p className="mt-6 text-center text-sm text-slate-500">
+      <p className="mt-6 text-center text-sm text-ink-muted">
         Already registered?{" "}
         <Link href="/login" className="font-semibold text-brand-600 hover:underline">
           Sign in
