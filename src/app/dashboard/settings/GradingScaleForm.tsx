@@ -81,7 +81,7 @@ export default function GradingScaleForm({
           </p>
         )}
 
-        <div className="overflow-x-auto rounded-xl border border-line">
+        <div className="kh-scroll-x overflow-x-auto rounded-xl border border-line">
           <table className="w-full min-w-[560px] text-sm">
             <thead className="border-b border-line-soft bg-sunken">
               <tr>

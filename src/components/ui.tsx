@@ -228,16 +228,26 @@ export function LabelledField({
   );
 }
 
-export function Table({ head, children }: { head: string[]; children: ReactNode }) {
+export function Table({
+  head,
+  children,
+  minWidth = 640,
+}: {
+  head: string[];
+  children: ReactNode;
+  /** Lower this for narrow tables. 640 forces a scroll on a phone even when
+   *  three columns would have fitted. */
+  minWidth?: number;
+}) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-line-soft bg-card shadow-card">
-      <table className="w-full min-w-[640px] text-sm">
+    <div className="kh-scroll-x overflow-x-auto rounded-2xl border border-line-soft bg-card shadow-card">
+      <table className="w-full text-sm" style={{ minWidth: `${minWidth}px` }}>
         <thead className="border-b border-line-soft bg-sunken">
           <tr>
             {head.map((h, i) => (
               <th
                 key={`${h}-${i}`}
-                className="px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle"
+                className="whitespace-nowrap px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle"
               >
                 {h}
               </th>

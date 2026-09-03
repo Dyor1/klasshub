@@ -177,7 +177,7 @@ export default async function LessonNotesPage() {
                         <input type="hidden" name="path" value={n.file_path ?? ""} />
                         <button
                           type="submit"
-                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
+                          className="inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                         >
                           Delete
                         </button>

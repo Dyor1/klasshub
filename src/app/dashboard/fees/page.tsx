@@ -310,7 +310,7 @@ export default async function FeesPage({
               <a
                 key={f.key}
                 href={`/dashboard/fees?term=${term}&year=${encodeURIComponent(year)}${f.key ? `&status=${f.key}` : ""}`}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                   (sp.status ?? "") === f.key
                     ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
                     : "text-ink-muted hover:bg-hover"

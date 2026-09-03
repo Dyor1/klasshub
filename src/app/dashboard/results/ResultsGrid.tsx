@@ -83,7 +83,7 @@ export default function ResultsGrid({
         </p>
       ) : null}
 
-      <div className="overflow-x-auto rounded-xl border border-line bg-card">
+      <div className="kh-scroll-x overflow-x-auto rounded-xl border border-line bg-card">
         <table className="w-full min-w-[680px] text-sm">
           <thead className="border-b border-line-soft bg-sunken">
             <tr>

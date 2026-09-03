@@ -59,7 +59,7 @@ export default function DeliveryRoutesForm({
       <ErrorNote message={state.error} />
       {state.ok && state.message && <SuccessNote>{state.message}</SuccessNote>}
 
-      <div className="overflow-x-auto">
+      <div className="kh-scroll-x overflow-x-auto">
         <table className="w-full min-w-[420px] text-sm">
           <thead>
             <tr className="border-b border-line-soft">

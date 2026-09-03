@@ -198,6 +198,36 @@ body {
     radial-gradient(48rem 28rem at 92% 0%, rgb(139 92 246 / 0.16) 0%, transparent 62%);
 }
 
+/* Horizontal scroll affordance for wide tables on narrow screens.
+ *
+ * A data table cannot honestly compress to 390px, so it scrolls — but nothing
+ * on screen said so, and a column of balances a thumb-swipe away might as well
+ * not exist. These shadows appear only at an edge that has content hidden
+ * beyond it, and disappear when you reach the end.
+ *
+ * background-attachment does the work: the two cover gradients are `local` so
+ * they travel with the content, while the shadows are `scroll` so they stay
+ * pinned and get revealed as the covers move away. No JavaScript, no resize
+ * observer, and it is correct at every width. */
+.kh-scroll-x {
+  background-image:
+    linear-gradient(to right, var(--surface-card) 30%, transparent),
+    linear-gradient(to left, var(--surface-card) 30%, transparent),
+    linear-gradient(to right, rgb(0 0 0 / 0.16), transparent),
+    linear-gradient(to left, rgb(0 0 0 / 0.16), transparent);
+  background-position: 0 0, 100% 0, 0 0, 100% 0;
+  background-repeat: no-repeat;
+  background-size: 44px 100%, 44px 100%, 16px 100%, 16px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+[data-theme="dark"] .kh-scroll-x {
+  background-image:
+    linear-gradient(to right, var(--surface-card) 30%, transparent),
+    linear-gradient(to left, var(--surface-card) 30%, transparent),
+    linear-gradient(to right, rgb(0 0 0 / 0.5), transparent),
+    linear-gradient(to left, rgb(0 0 0 / 0.5), transparent);
+}
+
 /* Brand gradient used on the logo mark, primary buttons and hero accents. */
 .bg-brand-gradient {
   background-image: linear-gradient(120deg, #2563eb 0%, #4f46e5 45%, #7c3aed 100%);

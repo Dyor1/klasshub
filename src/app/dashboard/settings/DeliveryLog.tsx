@@ -63,7 +63,7 @@ export default function DeliveryLog({ rows }: { rows: LogRow[] }) {
         </p>
       )}
 
-      <div className="overflow-x-auto">
+      <div className="kh-scroll-x overflow-x-auto">
         <table className="w-full min-w-[440px] text-sm">
           <thead>
             <tr className="border-b border-line-soft">

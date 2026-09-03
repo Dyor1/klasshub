@@ -100,7 +100,7 @@ export default async function ReportCardPage({
             <Link
               key={t.value}
               href={`/dashboard/report-cards/${studentId}?year=${encodeURIComponent(year)}&term=${t.value}`}
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                 t.value === term
                   ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
                   : "text-ink-muted hover:bg-hover"

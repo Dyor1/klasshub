@@ -189,7 +189,7 @@ export default async function AssignmentsPage() {
                       <input type="hidden" name="id" value={a.id} />
                       <button
                         type="submit"
-                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
+                        className="inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                       >
                         Delete
                       </button>

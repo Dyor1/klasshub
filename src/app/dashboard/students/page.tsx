@@ -61,7 +61,7 @@ export default async function StudentsPage({
           <div className="flex flex-wrap gap-2">
             <Link
               href="/dashboard/students"
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                 !classFilter
                   ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
                   : "text-ink-muted hover:bg-hover"
@@ -73,7 +73,7 @@ export default async function StudentsPage({
               <Link
                 key={c.id}
                 href={`/dashboard/students?class=${c.id}`}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                   classFilter === c.id
                     ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
                     : "text-ink-muted hover:bg-hover"
@@ -135,7 +135,7 @@ export default async function StudentsPage({
                     <input type="hidden" name="id" value={s.id} />
                     <button
                       type="submit"
-                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
+                      className="inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                     >
                       Delete
                     </button>
