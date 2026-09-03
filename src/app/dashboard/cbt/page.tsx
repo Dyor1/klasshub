@@ -73,13 +73,13 @@ export default async function CbtPage({
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">
                       <h2 className="text-base font-bold text-brand-900">{e.title}</h2>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                      <p className="mt-0.5 text-xs text-ink-muted">
                         {e.subject_id ? subjectName.get(e.subject_id) ?? "—" : "General"} ·{" "}
                         {e.duration_minutes} minutes · <span className="capitalize">{e.term}</span>{" "}
                         term {e.academic_year}
                       </p>
                       {done && (
-                        <p className="mt-2 text-sm font-semibold text-emerald-700">
+                        <p className="mt-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
                           Submitted — {attempt!.score} / {attempt!.total_marks} (
                           {attempt!.percentage}%)
                         </p>
@@ -138,31 +138,31 @@ export default async function CbtPage({
             const attempts = (sessions ?? []).filter((s) => s.exam_id === e.id);
             const submitted = attempts.filter((a) => a.status !== "in_progress").length;
             return (
-              <tr key={e.id} className="hover:bg-slate-50/60">
+              <tr key={e.id} className="hover:bg-hover">
                 <td className="px-4 py-3">
                   <Link
                     href={`/dashboard/cbt/${e.id}`}
-                    className="font-medium text-brand-700 hover:underline"
+                    className="font-medium text-brand-700 dark:text-brand-300 hover:underline"
                   >
                     {e.title}
                   </Link>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-ink-subtle">
                     {e.subject_id ? subjectName.get(e.subject_id) ?? "—" : "General"} ·{" "}
                     <span className="capitalize">{e.term}</span> term
                   </p>
                 </td>
-                <td className="px-4 py-3 text-slate-600">
+                <td className="px-4 py-3 text-ink-muted">
                   {className.get(e.class_id) ?? "—"}
                 </td>
                 <td className="px-4 py-3">
                   {qn === 0 ? (
                     <Chip tone="amber">none yet</Chip>
                   ) : (
-                    <span className="text-slate-600">{qn}</span>
+                    <span className="text-ink-muted">{qn}</span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-slate-600">{e.duration_minutes}m</td>
-                <td className="px-4 py-3 text-slate-600">
+                <td className="px-4 py-3 text-ink-muted">{e.duration_minutes}m</td>
+                <td className="px-4 py-3 text-ink-muted">
                   {submitted} / {attempts.length || 0}
                 </td>
                 <td className="px-4 py-3">
@@ -176,7 +176,7 @@ export default async function CbtPage({
                         <input type="hidden" name="status" value="published" />
                         <button
                           type="submit"
-                          className="rounded-lg px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-50"
+                          className="rounded-lg px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/12"
                         >
                           Publish
                         </button>
@@ -188,7 +188,7 @@ export default async function CbtPage({
                         <input type="hidden" name="status" value="closed" />
                         <button
                           type="submit"
-                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
+                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-ink-muted hover:bg-hover"
                         >
                           Close
                         </button>
@@ -198,7 +198,7 @@ export default async function CbtPage({
                       <input type="hidden" name="id" value={e.id} />
                       <button
                         type="submit"
-                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                       >
                         Delete
                       </button>

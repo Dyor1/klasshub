@@ -100,7 +100,7 @@ export default function StudentForm({
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="h-11 rounded-lg px-5 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+          className="h-11 rounded-lg px-5 text-sm font-semibold text-ink-muted hover:bg-hover"
         >
           Cancel
         </button>

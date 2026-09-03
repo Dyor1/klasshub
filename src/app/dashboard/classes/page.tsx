@@ -72,17 +72,17 @@ export default async function ClassesPage() {
             const enrolled = countByClass.get(c.id) ?? 0;
             const full = c.capacity != null && enrolled >= c.capacity;
             return (
-              <tr key={c.id} className="hover:bg-slate-50/60">
-                <td className="px-4 py-3 font-medium text-slate-900">
+              <tr key={c.id} className="hover:bg-hover">
+                <td className="px-4 py-3 font-medium text-ink">
                   {c.name}
-                  {c.section && <span className="text-slate-400"> · {c.section}</span>}
+                  {c.section && <span className="text-ink-subtle"> · {c.section}</span>}
                 </td>
-                <td className="px-4 py-3 text-slate-600">{c.grade_level}</td>
-                <td className="px-4 py-3 text-slate-600">{c.academic_year}</td>
-                <td className="px-4 py-3 text-slate-600">
+                <td className="px-4 py-3 text-ink-muted">{c.grade_level}</td>
+                <td className="px-4 py-3 text-ink-muted">{c.academic_year}</td>
+                <td className="px-4 py-3 text-ink-muted">
                   {c.class_teacher_id
                     ? teacherById.get(c.class_teacher_id) ?? "—"
-                    : <span className="text-slate-400">Unassigned</span>}
+                    : <span className="text-ink-subtle">Unassigned</span>}
                 </td>
                 <td className="px-4 py-3">
                   <Chip tone={full ? "amber" : "slate"}>
@@ -96,7 +96,7 @@ export default async function ClassesPage() {
                       <input type="hidden" name="id" value={c.id} />
                       <button
                         type="submit"
-                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                       >
                         Delete
                       </button>

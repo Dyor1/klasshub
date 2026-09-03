@@ -38,7 +38,7 @@ export default function Features() {
     <section id="features" className="scroll-mt-24 border-t border-line-soft bg-hover py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-300">
             Everything in one place
           </span>
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
@@ -54,9 +54,9 @@ export default function Features() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group rounded-2xl border border-line bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:border-brand-200"
+              className="group rounded-2xl border border-line bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:border-brand-500/35"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-gradient group-hover:text-white">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-300 transition-colors group-hover:bg-brand-gradient group-hover:text-white">
                 <svg
                   viewBox="0 0 24 24"
                   className="h-5 w-5"

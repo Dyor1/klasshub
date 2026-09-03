@@ -59,7 +59,7 @@ export default async function AssignmentDetailPage({
 
   const header = (
     <>
-      <Link href="/dashboard/assignments" className="text-sm text-slate-500 hover:text-brand-600">
+      <Link href="/dashboard/assignments" className="text-sm text-ink-muted hover:text-brand-600 dark:text-brand-300">
         &larr; All assignments
       </Link>
       <div className="mt-3">
@@ -82,7 +82,7 @@ export default async function AssignmentDetailPage({
       </div>
       {a.instructions && (
         <Card className="mb-6">
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink">
             {a.instructions}
           </p>
         </Card>
@@ -103,10 +103,10 @@ export default async function AssignmentDetailPage({
         {mine?.graded_at && (
           <Card title="Your grade" className="mb-6">
             <p className="text-3xl font-extrabold text-brand-900">
-              {mine.score} <span className="text-lg text-slate-400">/ {a.max_score}</span>
+              {mine.score} <span className="text-lg text-ink-subtle">/ {a.max_score}</span>
             </p>
             {mine.feedback && (
-              <p className="mt-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+              <p className="mt-2 rounded-lg border border-line bg-sunken px-3 py-2 text-sm text-ink">
                 <span className="font-semibold">Feedback:</span> {mine.feedback}
               </p>
             )}
@@ -115,17 +115,17 @@ export default async function AssignmentDetailPage({
 
         {mine && (
           <Card title="What you submitted" className="mb-6">
-            <p className="mb-2 text-xs text-slate-500">
+            <p className="mb-2 text-xs text-ink-muted">
               {new Date(mine.submitted_at).toLocaleString("en-GB", {
                 day: "numeric",
                 month: "short",
                 hour: "2-digit",
                 minute: "2-digit",
               })}
-              {mine.is_late && <span className="ml-2 font-semibold text-amber-700">Late</span>}
+              {mine.is_late && <span className="ml-2 font-semibold text-amber-700 dark:text-amber-300">Late</span>}
             </p>
             {mine.body && (
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink">
                 {mine.body}
               </p>
             )}
@@ -134,7 +134,7 @@ export default async function AssignmentDetailPage({
                 href={urlByPath.get(mine.file_path)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-block rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="mt-3 inline-block rounded-lg border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-hover"
               >
                 {mine.file_name} {mine.file_size ? `· ${formatBytes(mine.file_size)}` : ""}
               </a>
@@ -145,13 +145,13 @@ export default async function AssignmentDetailPage({
         {isStudent ? (
           mine?.graded_at ? (
             <Card>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-ink-muted">
                 This has been graded, so it can no longer be edited.
               </p>
             </Card>
           ) : a.status === "closed" ? (
             <Card>
-              <p className="text-sm text-slate-500">This assignment is closed.</p>
+              <p className="text-sm text-ink-muted">This assignment is closed.</p>
             </Card>
           ) : (
             <Card title={mine ? "Update your submission" : "Submit your work"}>
@@ -186,7 +186,7 @@ export default async function AssignmentDetailPage({
     <>
       {header}
 
-      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-ink-muted">
         Submissions ({subs?.length ?? 0}) · {graded} graded
       </h2>
 
@@ -212,8 +212,8 @@ export default async function AssignmentDetailPage({
                   <div className="flex min-w-0 items-center gap-3">
                     <Avatar name={name} />
                     <div className="min-w-0">
-                      <p className="font-semibold text-slate-900">{name}</p>
-                      <p className="text-xs text-slate-400">
+                      <p className="font-semibold text-ink">{name}</p>
+                      <p className="text-xs text-ink-subtle">
                         {st?.admission_number ?? ""} ·{" "}
                         {new Date(s.submitted_at).toLocaleString("en-GB", {
                           day: "numeric",
@@ -237,7 +237,7 @@ export default async function AssignmentDetailPage({
                 </div>
 
                 {s.body && (
-                  <p className="mb-3 whitespace-pre-wrap rounded-lg bg-slate-50 px-3.5 py-3 text-sm leading-relaxed text-slate-700">
+                  <p className="mb-3 whitespace-pre-wrap rounded-lg bg-sunken px-3.5 py-3 text-sm leading-relaxed text-ink">
                     {s.body}
                   </p>
                 )}
@@ -247,13 +247,13 @@ export default async function AssignmentDetailPage({
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mb-3 inline-block rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    className="mb-3 inline-block rounded-lg border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-hover"
                   >
                     {s.file_name} {s.file_size ? `· ${formatBytes(s.file_size)}` : ""}
                   </a>
                 )}
 
-                <div className="flex flex-wrap items-start justify-between gap-3 border-t border-slate-100 pt-3">
+                <div className="flex flex-wrap items-start justify-between gap-3 border-t border-line-soft pt-3">
                   <GradeForm
                     submissionId={s.id}
                     assignmentId={a.id}
@@ -267,7 +267,7 @@ export default async function AssignmentDetailPage({
                     <input type="hidden" name="assignment_id" value={a.id} />
                     <button
                       type="submit"
-                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                     >
                       Delete
                     </button>

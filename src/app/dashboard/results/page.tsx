@@ -77,23 +77,23 @@ export default async function ResultsPage({
             {mine.map((r) => {
               const subject = r.subjects as { name: string } | null;
               return (
-                <tr key={r.id} className="hover:bg-slate-50/60">
+                <tr key={r.id} className="hover:bg-hover">
                   {showWho && (
-                    <td className="px-4 py-3 font-medium text-slate-900">
+                    <td className="px-4 py-3 font-medium text-ink">
                       {childName.get(r.student_id) ?? "—"}
                     </td>
                   )}
-                  <td className="px-4 py-3 text-slate-600">{r.academic_year}</td>
-                  <td className="px-4 py-3 capitalize text-slate-600">{r.term}</td>
-                  <td className="px-4 py-3 font-medium text-slate-900">
+                  <td className="px-4 py-3 text-ink-muted">{r.academic_year}</td>
+                  <td className="px-4 py-3 capitalize text-ink-muted">{r.term}</td>
+                  <td className="px-4 py-3 font-medium text-ink">
                     {subject?.name ?? "—"}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">{r.ca_score}</td>
-                  <td className="px-4 py-3 text-slate-600">{r.exam_score}</td>
-                  <td className="px-4 py-3 font-semibold text-slate-900">{r.total_score}</td>
-                  <td className="px-4 py-3 text-slate-600">{r.percentage}%</td>
+                  <td className="px-4 py-3 text-ink-muted">{r.ca_score}</td>
+                  <td className="px-4 py-3 text-ink-muted">{r.exam_score}</td>
+                  <td className="px-4 py-3 font-semibold text-ink">{r.total_score}</td>
+                  <td className="px-4 py-3 text-ink-muted">{r.percentage}%</td>
                   <td className="px-4 py-3">
-                    {r.grade ? <Chip tone="brand">{r.grade}</Chip> : <span className="text-slate-300">—</span>}
+                    {r.grade ? <Chip tone="brand">{r.grade}</Chip> : <span className="text-ink-subtle">—</span>}
                   </td>
                 </tr>
               );
@@ -193,7 +193,7 @@ export default async function ResultsPage({
           <Card className="mb-6">
             <form method="get" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:items-end">
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Class</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Class</span>
                 <select name="class" defaultValue={classId} className={inputClass}>
                   <option value="">Select…</option>
                   {classes!.map((c) => (
@@ -204,7 +204,7 @@ export default async function ResultsPage({
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Subject</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Subject</span>
                 <select name="subject" defaultValue={subjectId} className={inputClass}>
                   <option value="">Select…</option>
                   {subjects!.map((s) => (
@@ -215,7 +215,7 @@ export default async function ResultsPage({
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Term</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Term</span>
                 <select name="term" defaultValue={term} className={inputClass}>
                   {TERMS.map((t) => (
                     <option key={t.value} value={t.value}>
@@ -225,12 +225,12 @@ export default async function ResultsPage({
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Session</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Session</span>
                 <input name="year" defaultValue={year} className={inputClass} />
               </label>
               <button
                 type="submit"
-                className="h-11 rounded-lg border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="h-11 rounded-lg border border-line bg-white px-5 text-sm font-semibold text-ink hover:bg-hover"
               >
                 Load
               </button>
@@ -250,12 +250,12 @@ export default async function ResultsPage({
           ) : (
             <>
               {hasExisting && (
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-white px-5 py-4">
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-ink">
                       {anyPublished ? "Published to students" : "Draft — not visible to students"}
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-ink-muted">
                       {anyPublished
                         ? "Students in this class can see these marks."
                         : "Publish when you're ready for students to see these marks."}
@@ -271,7 +271,7 @@ export default async function ResultsPage({
                       type="submit"
                       className={`h-10 rounded-lg px-5 text-sm font-semibold transition-colors ${
                         anyPublished
-                          ? "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                          ? "border border-line bg-white text-ink hover:bg-hover"
                           : "bg-emerald-600 text-white hover:bg-emerald-700"
                       }`}
                     >

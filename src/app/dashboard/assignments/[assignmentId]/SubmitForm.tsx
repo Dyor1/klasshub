@@ -44,13 +44,13 @@ export default function SubmitForm({
       <input type="hidden" name="assignment_id" value={assignmentId} />
       <ErrorNote message={state.error} />
       {state.ok && state.message && (
-        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-800">
+        <p className="rounded-lg border border-emerald-500/35 bg-emerald-500/12 px-3.5 py-2.5 text-sm text-emerald-800 dark:text-emerald-200">
           {state.message}
         </p>
       )}
 
       {overdue && (
-        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-800">
+        <p className="rounded-lg border border-amber-500/35 bg-amber-500/12 px-3.5 py-2.5 text-sm text-amber-800 dark:text-amber-200">
           The deadline has passed — you can still submit, but it will be marked
           late.
         </p>
@@ -63,7 +63,7 @@ export default function SubmitForm({
             rows={8}
             defaultValue={existingBody ?? ""}
             placeholder="Type your work here…"
-            className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+            className="w-full rounded-lg border border-line px-3.5 py-2.5 text-sm placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
           />
         </LabelledField>
       )}
@@ -79,7 +79,7 @@ export default function SubmitForm({
             label="Attach a file"
           />
           {existingFileName && !file && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-ink-muted">
               Currently attached: <span className="font-medium">{existingFileName}</span> —
               choosing a new file replaces it.
             </p>

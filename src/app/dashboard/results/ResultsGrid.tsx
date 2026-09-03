@@ -78,42 +78,42 @@ export default function ResultsGrid({
 
       <ErrorNote message={state.error} />
       {state.saved ? (
-        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-800">
+        <p className="rounded-lg border border-emerald-500/35 bg-emerald-500/12 px-3.5 py-2.5 text-sm text-emerald-800 dark:text-emerald-200">
           Saved marks for {state.saved} student{state.saved === 1 ? "" : "s"}.
         </p>
       ) : null}
 
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded-xl border border-line bg-white">
         <table className="w-full min-w-[680px] text-sm">
-          <thead className="border-b border-slate-100 bg-slate-50/70">
+          <thead className="border-b border-line-soft bg-sunken">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-muted">
                 Student
               </th>
-              <th className="w-32 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="w-32 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-muted">
                 CA / {caMax}
               </th>
-              <th className="w-32 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="w-32 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-muted">
                 Exam / {examMax}
               </th>
-              <th className="w-24 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="w-24 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-muted">
                 Total
               </th>
-              <th className="w-24 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th className="w-24 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-ink-muted">
                 %
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-line-soft">
             {rows.map((r) => {
               const t = total(r.studentId);
               const p = pct(r.studentId);
               return (
-                <tr key={r.studentId} className="hover:bg-slate-50/60">
+                <tr key={r.studentId} className="hover:bg-hover">
                   <td className="px-4 py-2.5">
                     <input type="hidden" name="student_id" value={r.studentId} />
-                    <p className="font-medium text-slate-900">{r.name}</p>
-                    <p className="font-mono text-xs text-slate-400">
+                    <p className="font-medium text-ink">{r.name}</p>
+                    <p className="font-mono text-xs text-ink-subtle">
                       {r.admissionNumber}
                     </p>
                   </td>
@@ -131,7 +131,7 @@ export default function ResultsGrid({
                           [r.studentId]: { ...s[r.studentId], ca: e.target.value },
                         }))
                       }
-                      className="h-10 w-24 rounded-lg border border-slate-200 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+                      className="h-10 w-24 rounded-lg border border-line px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
                     />
                   </td>
                   <td className="px-4 py-2.5">
@@ -148,14 +148,14 @@ export default function ResultsGrid({
                           [r.studentId]: { ...s[r.studentId], exam: e.target.value },
                         }))
                       }
-                      className="h-10 w-24 rounded-lg border border-slate-200 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+                      className="h-10 w-24 rounded-lg border border-line px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
                     />
                   </td>
-                  <td className="px-4 py-2.5 font-semibold text-slate-900">
-                    {t === null ? <span className="text-slate-300">—</span> : t}
+                  <td className="px-4 py-2.5 font-semibold text-ink">
+                    {t === null ? <span className="text-ink-subtle">—</span> : t}
                   </td>
-                  <td className="px-4 py-2.5 text-slate-600">
-                    {p === null ? <span className="text-slate-300">—</span> : `${p}%`}
+                  <td className="px-4 py-2.5 text-ink-muted">
+                    {p === null ? <span className="text-ink-subtle">—</span> : `${p}%`}
                   </td>
                 </tr>
               );

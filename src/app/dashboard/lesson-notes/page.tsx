@@ -69,7 +69,7 @@ export default async function LessonNotesPage() {
       />
 
       {viewer.isAdmin && awaiting > 0 && (
-        <p className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-800">
+        <p className="mb-6 rounded-lg border border-amber-500/35 bg-amber-500/12 px-3.5 py-2.5 text-sm text-amber-800 dark:text-amber-200">
           {awaiting} note{awaiting === 1 ? "" : "s"} awaiting your review.
         </p>
       )}
@@ -97,7 +97,7 @@ export default async function LessonNotesPage() {
                       {n.week_number && <Chip tone="slate">Week {n.week_number}</Chip>}
                     </div>
 
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-ink-muted">
                       {viewer.isAdmin && (
                         <>
                           {staffName.get(n.teacher_id) ?? "Teacher"}
@@ -112,19 +112,19 @@ export default async function LessonNotesPage() {
                     </p>
 
                     {n.description && (
-                      <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                      <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                         {n.description}
                       </p>
                     )}
 
                     {n.admin_feedback && (
-                      <p className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                      <p className="mt-3 rounded-lg border border-line bg-sunken px-3 py-2 text-sm text-ink">
                         <span className="font-semibold">Reviewer:</span> {n.admin_feedback}
                       </p>
                     )}
 
                     {n.file_name && (
-                      <p className="mt-2 text-xs text-slate-400">
+                      <p className="mt-2 text-xs text-ink-subtle">
                         {n.file_name}
                         {n.file_size ? ` · ${formatBytes(n.file_size)}` : ""}
                       </p>
@@ -137,7 +137,7 @@ export default async function LessonNotesPage() {
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                        className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-hover"
                       >
                         Open plan
                       </a>
@@ -150,7 +150,7 @@ export default async function LessonNotesPage() {
                           name="admin_feedback"
                           defaultValue={n.admin_feedback ?? ""}
                           placeholder="Feedback (optional)"
-                          className="h-9 w-52 rounded-lg border border-slate-200 px-3 text-xs focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+                          className="h-9 w-52 rounded-lg border border-line px-3 text-xs focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
                         />
                         <div className="flex gap-2">
                           <button
@@ -165,7 +165,7 @@ export default async function LessonNotesPage() {
                             type="submit"
                             name="status"
                             value="rejected"
-                            className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                            className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink hover:bg-hover"
                           >
                             Send back
                           </button>
@@ -177,7 +177,7 @@ export default async function LessonNotesPage() {
                         <input type="hidden" name="path" value={n.file_path ?? ""} />
                         <button
                           type="submit"
-                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                         >
                           Delete
                         </button>

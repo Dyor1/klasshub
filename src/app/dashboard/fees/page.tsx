@@ -105,20 +105,20 @@ export default async function FeesPage({
                 ]}
               >
                 {(bills ?? []).map((b) => (
-                  <tr key={b.id} className="hover:bg-slate-50/60">
+                  <tr key={b.id} className="hover:bg-hover">
                     {showWho && (
-                      <td className="px-4 py-3 font-medium text-slate-900">
+                      <td className="px-4 py-3 font-medium text-ink">
                         {name.get(b.student_id ?? "") ?? "—"}
                       </td>
                     )}
-                    <td className="px-4 py-3 capitalize text-slate-600">
+                    <td className="px-4 py-3 capitalize text-ink-muted">
                       {b.term} · {b.academic_year}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-4 py-3 text-ink-muted">
                       {naira(Number(b.total_amount) - Number(b.discount))}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{naira(b.amount_paid ?? 0)}</td>
-                    <td className="px-4 py-3 font-semibold text-slate-900">
+                    <td className="px-4 py-3 text-ink-muted">{naira(b.amount_paid ?? 0)}</td>
+                    <td className="px-4 py-3 font-semibold text-ink">
                       {naira(b.balance ?? 0)}
                     </td>
                     <td className="px-4 py-3">
@@ -143,17 +143,17 @@ export default async function FeesPage({
               <Card title="Payment history">
                 <Table head={["Receipt", "Date", "Method", "Amount"]}>
                   {(payments ?? []).map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50/60">
-                      <td className="px-4 py-3 font-mono text-xs text-slate-600">{p.receipt_no}</td>
-                      <td className="px-4 py-3 text-slate-600">
+                    <tr key={p.id} className="hover:bg-hover">
+                      <td className="px-4 py-3 font-mono text-xs text-ink-muted">{p.receipt_no}</td>
+                      <td className="px-4 py-3 text-ink-muted">
                         {new Date(p.paid_at).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
                         })}
                       </td>
-                      <td className="px-4 py-3 capitalize text-slate-600">{p.method}</td>
-                      <td className="px-4 py-3 font-semibold text-slate-900">{naira(p.amount)}</td>
+                      <td className="px-4 py-3 capitalize text-ink-muted">{p.method}</td>
+                      <td className="px-4 py-3 font-semibold text-ink">{naira(p.amount)}</td>
                     </tr>
                   ))}
                 </Table>
@@ -208,7 +208,7 @@ export default async function FeesPage({
       <Card className="mb-6">
         <form method="get" className="grid gap-4 sm:grid-cols-3 sm:items-end">
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-slate-600">Term</span>
+            <span className="mb-1.5 block text-xs font-medium text-ink-muted">Term</span>
             <select name="term" defaultValue={term} className={inputClass}>
               {TERMS.map((t) => (
                 <option key={t.value} value={t.value}>
@@ -218,7 +218,7 @@ export default async function FeesPage({
             </select>
           </label>
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-slate-600">Session</span>
+            <span className="mb-1.5 block text-xs font-medium text-ink-muted">Session</span>
             <input name="year" defaultValue={year} className={inputClass} />
           </label>
           <button type="submit" className={btnGhost}>
@@ -242,19 +242,19 @@ export default async function FeesPage({
             className="mb-6"
           >
             {(feeItems ?? []).length > 0 && (
-              <div className="mb-5 overflow-hidden rounded-xl border border-slate-200">
+              <div className="mb-5 overflow-hidden rounded-xl border border-line">
                 <table className="w-full text-sm">
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-line-soft">
                     {(feeItems ?? []).map((f) => (
                       <tr key={f.id}>
-                        <td className="px-4 py-2.5 font-medium text-slate-900">{f.name}</td>
-                        <td className="px-4 py-2.5 text-slate-600">
+                        <td className="px-4 py-2.5 font-medium text-ink">{f.name}</td>
+                        <td className="px-4 py-2.5 text-ink-muted">
                           {f.class_id ? className.get(f.class_id) ?? "—" : "All classes"}
                         </td>
                         <td className="px-4 py-2.5">
                           {f.is_optional && <Chip tone="slate">optional</Chip>}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-semibold text-slate-900">
+                        <td className="px-4 py-2.5 text-right font-semibold text-ink">
                           {naira(f.amount)}
                         </td>
                         <td className="px-4 py-2.5 text-right">
@@ -262,7 +262,7 @@ export default async function FeesPage({
                             <input type="hidden" name="id" value={f.id} />
                             <button
                               type="submit"
-                              className="rounded-lg px-3 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
+                              className="rounded-lg px-3 py-1 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                             >
                               Remove
                             </button>
@@ -279,7 +279,7 @@ export default async function FeesPage({
 
           <Card title="Raise invoices" className="mb-6">
             {(feeItems ?? []).length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-ink-muted">
                 Add at least one fee item above before raising invoices.
               </p>
             ) : (
@@ -312,8 +312,8 @@ export default async function FeesPage({
                 href={`/dashboard/fees?term=${term}&year=${encodeURIComponent(year)}${f.key ? `&status=${f.key}` : ""}`}
                 className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                   (sp.status ?? "") === f.key
-                    ? "bg-brand-50 text-brand-700"
-                    : "text-slate-600 hover:bg-slate-100"
+                    ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
+                    : "text-ink-muted hover:bg-hover"
                 }`}
               >
                 {f.label}
@@ -327,24 +327,24 @@ export default async function FeesPage({
               const name = s ? `${s.surname} ${s.first_name}` : "Unknown";
               const netBilled = Number(b.total_amount) - Number(b.discount);
               return (
-                <tr key={b.id} className="hover:bg-slate-50/60">
+                <tr key={b.id} className="hover:bg-hover">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <Avatar name={name} />
                       <div className="min-w-0">
-                        <p className="font-medium text-slate-900">{name}</p>
-                        <p className="font-mono text-xs text-slate-400">
+                        <p className="font-medium text-ink">{name}</p>
+                        <p className="font-mono text-xs text-ink-subtle">
                           {s?.admission_number ?? ""}
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-slate-600">
+                  <td className="px-4 py-3 text-ink-muted">
                     {b.class_id ? className.get(b.class_id) ?? "—" : "—"}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">{naira(netBilled)}</td>
-                  <td className="px-4 py-3 text-slate-600">{naira(b.amount_paid ?? 0)}</td>
-                  <td className="px-4 py-3 font-semibold text-slate-900">
+                  <td className="px-4 py-3 text-ink-muted">{naira(netBilled)}</td>
+                  <td className="px-4 py-3 text-ink-muted">{naira(b.amount_paid ?? 0)}</td>
+                  <td className="px-4 py-3 font-semibold text-ink">
                     {naira(b.balance ?? 0)}
                   </td>
                   <td className="px-4 py-3">

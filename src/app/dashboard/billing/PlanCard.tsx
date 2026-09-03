@@ -47,8 +47,8 @@ export default function PlanCard({
     <div
       className={`flex flex-col rounded-2xl border p-6 ${
         isCurrent
-          ? "border-brand-300 bg-brand-50/40 ring-1 ring-brand-200"
-          : "border-slate-200 bg-white shadow-card"
+          ? "border-brand-300 bg-brand-500/8 ring-1 ring-brand-500/30"
+          : "border-line bg-white shadow-card"
       }`}
     >
       <div className="flex items-baseline justify-between gap-2">
@@ -61,18 +61,18 @@ export default function PlanCard({
       </div>
 
       <p className="mt-3 text-2xl font-extrabold text-brand-900">{price}</p>
-      <p className="mt-1 text-xs text-slate-500">
+      <p className="mt-1 text-xs text-ink-muted">
         {maxStudents === null ? "Unlimited students" : `Up to ${maxStudents} students`}
       </p>
 
       <div className="flex-1" />
 
       {!selfServe ? (
-        <p className="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-center text-xs text-slate-600">
+        <p className="mt-5 rounded-lg border border-line bg-sunken px-3 py-2.5 text-center text-xs text-ink-muted">
           Arranged with our team
         </p>
       ) : tooSmall ? (
-        <p className="mt-5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-center text-xs text-amber-800">
+        <p className="mt-5 rounded-lg border border-amber-500/35 bg-amber-500/12 px-3 py-2.5 text-center text-xs text-amber-800 dark:text-amber-200">
           You have {studentCount} students — too many for this plan
         </p>
       ) : (
@@ -80,7 +80,7 @@ export default function PlanCard({
           <input type="hidden" name="plan" value={plan} />
           <Pay label={isCurrent ? "Renew for a term" : `Switch to ${label}`} />
           {state.error && (
-            <p role="alert" className="mt-2 text-xs text-red-600">
+            <p role="alert" className="mt-2 text-xs text-red-600 dark:text-red-400">
               {state.error}
             </p>
           )}

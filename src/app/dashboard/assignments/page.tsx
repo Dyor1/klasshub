@@ -74,7 +74,7 @@ export default async function AssignmentsPage() {
                       >
                         {a.title}
                       </Link>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                      <p className="mt-0.5 text-xs text-ink-muted">
                         {a.subject_id ? subjectName.get(a.subject_id) ?? "—" : "General"} ·{" "}
                         {a.max_score} marks · {dueLabel(a.due_at)}
                       </p>
@@ -96,7 +96,7 @@ export default async function AssignmentsPage() {
                       )}
                       <Link
                         href={`/dashboard/assignments/${a.id}`}
-                        className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-ink hover:bg-hover"
                       >
                         {sub ? "View" : "Open"}
                       </Link>
@@ -139,23 +139,23 @@ export default async function AssignmentsPage() {
             const list = countFor(a.id);
             const graded = list.filter((s) => s.graded_at).length;
             return (
-              <tr key={a.id} className="hover:bg-slate-50/60">
+              <tr key={a.id} className="hover:bg-hover">
                 <td className="px-4 py-3">
                   <Link
                     href={`/dashboard/assignments/${a.id}`}
-                    className="font-medium text-brand-700 hover:underline"
+                    className="font-medium text-brand-700 dark:text-brand-300 hover:underline"
                   >
                     {a.title}
                   </Link>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-ink-subtle">
                     {a.subject_id ? subjectName.get(a.subject_id) ?? "—" : "General"} ·{" "}
                     {a.max_score} marks
                   </p>
                 </td>
-                <td className="px-4 py-3 text-slate-600">{className.get(a.class_id) ?? "—"}</td>
-                <td className="px-4 py-3 text-xs text-slate-500">{dueLabel(a.due_at)}</td>
-                <td className="px-4 py-3 text-slate-600">{list.length}</td>
-                <td className="px-4 py-3 text-slate-600">{graded}</td>
+                <td className="px-4 py-3 text-ink-muted">{className.get(a.class_id) ?? "—"}</td>
+                <td className="px-4 py-3 text-xs text-ink-muted">{dueLabel(a.due_at)}</td>
+                <td className="px-4 py-3 text-ink-muted">{list.length}</td>
+                <td className="px-4 py-3 text-ink-muted">{graded}</td>
                 <td className="px-4 py-3">
                   <Chip tone={statusTone[a.status] ?? "slate"}>{a.status}</Chip>
                 </td>
@@ -167,7 +167,7 @@ export default async function AssignmentsPage() {
                         <input type="hidden" name="status" value="published" />
                         <button
                           type="submit"
-                          className="rounded-lg px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-50"
+                          className="rounded-lg px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/12"
                         >
                           Publish
                         </button>
@@ -179,7 +179,7 @@ export default async function AssignmentsPage() {
                         <input type="hidden" name="status" value="closed" />
                         <button
                           type="submit"
-                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100"
+                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-ink-muted hover:bg-hover"
                         >
                           Close
                         </button>
@@ -189,7 +189,7 @@ export default async function AssignmentsPage() {
                       <input type="hidden" name="id" value={a.id} />
                       <button
                         type="submit"
-                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                       >
                         Delete
                       </button>

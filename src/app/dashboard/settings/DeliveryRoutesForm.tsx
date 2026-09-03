@@ -62,32 +62,32 @@ export default function DeliveryRoutesForm({
       <div className="overflow-x-auto">
         <table className="w-full min-w-[420px] text-sm">
           <thead>
-            <tr className="border-b border-slate-100">
-              <th className="py-2 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <tr className="border-b border-line-soft">
+              <th className="py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                 Event
               </th>
-              <th className="w-20 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <th className="w-20 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                 Email
               </th>
-              <th className="w-20 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <th className="w-20 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                 SMS
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-line-soft">
             {KINDS.map((k) => (
               <tr key={k.kind}>
                 <td className="py-3">
                   <input type="hidden" name="kind" value={k.kind} />
-                  <p className="font-medium text-slate-800">{k.label}</p>
-                  <p className="text-xs text-slate-400">{k.when}</p>
+                  <p className="font-medium text-ink">{k.label}</p>
+                  <p className="text-xs text-ink-subtle">{k.when}</p>
                 </td>
                 <td className="text-center">
                   <input
                     type="checkbox"
                     name={`email:${k.kind}`}
                     defaultChecked={byKind.get(k.kind)?.email ?? true}
-                    className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                    className="h-4 w-4 rounded border-line-strong text-brand-600 dark:text-brand-300 focus:ring-brand-500"
                   />
                 </td>
                 <td className="text-center">
@@ -98,7 +98,7 @@ export default function DeliveryRoutesForm({
                     onChange={(e) =>
                       setSms((prev) => ({ ...prev, [k.kind]: e.target.checked }))
                     }
-                    className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                    className="h-4 w-4 rounded border-line-strong text-brand-600 dark:text-brand-300 focus:ring-brand-500"
                   />
                 </td>
               </tr>
@@ -108,11 +108,11 @@ export default function DeliveryRoutesForm({
       </div>
 
       {smsOn.length > 0 && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="text-sm font-semibold text-amber-900">
+        <div className="rounded-xl border border-amber-500/35 bg-amber-500/12 px-4 py-3">
+          <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
             SMS costs money on every send
           </p>
-          <p className="mt-1 text-xs leading-relaxed text-amber-800">
+          <p className="mt-1 text-xs leading-relaxed text-amber-800 dark:text-amber-200">
             You have {recipientCount} {recipientCount === 1 ? "person" : "people"} with a
             mobile number on file. At roughly ₦3.50 a text, one notice to all of them is
             about ₦{perBlast.toLocaleString("en-NG")}.{" "}
@@ -126,7 +126,7 @@ export default function DeliveryRoutesForm({
         </div>
       )}
 
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-ink-muted">
         Anyone can still opt themselves out of either channel from their own
         Notifications page, and that always wins over the setting above.
       </p>

@@ -15,10 +15,10 @@ type Row = {
 };
 
 const OPTIONS = [
-  { value: "present", label: "Present", on: "bg-emerald-600 text-white", off: "text-emerald-700 hover:bg-emerald-50" },
-  { value: "absent", label: "Absent", on: "bg-red-600 text-white", off: "text-red-700 hover:bg-red-50" },
-  { value: "late", label: "Late", on: "bg-amber-500 text-white", off: "text-amber-700 hover:bg-amber-50" },
-  { value: "excused", label: "Excused", on: "bg-slate-600 text-white", off: "text-slate-600 hover:bg-slate-100" },
+  { value: "present", label: "Present", on: "bg-emerald-600 text-white", off: "text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/12" },
+  { value: "absent", label: "Absent", on: "bg-red-600 text-white", off: "text-red-700 dark:text-red-300 hover:bg-red-500/10" },
+  { value: "late", label: "Late", on: "bg-amber-500 text-white", off: "text-amber-700 dark:text-amber-300 hover:bg-amber-500/12" },
+  { value: "excused", label: "Excused", on: "bg-ink-muted text-white", off: "text-ink-muted hover:bg-hover" },
 ];
 
 function Submit() {
@@ -56,7 +56,7 @@ export default function Register({
 
       <ErrorNote message={state.error} />
       {state.saved ? (
-        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-800">
+        <p className="rounded-lg border border-emerald-500/35 bg-emerald-500/12 px-3.5 py-2.5 text-sm text-emerald-800 dark:text-emerald-200">
           Register saved for {state.saved} student{state.saved === 1 ? "" : "s"}.
         </p>
       ) : null}
@@ -65,7 +65,7 @@ export default function Register({
         {counts.map((c) => (
           <span
             key={c.value}
-            className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600"
+            className="rounded-full bg-sunken px-3 py-1 text-xs font-semibold text-ink-muted"
           >
             {c.label}: {c.n}
           </span>
@@ -75,14 +75,14 @@ export default function Register({
           onClick={() =>
             setMarks(Object.fromEntries(rows.map((r) => [r.studentId, "present"])))
           }
-          className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+          className="rounded-full border border-line px-3 py-1 text-xs font-semibold text-ink-muted hover:bg-hover"
         >
           Mark all present
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <ul className="divide-y divide-slate-100">
+      <div className="overflow-hidden rounded-xl border border-line bg-white">
+        <ul className="divide-y divide-line-soft">
           {rows.map((r) => (
             <li
               key={r.studentId}
@@ -98,12 +98,12 @@ export default function Register({
               <div className="flex min-w-0 items-center gap-3">
                 <Avatar name={r.name} />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-slate-900">{r.name}</p>
-                  <p className="font-mono text-xs text-slate-400">{r.admissionNumber}</p>
+                  <p className="truncate text-sm font-medium text-ink">{r.name}</p>
+                  <p className="font-mono text-xs text-ink-subtle">{r.admissionNumber}</p>
                 </div>
               </div>
 
-              <div className="flex overflow-hidden rounded-lg border border-slate-200">
+              <div className="flex overflow-hidden rounded-lg border border-line">
                 {OPTIONS.map((o) => {
                   const active = (marks[r.studentId] ?? "present") === o.value;
                   return (

@@ -68,25 +68,25 @@ export default async function PaymentCallbackPage({
 
       <Card>
         {!reference ? (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-ink-muted">
             No payment reference was supplied. If you were paying a bill, open it
             again from the Fees page.
           </p>
         ) : !attempt ? (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-ink-muted">
             We have no record of that reference. If money left your account,
             contact the school with the reference{" "}
-            <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">
+            <code className="rounded bg-sunken px-1.5 py-0.5 text-xs">
               {reference}
             </code>{" "}
             and they can look it up.
           </p>
         ) : settled ? (
           <>
-            <p className="text-2xl font-extrabold text-emerald-700">
+            <p className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-300">
               {naira(attempt.amount)}
             </p>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-sm text-ink-muted">
               Received{" "}
               {attempt.paid_at
                 ? new Date(attempt.paid_at).toLocaleString("en-GB", {
@@ -100,20 +100,20 @@ export default async function PaymentCallbackPage({
             </p>
           </>
         ) : failed ? (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-ink-muted">
             The payment did not go through, so the bill is still outstanding. You
             can try again from the Fees page.
           </p>
         ) : (
           <>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-ink-muted">
               We are waiting for confirmation from Paystack. This page does not
               take their word for it — your bill updates only once the payment is
               confirmed directly to us, which is normally within a few seconds.
             </p>
-            <p className="mt-2 text-xs text-slate-400">
+            <p className="mt-2 text-xs text-ink-subtle">
               Reference{" "}
-              <code className="rounded bg-slate-100 px-1.5 py-0.5">{reference}</code>
+              <code className="rounded bg-sunken px-1.5 py-0.5">{reference}</code>
             </p>
           </>
         )}

@@ -52,19 +52,19 @@ export default function GradeForm({
           step="0.5"
           defaultValue={score ?? ""}
           placeholder={`/ ${maxScore}`}
-          className="h-10 w-24 rounded-lg border border-slate-200 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+          className="h-10 w-24 rounded-lg border border-line px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
         />
         <input
           name="feedback"
           defaultValue={feedback ?? ""}
           placeholder="Feedback (optional)"
-          className="h-10 min-w-[12rem] flex-1 rounded-lg border border-slate-200 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+          className="h-10 min-w-[12rem] flex-1 rounded-lg border border-line px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
         />
         <Save />
       </div>
 
       {state.ok && state.message && (
-        <p className="text-xs font-medium text-emerald-700">{state.message}</p>
+        <p className="text-xs font-medium text-emerald-700 dark:text-emerald-300">{state.message}</p>
       )}
     </form>
   );

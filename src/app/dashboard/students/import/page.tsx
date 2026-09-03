@@ -18,7 +18,7 @@ export default async function ImportStudentsPage() {
     <>
       <Link
         href="/dashboard/students"
-        className="text-sm text-slate-500 hover:text-brand-600"
+        className="text-sm text-ink-muted hover:text-brand-600 dark:text-brand-300"
       >
         &larr; Students
       </Link>

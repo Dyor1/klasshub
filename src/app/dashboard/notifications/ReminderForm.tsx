@@ -29,14 +29,14 @@ export default function ReminderForm({ defaultYear }: { defaultYear: string }) {
     <form action={formAction} className="space-y-4">
       <ErrorNote message={state.error} />
       {state.ok && state.message && (
-        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-800">
+        <p className="rounded-lg border border-emerald-500/35 bg-emerald-500/12 px-3.5 py-2.5 text-sm text-emerald-800 dark:text-emerald-200">
           {state.message}
         </p>
       )}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <label className="block">
-          <span className="mb-1.5 block text-xs font-medium text-slate-600">Term</span>
+          <span className="mb-1.5 block text-xs font-medium text-ink-muted">Term</span>
           <select name="term" defaultValue="first" className={inputClass}>
             {TERMS.map((t) => (
               <option key={t.value} value={t.value}>
@@ -46,13 +46,13 @@ export default function ReminderForm({ defaultYear }: { defaultYear: string }) {
           </select>
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-xs font-medium text-slate-600">Session</span>
+          <span className="mb-1.5 block text-xs font-medium text-ink-muted">Session</span>
           <input name="academic_year" defaultValue={defaultYear} className={inputClass} />
         </label>
         <Submit />
       </div>
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-ink-subtle">
         Notifies the student and every linked guardian of anyone with an
         outstanding balance. Nobody who has paid in full is contacted.
       </p>

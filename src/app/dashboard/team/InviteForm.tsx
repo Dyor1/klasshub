@@ -31,9 +31,9 @@ export default function InviteForm() {
   const [copied, setCopied] = useState(false);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-card">
+    <div className="rounded-xl border border-line bg-white p-5 shadow-card">
       <h2 className="text-sm font-bold text-brand-900">Invite someone</h2>
-      <p className="mt-0.5 text-xs text-slate-500">
+      <p className="mt-0.5 text-xs text-ink-muted">
         They&apos;ll join your school with the role you choose here.
       </p>
 
@@ -41,7 +41,7 @@ export default function InviteForm() {
         {state.error && (
           <p
             role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700"
+            className="rounded-lg border border-red-400/40 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-700 dark:text-red-300"
           >
             {state.error}
           </p>
@@ -53,12 +53,12 @@ export default function InviteForm() {
             type="email"
             required
             placeholder="teacher@yourschool.edu.ng"
-            className="h-11 flex-1 rounded-lg border border-slate-200 px-3.5 text-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+            className="h-11 flex-1 rounded-lg border border-line px-3.5 text-sm placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
           />
           <select
             name="role"
             defaultValue="teacher"
-            className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+            className="h-11 rounded-lg border border-line bg-white px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
           >
             {roles.map((r) => (
               <option key={r.value} value={r.value}>
@@ -71,17 +71,17 @@ export default function InviteForm() {
       </form>
 
       {state.inviteUrl && (
-        <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+        <div className="mt-4 rounded-lg border border-emerald-500/35 bg-emerald-500/12 p-4">
           <p className="text-sm font-semibold text-emerald-900">
             Invite created for {state.email}
           </p>
-          <p className="mt-1 text-xs text-emerald-700">
+          <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-300">
             {state.mailQueued
               ? "We've queued an email to them with this link. Keep a copy anyway — it is shown once here and expires in 7 days."
               : "Copy this link and send it to them — it is shown once and expires in 7 days."}
           </p>
           {state.mailQueued === false && (
-            <p className="mt-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            <p className="mt-2 rounded-md border border-amber-500/35 bg-amber-500/12 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
               The invitation was created, but the email could not be queued. Send
               the link below yourself.
             </p>
@@ -91,7 +91,7 @@ export default function InviteForm() {
               readOnly
               value={state.inviteUrl}
               onFocus={(e) => e.currentTarget.select()}
-              className="h-10 flex-1 rounded-md border border-emerald-300 bg-white px-3 font-mono text-xs text-slate-700"
+              className="h-10 flex-1 rounded-md border border-emerald-300 bg-white px-3 font-mono text-xs text-ink"
             />
             <button
               type="button"

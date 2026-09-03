@@ -30,7 +30,7 @@ export default function Faq() {
     <section id="faq" className="scroll-mt-24 py-24">
       <div className="mx-auto max-w-3xl px-6">
         <div className="text-center">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-300">
             FAQ
           </span>
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">

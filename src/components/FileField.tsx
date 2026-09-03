@@ -84,19 +84,19 @@ export default function FileField({
     <div>
       <span className="mb-1.5 block text-xs font-medium text-slate-600">
         {label}
-        {required && <span className="text-brand-600"> *</span>}
+        {required && <span className="text-brand-600 dark:text-brand-300"> *</span>}
       </span>
 
       {value ? (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-emerald-500/35 bg-emerald-500/12 px-3.5 py-2.5">
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-emerald-900">{value.name}</p>
-            <p className="text-xs text-emerald-700">{formatBytes(value.size)} · uploaded</p>
+            <p className="text-xs text-emerald-700 dark:text-emerald-300">{formatBytes(value.size)} · uploaded</p>
           </div>
           <button
             type="button"
             onClick={clear}
-            className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100"
+            className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold text-emerald-800 dark:text-emerald-200 hover:bg-emerald-500/18"
           >
             Replace
           </button>
@@ -106,13 +106,13 @@ export default function FileField({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={busy}
-          className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 text-sm font-medium text-slate-500 transition-colors hover:border-brand-400 hover:bg-brand-50/40 hover:text-brand-700 disabled:opacity-60"
+          className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 text-sm font-medium text-slate-500 transition-colors hover:border-brand-400 hover:bg-brand-500/8 hover:text-brand-700 dark:text-brand-300 disabled:opacity-60"
         >
           {busy ? "Uploading…" : "Choose a file (max 20 MB)"}
         </button>
       )}
 
-      {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
+      {error && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{error}</p>}
 
       <input
         ref={inputRef}

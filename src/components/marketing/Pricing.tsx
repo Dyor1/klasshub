@@ -59,7 +59,7 @@ export default function Pricing() {
     <section id="pricing" className="scroll-mt-24 border-t border-line-soft bg-hover py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-300">
             Pricing
           </span>
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
@@ -76,7 +76,7 @@ export default function Pricing() {
               key={plan.name}
               className={`relative flex flex-col rounded-2xl border p-7 ${
                 plan.featured
-                  ? "border-brand-300 bg-card shadow-brand ring-1 ring-brand-200"
+                  ? "border-brand-300 bg-card shadow-brand ring-1 ring-brand-500/30"
                   : "border-line bg-card shadow-card"
               }`}
             >
@@ -95,7 +95,7 @@ export default function Pricing() {
                   <span className="text-sm text-ink-muted">{plan.cadence}</span>
                 )}
               </div>
-              <p className="mt-1 text-xs font-medium text-brand-600">{plan.limit}</p>
+              <p className="mt-1 text-xs font-medium text-brand-600 dark:text-brand-300">{plan.limit}</p>
 
               <ul className="mt-6 flex-1 space-y-3">
                 {plan.features.map((feature) => (

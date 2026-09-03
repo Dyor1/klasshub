@@ -109,11 +109,11 @@ export default function ExamForm({
           </LabelledField>
         </div>
         <div className="flex items-end pb-1">
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-ink-muted">
             <input
               name="shuffle_questions"
               type="checkbox"
-              className="h-4 w-4 rounded border-slate-300"
+              className="h-4 w-4 rounded border-line-strong"
             />
             Shuffle question order
           </label>
@@ -127,7 +127,7 @@ export default function ExamForm({
         </button>
       </div>
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-ink-subtle">
         Exams start as drafts. Add questions, then publish when you&apos;re ready
         for the class to sit it.
       </p>

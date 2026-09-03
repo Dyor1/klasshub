@@ -83,10 +83,10 @@ export default async function ClassNotesPage() {
                     </div>
 
                     {n.description && (
-                      <p className="text-sm leading-relaxed text-slate-600">{n.description}</p>
+                      <p className="text-sm leading-relaxed text-ink-muted">{n.description}</p>
                     )}
 
-                    <p className="mt-2 text-xs text-slate-400">
+                    <p className="mt-2 text-xs text-ink-subtle">
                       {n.file_name}
                       {n.file_size ? ` · ${formatBytes(n.file_size)}` : ""} ·{" "}
                       {new Date(n.created_at).toLocaleDateString("en-GB", {
@@ -103,12 +103,12 @@ export default async function ClassNotesPage() {
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                        className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-hover"
                       >
                         Download
                       </a>
                     ) : (
-                      <span className="text-xs text-slate-400">Link unavailable</span>
+                      <span className="text-xs text-ink-subtle">Link unavailable</span>
                     )}
 
                     {viewer.isStaff && (
@@ -117,7 +117,7 @@ export default async function ClassNotesPage() {
                         <input type="hidden" name="path" value={n.file_path} />
                         <button
                           type="submit"
-                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                          className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                         >
                           Delete
                         </button>

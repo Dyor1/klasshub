@@ -61,8 +61,8 @@ export default async function ChildrenPage() {
               <div className="flex items-start gap-4">
                 <Avatar name={name} />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-bold text-slate-900">{name}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="truncate font-bold text-ink">{name}</p>
+                  <p className="text-xs text-ink-muted">
                     {s.class_id ? className.get(s.class_id) ?? "—" : "No class"} &middot;{" "}
                     <span className="font-mono">{s.admission_number}</span>
                   </p>
@@ -84,7 +84,7 @@ export default async function ChildrenPage() {
                       <Link
                         key={t.value}
                         href={`/dashboard/report-cards/${s.id}?year=${encodeURIComponent(year)}&term=${t.value}`}
-                        className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                        className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:bg-hover"
                       >
                         {t.label.replace(" Term", "")} report
                       </Link>

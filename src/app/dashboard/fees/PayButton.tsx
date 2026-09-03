@@ -33,7 +33,7 @@ export default function PayButton({
       <input type="hidden" name="invoice_id" value={invoiceId} />
       <Button amount={amount} />
       {state.error && (
-        <p role="alert" className="mt-1 max-w-[14rem] text-xs text-red-600">
+        <p role="alert" className="mt-1 max-w-[14rem] text-xs text-red-600 dark:text-red-400">
           {state.error}
         </p>
       )}

@@ -62,8 +62,8 @@ export default async function ReportCardsPage({
                   <div className="flex items-center gap-3">
                     <Avatar name={name} />
                     <div className="min-w-0">
-                      <p className="truncate font-bold text-slate-900">{name}</p>
-                      <p className="font-mono text-xs text-slate-500">
+                      <p className="truncate font-bold text-ink">{name}</p>
+                      <p className="font-mono text-xs text-ink-muted">
                         {s.admission_number}
                       </p>
                     </div>
@@ -73,7 +73,7 @@ export default async function ReportCardsPage({
                       <Link
                         key={t.value}
                         href={`/dashboard/report-cards/${s.id}?year=${encodeURIComponent(year)}&term=${t.value}`}
-                        className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                        className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:bg-hover"
                       >
                         {t.label.replace(" Term", "")}
                       </Link>
@@ -140,7 +140,7 @@ export default async function ReportCardsPage({
           <Card className="mb-6">
             <form method="get" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Class</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Class</span>
                 <select name="class" defaultValue={classId} className={inputClass}>
                   <option value="">Select…</option>
                   {classes.map((c) => (
@@ -151,7 +151,7 @@ export default async function ReportCardsPage({
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Term</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Term</span>
                 <select name="term" defaultValue={term} className={inputClass}>
                   {TERMS.map((t) => (
                     <option key={t.value} value={t.value}>
@@ -161,7 +161,7 @@ export default async function ReportCardsPage({
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Session</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Session</span>
                 <input name="year" defaultValue={year} className={inputClass} />
               </label>
               <button type="submit" className={btnGhost}>
@@ -183,17 +183,17 @@ export default async function ReportCardsPage({
                 const name = [s.surname, s.first_name, s.other_names].filter(Boolean).join(" ");
                 const rec = recorded.get(s.id);
                 return (
-                  <tr key={s.id} className="hover:bg-slate-50/60">
+                  <tr key={s.id} className="hover:bg-hover">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <Avatar name={name} />
-                        <span className="font-medium text-slate-900">{name}</span>
+                        <span className="font-medium text-ink">{name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">
+                    <td className="px-4 py-3 font-mono text-xs text-ink-muted">
                       {s.admission_number}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{rec?.total ?? 0}</td>
+                    <td className="px-4 py-3 text-ink-muted">{rec?.total ?? 0}</td>
                     <td className="px-4 py-3">
                       {!rec ? (
                         <Chip tone="slate">No marks</Chip>
@@ -206,7 +206,7 @@ export default async function ReportCardsPage({
                     <td className="px-4 py-3 text-right">
                       <Link
                         href={`/dashboard/report-cards/${s.id}?year=${encodeURIComponent(year)}&term=${term}`}
-                        className="rounded-lg px-3 py-1.5 text-xs font-semibold text-brand-700 hover:bg-brand-50"
+                        className="rounded-lg px-3 py-1.5 text-xs font-semibold text-brand-700 dark:text-brand-300 hover:bg-brand-500/10"
                       >
                         View card
                       </Link>

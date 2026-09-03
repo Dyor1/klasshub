@@ -42,12 +42,12 @@ export default function QuestionForm({ examId }: { examId: string }) {
           required
           rows={2}
           placeholder="What is 2 + 2?"
-          className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+          className="w-full rounded-lg border border-line px-3.5 py-2.5 text-sm placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
         />
       </LabelledField>
 
       <div className="space-y-2">
-        <span className="block text-xs font-medium text-slate-600">
+        <span className="block text-xs font-medium text-ink-muted">
           Options — click the letter to mark the correct answer
         </span>
         {LETTERS.map((l) => {
@@ -62,7 +62,7 @@ export default function QuestionForm({ examId }: { examId: string }) {
                 className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold uppercase transition-colors ${
                   isCorrect
                     ? "bg-emerald-600 text-white"
-                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                    : "bg-sunken text-ink-muted hover:bg-hover"
                 }`}
               >
                 {l}

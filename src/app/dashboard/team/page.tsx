@@ -33,14 +33,14 @@ export default async function TeamPage() {
           <InviteForm />
         </div>
       ) : (
-        <p className="mb-8 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">
+        <p className="mb-8 rounded-lg border border-line bg-white px-4 py-3 text-sm text-ink-muted">
           Only administrators can invite people.
         </p>
       )}
 
       {viewer.isAdmin && invites && invites.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-ink-muted">
             Pending invitations
           </h2>
           <ul className="mt-3 space-y-2">
@@ -49,15 +49,15 @@ export default async function TeamPage() {
               return (
                 <li
                   key={inv.id}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white px-4 py-3"
+                  className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white px-4 py-3"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-900">
+                    <p className="truncate text-sm font-medium text-ink">
                       {inv.email}
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-ink-muted">
                       {expired ? (
-                        <span className="text-red-600">Expired</span>
+                        <span className="text-red-600 dark:text-red-400">Expired</span>
                       ) : (
                         <>
                           Expires{" "}
@@ -71,7 +71,7 @@ export default async function TeamPage() {
                   </div>
                   <span
                     className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ${
-                      roleChip[inv.role] ?? "bg-slate-100 text-slate-700"
+                      roleChip[inv.role] ?? "bg-sunken text-ink"
                     }`}
                   >
                     {inv.role}
@@ -80,7 +80,7 @@ export default async function TeamPage() {
                     <input type="hidden" name="id" value={inv.id} />
                     <button
                       type="submit"
-                      className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                      className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                     >
                       Revoke
                     </button>
@@ -93,19 +93,19 @@ export default async function TeamPage() {
       )}
 
       <Card title={`Members (${members?.length ?? 0})`}>
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-line-soft">
           {members?.map((m) => (
             <li key={m.id} className="flex items-center justify-between gap-4 py-3 first:pt-0">
               <div className="flex min-w-0 items-center gap-3">
                 <Avatar name={m.full_name ?? m.email ?? "?"} tone="muted" />
                 <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-slate-900">
+                <p className="truncate text-sm font-medium text-ink">
                   {m.full_name ?? "—"}
                   {m.id === viewer.id && (
-                    <span className="ml-2 text-xs font-normal text-slate-400">you</span>
+                    <span className="ml-2 text-xs font-normal text-ink-subtle">you</span>
                   )}
                 </p>
-                <p className="truncate text-xs text-slate-500">{m.email}</p>
+                <p className="truncate text-xs text-ink-muted">{m.email}</p>
                 </div>
               </div>
               <Chip>{m.role}</Chip>

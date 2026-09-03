@@ -102,8 +102,8 @@ export default async function NotificationsPage() {
               key={n.id}
               className={`flex items-start gap-4 rounded-xl border px-4 py-3.5 transition-colors ${
                 n.read_at
-                  ? "border-slate-200 bg-white"
-                  : "border-brand-200 bg-brand-50/40"
+                  ? "border-line bg-white"
+                  : "border-brand-500/35 bg-brand-500/8"
               }`}
             >
               <span
@@ -117,15 +117,15 @@ export default async function NotificationsPage() {
                 <div className="mb-0.5 flex flex-wrap items-center gap-2">
                   <p className="text-sm font-semibold text-brand-900">{n.title}</p>
                   <Chip tone={kindTone[n.kind] ?? "slate"}>{n.kind.replace("_", " ")}</Chip>
-                  <span className="text-xs text-slate-400">{ago(n.created_at)}</span>
+                  <span className="text-xs text-ink-subtle">{ago(n.created_at)}</span>
                 </div>
                 {n.body && (
-                  <p className="text-sm leading-relaxed text-slate-600">{n.body}</p>
+                  <p className="text-sm leading-relaxed text-ink-muted">{n.body}</p>
                 )}
                 {n.link && (
                   <Link
                     href={n.link}
-                    className="mt-1.5 inline-block text-xs font-semibold text-brand-600 hover:underline"
+                    className="mt-1.5 inline-block text-xs font-semibold text-brand-600 dark:text-brand-300 hover:underline"
                   >
                     Open
                   </Link>
@@ -138,7 +138,7 @@ export default async function NotificationsPage() {
                     <input type="hidden" name="id" value={n.id} />
                     <button
                       type="submit"
-                      className="rounded-lg px-2.5 py-1 text-xs font-medium text-slate-500 hover:bg-slate-100"
+                      className="rounded-lg px-2.5 py-1 text-xs font-medium text-ink-muted hover:bg-hover"
                     >
                       Mark read
                     </button>
@@ -149,7 +149,7 @@ export default async function NotificationsPage() {
                   <button
                     type="submit"
                     aria-label="Dismiss"
-                    className="rounded-lg px-2.5 py-1 text-xs font-medium text-slate-400 hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg px-2.5 py-1 text-xs font-medium text-ink-subtle hover:bg-red-500/10 hover:text-red-600 dark:text-red-400"
                   >
                     ✕
                   </button>

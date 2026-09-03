@@ -67,20 +67,20 @@ export default async function AttendancePage({
               ].map((s) => (
                 <Card key={s.label}>
                   <p className="text-2xl font-extrabold text-brand-900">{s.value}</p>
-                  <p className="mt-0.5 text-xs text-slate-500">{s.label}</p>
+                  <p className="mt-0.5 text-xs text-ink-muted">{s.label}</p>
                 </Card>
               ))}
             </div>
 
             <Table head={[...(showWho ? ["Student"] : []), "Date", "Status", "Remarks"]}>
               {(records ?? []).map((r) => (
-                <tr key={r.id} className="hover:bg-slate-50/60">
+                <tr key={r.id} className="hover:bg-hover">
                   {showWho && (
-                    <td className="px-4 py-3 font-medium text-slate-900">
+                    <td className="px-4 py-3 font-medium text-ink">
                       {name.get(r.student_id) ?? "—"}
                     </td>
                   )}
-                  <td className="px-4 py-3 text-slate-600">
+                  <td className="px-4 py-3 text-ink-muted">
                     {new Date(r.date + "T00:00:00").toLocaleDateString("en-GB", {
                       weekday: "short",
                       day: "numeric",
@@ -91,8 +91,8 @@ export default async function AttendancePage({
                   <td className="px-4 py-3">
                     <Chip tone={statusTone[r.status] ?? "slate"}>{r.status}</Chip>
                   </td>
-                  <td className="px-4 py-3 text-slate-500">
-                    {r.remarks ?? <span className="text-slate-300">—</span>}
+                  <td className="px-4 py-3 text-ink-muted">
+                    {r.remarks ?? <span className="text-ink-subtle">—</span>}
                   </td>
                 </tr>
               ))}
@@ -154,7 +154,7 @@ export default async function AttendancePage({
           <Card className="mb-6">
             <form method="get" className="grid gap-4 sm:grid-cols-3 sm:items-end">
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Class</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Class</span>
                 <select name="class" defaultValue={classId} className={inputClass}>
                   <option value="">Select…</option>
                   {classes.map((c) => (
@@ -165,7 +165,7 @@ export default async function AttendancePage({
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1.5 block text-xs font-medium text-slate-600">Date</span>
+                <span className="mb-1.5 block text-xs font-medium text-ink-muted">Date</span>
                 <input name="date" type="date" max={today} defaultValue={date} className={inputClass} />
               </label>
               <button type="submit" className={btnGhost}>
@@ -184,7 +184,7 @@ export default async function AttendancePage({
           ) : (
             <>
               {existingByStudent.size > 0 && (
-                <p className="mb-4 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-600">
+                <p className="mb-4 rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-ink-muted">
                   A register already exists for this date — saving will update it.
                 </p>
               )}

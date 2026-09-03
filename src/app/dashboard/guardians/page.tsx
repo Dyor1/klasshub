@@ -72,12 +72,12 @@ export default async function GuardiansPage() {
       )}
 
       {orphanParents.length > 0 && (
-        <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="text-sm font-semibold text-amber-900">
+        <div className="mb-6 rounded-xl border border-amber-500/35 bg-amber-500/12 px-4 py-3">
+          <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
             {orphanParents.length} parent account
             {orphanParents.length === 1 ? "" : "s"} not linked to any child
           </p>
-          <p className="mt-0.5 text-xs text-amber-800">
+          <p className="mt-0.5 text-xs text-amber-800 dark:text-amber-200">
             {orphanParents.map((p) => p.full_name ?? p.email).join(", ")} — they
             will see an empty portal until linked.
           </p>
@@ -92,23 +92,23 @@ export default async function GuardiansPage() {
       ) : (
         <Table head={["Parent", "Student", "Relationship", ""]}>
           {links.map((l) => (
-            <tr key={l.id} className="hover:bg-slate-50/60">
+            <tr key={l.id} className="hover:bg-hover">
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
                   <Avatar name={parentLabel.get(l.profile_id) ?? "?"} tone="muted" />
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-ink">
                     {parentLabel.get(l.profile_id) ?? "Unknown"}
                   </span>
                 </div>
               </td>
-              <td className="px-4 py-3 text-slate-700">
+              <td className="px-4 py-3 text-ink">
                 {studentLabel.get(l.student_id) ?? "Unknown"}
               </td>
               <td className="px-4 py-3">
                 {l.relationship ? (
                   <Chip tone="brand">{l.relationship}</Chip>
                 ) : (
-                  <span className="text-slate-400">—</span>
+                  <span className="text-ink-subtle">—</span>
                 )}
               </td>
               <td className="px-4 py-3 text-right">
@@ -116,7 +116,7 @@ export default async function GuardiansPage() {
                   <input type="hidden" name="id" value={l.id} />
                   <button
                     type="submit"
-                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                   >
                     Unlink
                   </button>

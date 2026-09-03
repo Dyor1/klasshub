@@ -39,8 +39,8 @@ function Toggle({
     <label
       className={`flex items-start gap-3 rounded-xl border px-4 py-3 transition-colors ${
         disabled
-          ? "border-slate-200 bg-slate-50"
-          : "cursor-pointer border-slate-200 hover:bg-slate-50"
+          ? "border-line bg-sunken"
+          : "cursor-pointer border-line hover:bg-hover"
       }`}
     >
       <input
@@ -49,11 +49,11 @@ function Toggle({
         checked={checked}
         disabled={disabled}
         onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+        className="mt-0.5 h-4 w-4 shrink-0 rounded border-line-strong text-brand-600 dark:text-brand-300 focus:ring-brand-500"
       />
       <span className="min-w-0">
-        <span className="block text-sm font-medium text-slate-800">{label}</span>
-        <span className="block text-xs text-slate-500">{hint}</span>
+        <span className="block text-sm font-medium text-ink">{label}</span>
+        <span className="block text-xs text-ink-muted">{hint}</span>
       </span>
     </label>
   );
@@ -85,7 +85,7 @@ export default function PreferencesForm({
       {state.ok && state.message && <SuccessNote>{state.message}</SuccessNote>}
 
       <label className="block max-w-xs">
-        <span className="mb-1.5 block text-xs font-medium text-slate-600">
+        <span className="mb-1.5 block text-xs font-medium text-ink-muted">
           Mobile number
         </span>
         <input
@@ -95,7 +95,7 @@ export default function PreferencesForm({
           placeholder="08012345678"
           className={inputClass}
         />
-        <span className="mt-1 block text-xs text-slate-400">
+        <span className="mt-1 block text-xs text-ink-subtle">
           Nigerian or international. Saved as +234… either way.
         </span>
       </label>

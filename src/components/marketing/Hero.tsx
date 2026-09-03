@@ -18,7 +18,7 @@ export default function Hero() {
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-16 sm:pb-28 sm:pt-24">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="animate-fade-in-up">
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-card px-3.5 py-1.5 text-xs font-semibold text-brand-700 shadow-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/35 bg-card px-3.5 py-1.5 text-xs font-semibold text-brand-700 dark:text-brand-300 shadow-sm">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-500" />

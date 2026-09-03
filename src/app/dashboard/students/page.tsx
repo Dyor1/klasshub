@@ -63,8 +63,8 @@ export default async function StudentsPage({
               href="/dashboard/students"
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                 !classFilter
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-slate-600 hover:bg-slate-100"
+                  ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
+                  : "text-ink-muted hover:bg-hover"
               }`}
             >
               All classes
@@ -75,8 +75,8 @@ export default async function StudentsPage({
                 href={`/dashboard/students?class=${c.id}`}
                 className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                   classFilter === c.id
-                    ? "bg-brand-50 text-brand-700"
-                    : "text-slate-600 hover:bg-slate-100"
+                    ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
+                    : "text-ink-muted hover:bg-hover"
                 }`}
               >
                 {c.name}
@@ -106,25 +106,25 @@ export default async function StudentsPage({
           }
         >
           {students.map((s) => (
-            <tr key={s.id} className="hover:bg-slate-50/60">
-              <td className="px-4 py-3 font-mono text-xs text-slate-600">
+            <tr key={s.id} className="hover:bg-hover">
+              <td className="px-4 py-3 font-mono text-xs text-ink-muted">
                 {s.admission_number}
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
                   <Avatar name={`${s.surname} ${s.first_name}`} />
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-ink">
                     {[s.surname, s.first_name, s.other_names].filter(Boolean).join(" ")}
                   </span>
                 </div>
               </td>
-              <td className="px-4 py-3 text-slate-600">
+              <td className="px-4 py-3 text-ink-muted">
                 {s.class_id
                   ? classById.get(s.class_id) ?? "—"
-                  : <span className="text-slate-400">Unassigned</span>}
+                  : <span className="text-ink-subtle">Unassigned</span>}
               </td>
-              <td className="px-4 py-3 capitalize text-slate-600">
-                {s.gender ?? <span className="text-slate-400">—</span>}
+              <td className="px-4 py-3 capitalize text-ink-muted">
+                {s.gender ?? <span className="text-ink-subtle">—</span>}
               </td>
               <td className="px-4 py-3">
                 <Chip tone={s.status === "active" ? "green" : "slate"}>{s.status}</Chip>
@@ -135,7 +135,7 @@ export default async function StudentsPage({
                     <input type="hidden" name="id" value={s.id} />
                     <button
                       type="submit"
-                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                     >
                       Delete
                     </button>

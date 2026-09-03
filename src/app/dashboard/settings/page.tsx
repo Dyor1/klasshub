@@ -52,7 +52,7 @@ export default async function SettingsPage() {
         description="Bands must cover 0–100 with no gaps or overlaps, or some results would end up with no grade."
       >
         {resultCount ? (
-          <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-800">
+          <p className="mb-4 rounded-lg border border-amber-500/35 bg-amber-500/12 px-3.5 py-2.5 text-sm text-amber-800 dark:text-amber-200">
             Changing the scale re-grades all {resultCount} existing result
             {resultCount === 1 ? "" : "s"} immediately — report cards already
             issued will show the new letters.

@@ -286,7 +286,7 @@ export default async function AnalyticsPage({
         action={
           <Link
             href="/dashboard/settings"
-            className="text-sm font-medium text-slate-500 hover:text-brand-600"
+            className="text-sm font-medium text-ink-muted hover:text-brand-600 dark:text-brand-300"
           >
             Change pass mark
           </Link>
@@ -296,7 +296,7 @@ export default async function AnalyticsPage({
       <Card className="mb-6">
         <form method="get" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-slate-600">Class</span>
+            <span className="mb-1.5 block text-xs font-medium text-ink-muted">Class</span>
             <select name="class" defaultValue={classId} className={inputClass}>
               <option value="">All classes</option>
               {(classes ?? []).map((c) => (
@@ -307,7 +307,7 @@ export default async function AnalyticsPage({
             </select>
           </label>
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-slate-600">Term</span>
+            <span className="mb-1.5 block text-xs font-medium text-ink-muted">Term</span>
             <select name="term" defaultValue={term} className={inputClass}>
               {TERMS.map((t) => (
                 <option key={t.value} value={t.value}>
@@ -317,12 +317,12 @@ export default async function AnalyticsPage({
             </select>
           </label>
           <label className="block">
-            <span className="mb-1.5 block text-xs font-medium text-slate-600">Session</span>
+            <span className="mb-1.5 block text-xs font-medium text-ink-muted">Session</span>
             <input name="year" defaultValue={year} className={inputClass} />
           </label>
           <button
             type="submit"
-            className="h-11 rounded-lg border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            className="h-11 rounded-lg border border-line bg-white px-5 text-sm font-semibold text-ink hover:bg-hover"
           >
             Apply
           </button>
@@ -371,11 +371,11 @@ export default async function AnalyticsPage({
               description={`Average score per subject${classId ? "" : ", across every class"}.`}
             >
               {subjectStats.length === 0 ? (
-                <p className="py-6 text-center text-sm text-slate-400">
+                <p className="py-6 text-center text-sm text-ink-subtle">
                   No results recorded for this term.
                 </p>
               ) : (
-                <div className="divide-y divide-slate-50">
+                <div className="divide-y divide-line-soft">
                   {subjectStats.map((s) => (
                     <BarRow
                       key={s.name}
@@ -390,7 +390,7 @@ export default async function AnalyticsPage({
 
             <Card title="Grade spread" description={`Every grade awarded in ${termLabel.toLowerCase()}.`}>
               {gradeData.length === 0 ? (
-                <p className="py-6 text-center text-sm text-slate-400">No grades awarded yet.</p>
+                <p className="py-6 text-center text-sm text-ink-subtle">No grades awarded yet.</p>
               ) : (
                 <Columns data={gradeData} />
               )}
@@ -399,14 +399,14 @@ export default async function AnalyticsPage({
 
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
             <Card title="Term on term" description={`Averages across ${year}.`}>
-              <div className="divide-y divide-slate-50">
+              <div className="divide-y divide-line-soft">
                 {trend.map((t) =>
                   t.avg == null ? (
                     <div key={t.label} className="flex items-center gap-3 py-2">
-                      <span className="w-36 shrink-0 text-sm font-medium text-slate-400 sm:w-44">
+                      <span className="w-36 shrink-0 text-sm font-medium text-ink-subtle sm:w-44">
                         {t.label}
                       </span>
-                      <span className="text-xs text-slate-400">Not recorded</span>
+                      <span className="text-xs text-ink-subtle">Not recorded</span>
                     </div>
                   ) : (
                     <BarRow
@@ -434,7 +434,7 @@ export default async function AnalyticsPage({
 
           <Card title="Fee collection" description={`${termLabel}, ${year}.`} className="mt-6">
             {fees.billed === 0 ? (
-              <p className="py-6 text-center text-sm text-slate-400">
+              <p className="py-6 text-center text-sm text-ink-subtle">
                 No invoices issued for this term.
               </p>
             ) : (
@@ -445,10 +445,10 @@ export default async function AnalyticsPage({
                     { label: "Outstanding", value: fees.outstanding, color: "#e2e8f0" },
                   ]}
                 />
-                <p className="mt-4 text-sm text-slate-500">
+                <p className="mt-4 text-sm text-ink-muted">
                   {naira(fees.billed)} billed.{" "}
                   {fees.unpaid > 0 && (
-                    <span className="font-medium text-amber-700">
+                    <span className="font-medium text-amber-700 dark:text-amber-300">
                       {fees.unpaid} student{fees.unpaid === 1 ? " has" : "s have"} paid nothing
                       yet.
                     </span>
@@ -460,27 +460,27 @@ export default async function AnalyticsPage({
 
           {!classId && classStats.length > 0 && (
             <div className="mt-6">
-              <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-ink-muted">
                 By class
               </h2>
               <Table head={["Class", "Students", "Average", "Pass rate", "Attendance"]}>
                 {classStats.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50/60">
-                    <td className="px-4 py-3 font-semibold text-slate-900">{c.name}</td>
-                    <td className="px-4 py-3 text-slate-600">{c.students || "—"}</td>
+                  <tr key={c.id} className="hover:bg-hover">
+                    <td className="px-4 py-3 font-semibold text-ink">{c.name}</td>
+                    <td className="px-4 py-3 text-ink-muted">{c.students || "—"}</td>
                     <td className="px-4 py-3">
                       {c.avg == null ? (
-                        <span className="text-slate-300">—</span>
+                        <span className="text-ink-subtle">—</span>
                       ) : (
                         <span className={`font-bold tabular-nums ${toneFor(c.avg).text}`}>
                           {c.avg.toFixed(1)}%
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 tabular-nums text-slate-600">
+                    <td className="px-4 py-3 tabular-nums text-ink-muted">
                       {c.passRate == null ? "—" : `${c.passRate.toFixed(0)}%`}
                     </td>
-                    <td className="px-4 py-3 tabular-nums text-slate-600">
+                    <td className="px-4 py-3 tabular-nums text-ink-muted">
                       {c.attendance == null ? "—" : `${c.attendance.toFixed(1)}%`}
                     </td>
                   </tr>
@@ -490,24 +490,24 @@ export default async function AnalyticsPage({
           )}
 
           <div className="mt-6">
-            <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-ink-muted">
               Needs attention
             </h2>
             {atRisk.length === 0 ? (
               <Card>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-ink-muted">
                   No student is below {passMark}% or failing two or more subjects this term.
                 </p>
               </Card>
             ) : (
               <Table head={["Student", "Class", "Average", "Failed", ""]}>
                 {atRisk.map((s) => (
-                  <tr key={s.id} className="hover:bg-slate-50/60">
+                  <tr key={s.id} className="hover:bg-hover">
                     <td className="px-4 py-3">
-                      <p className="font-semibold text-slate-900">{s.name}</p>
-                      <p className="text-xs text-slate-400">{s.admissionNumber}</p>
+                      <p className="font-semibold text-ink">{s.name}</p>
+                      <p className="text-xs text-ink-subtle">{s.admissionNumber}</p>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{s.className}</td>
+                    <td className="px-4 py-3 text-ink-muted">{s.className}</td>
                     <td className="px-4 py-3">
                       <span className={`font-bold tabular-nums ${toneFor(s.avg).text}`}>
                         {s.avg.toFixed(1)}%
@@ -524,7 +524,7 @@ export default async function AnalyticsPage({
                     <td className="px-4 py-3 text-right">
                       <Link
                         href={`/dashboard/report-cards/${s.id}`}
-                        className="text-sm font-semibold text-brand-600 hover:text-brand-700"
+                        className="text-sm font-semibold text-brand-600 dark:text-brand-300 hover:text-brand-700 dark:text-brand-300"
                       >
                         Report card
                       </Link>

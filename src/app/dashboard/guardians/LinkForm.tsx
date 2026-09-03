@@ -32,7 +32,7 @@ export default function LinkForm({
 
   if (parents.length === 0) {
     return (
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-ink-muted">
         No parent accounts yet. Invite a parent from the Team page first — they
         appear here once they accept.
       </p>

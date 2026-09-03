@@ -89,8 +89,8 @@ export default async function TransportPage() {
                 <Card key={r.id}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="truncate font-bold text-slate-900">{s?.name ?? "Student"}</p>
-                      <p className="text-xs text-slate-500">{route?.name ?? "Route"}</p>
+                      <p className="truncate font-bold text-ink">{s?.name ?? "Student"}</p>
+                      <p className="text-xs text-ink-muted">{route?.name ?? "Route"}</p>
                     </div>
                     <Chip tone={boardTone[r.board_status]}>{boardLabel[r.board_status]}</Chip>
                   </div>
@@ -102,17 +102,17 @@ export default async function TransportPage() {
                       ["Driver", route?.driver_name ?? "—"],
                     ].map(([k, v]) => (
                       <div key={k} className="flex justify-between gap-3">
-                        <dt className="text-slate-500">{k}</dt>
-                        <dd className="font-medium text-slate-900">{v}</dd>
+                        <dt className="text-ink-muted">{k}</dt>
+                        <dd className="font-medium text-ink">{v}</dd>
                       </div>
                     ))}
                     {route?.driver_phone && (
                       <div className="flex justify-between gap-3">
-                        <dt className="text-slate-500">Driver phone</dt>
+                        <dt className="text-ink-muted">Driver phone</dt>
                         <dd>
                           <a
                             href={`tel:${route.driver_phone}`}
-                            className="font-semibold text-brand-600 hover:underline"
+                            className="font-semibold text-brand-600 dark:text-brand-300 hover:underline"
                           >
                             {route.driver_phone}
                           </a>
@@ -122,7 +122,7 @@ export default async function TransportPage() {
                   </dl>
 
                   {r.board_updated_at && (
-                    <p className="mt-3 text-xs text-slate-400">
+                    <p className="mt-3 text-xs text-ink-subtle">
                       Updated {timeOf(r.board_updated_at)}
                     </p>
                   )}
@@ -172,7 +172,7 @@ export default async function TransportPage() {
                 }))}
               />
             ) : (
-              <p className="text-sm text-slate-500">Enrol students first.</p>
+              <p className="text-sm text-ink-muted">Enrol students first.</p>
             )}
           </Card>
 
@@ -191,7 +191,7 @@ export default async function TransportPage() {
                         {route.capacity != null ? ` / ${route.capacity}` : ""} riders
                       </Chip>
                       {route.driver_name && (
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-ink-muted">
                           {route.driver_name}
                           {route.driver_phone ? ` · ${route.driver_phone}` : ""}
                         </span>
@@ -201,20 +201,20 @@ export default async function TransportPage() {
                       <input type="hidden" name="id" value={route.id} />
                       <button
                         type="submit"
-                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                        className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                       >
                         Delete route
                       </button>
                     </form>
                   </div>
 
-                  <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                  <div className="overflow-hidden rounded-xl border border-line bg-white">
                     {list.length === 0 ? (
-                      <p className="px-4 py-5 text-sm text-slate-500">
+                      <p className="px-4 py-5 text-sm text-ink-muted">
                         No riders on this route yet.
                       </p>
                     ) : (
-                      <ul className="divide-y divide-slate-100">
+                      <ul className="divide-y divide-line-soft">
                         {list.map((r) => {
                           const s = studentById.get(r.student_id);
                           return (
@@ -225,10 +225,10 @@ export default async function TransportPage() {
                               <div className="flex min-w-0 items-center gap-3">
                                 <Avatar name={s?.name ?? "?"} />
                                 <div className="min-w-0">
-                                  <p className="truncate text-sm font-medium text-slate-900">
+                                  <p className="truncate text-sm font-medium text-ink">
                                     {s?.name ?? "Student"}
                                   </p>
-                                  <p className="text-xs text-slate-400">
+                                  <p className="text-xs text-ink-subtle">
                                     {r.pickup_point ?? "No pickup point"}
                                     {r.board_updated_at ? ` · ${timeOf(r.board_updated_at)}` : ""}
                                   </p>
@@ -245,7 +245,7 @@ export default async function TransportPage() {
                                       className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
                                         r.board_status === st
                                           ? "bg-brand-gradient text-white"
-                                          : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                                          : "border border-line text-ink-muted hover:bg-hover"
                                       }`}
                                     >
                                       {boardLabel[st]}
@@ -256,7 +256,7 @@ export default async function TransportPage() {
                                   <input type="hidden" name="id" value={r.id} />
                                   <button
                                     type="submit"
-                                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                                   >
                                     Remove
                                   </button>
@@ -274,7 +274,7 @@ export default async function TransportPage() {
           </div>
 
           {unassigned.length > 0 && (
-            <p className="mt-6 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">
+            <p className="mt-6 rounded-lg border border-line bg-white px-4 py-3 text-sm text-ink-muted">
               {unassigned.length} student{unassigned.length === 1 ? "" : "s"} not on any route.
             </p>
           )}

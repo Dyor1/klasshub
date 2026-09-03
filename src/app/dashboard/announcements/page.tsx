@@ -69,10 +69,10 @@ export default async function AnnouncementsPage() {
                       <Chip tone="slate">{className.get(p.class_id) ?? "class"}</Chip>
                     )}
                   </div>
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-600">
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-muted">
                     {p.body}
                   </p>
-                  <p className="mt-3 text-xs text-slate-400">
+                  <p className="mt-3 text-xs text-ink-subtle">
                     {p.created_by ? authorName.get(p.created_by) ?? "Staff" : "Staff"}
                     {" · "}
                     {new Date(p.created_at).toLocaleDateString("en-GB", {
@@ -88,7 +88,7 @@ export default async function AnnouncementsPage() {
                     <input type="hidden" name="id" value={p.id} />
                     <button
                       type="submit"
-                      className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                      className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                     >
                       Delete
                     </button>

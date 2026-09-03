@@ -50,7 +50,7 @@ export default function SiteFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-ink-muted transition-colors hover:text-brand-600"
+                      className="text-sm text-ink-muted transition-colors hover:text-brand-600 dark:text-brand-300"
                     >
                       {link.label}
                     </Link>

@@ -63,7 +63,7 @@ export default function AnnouncementForm({
           required
           rows={4}
           placeholder="Write the announcement…"
-          className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+          className="w-full rounded-lg border border-line px-3.5 py-2.5 text-sm placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
         />
       </LabelledField>
 
@@ -95,7 +95,7 @@ export default function AnnouncementForm({
             name="class_id"
             defaultValue=""
             disabled={audience === "staff"}
-            className={`${inputClass} disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400`}
+            className={`${inputClass} disabled:cursor-not-allowed disabled:bg-sunken disabled:text-ink-subtle`}
           >
             <option value="">All classes</option>
             {classes.map((c) => (

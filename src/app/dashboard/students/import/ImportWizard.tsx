@@ -107,7 +107,7 @@ export default function ImportWizard({ classNames }: { classNames: string[] }) {
           </button>
         </div>
         {classNames.length > 0 && (
-          <p className="mt-4 text-xs leading-relaxed text-slate-500">
+          <p className="mt-4 text-xs leading-relaxed text-ink-muted">
             The <span className="font-medium">Class</span> column must match a class you
             already have: {classNames.join(", ")}.
           </p>
@@ -119,16 +119,16 @@ export default function ImportWizard({ classNames }: { classNames: string[] }) {
           type="file"
           accept=".csv,text/csv"
           onChange={onFile}
-          className="block w-full text-sm text-slate-600 file:mr-4 file:h-10 file:cursor-pointer file:rounded-lg file:border-0 file:bg-brand-gradient file:px-5 file:text-sm file:font-semibold file:text-white hover:file:brightness-110"
+          className="block w-full text-sm text-ink-muted file:mr-4 file:h-10 file:cursor-pointer file:rounded-lg file:border-0 file:bg-brand-gradient file:px-5 file:text-sm file:font-semibold file:text-white hover:file:brightness-110"
         />
         {fileName && (
-          <p className="mt-3 text-sm text-slate-600">
+          <p className="mt-3 text-sm text-ink-muted">
             <span className="font-medium">{fileName}</span>
             {rows.length > 0 && ` — ${rows.length} row${rows.length === 1 ? "" : "s"}`}
           </p>
         )}
         {unmapped.length > 0 && (
-          <p className="mt-2 text-xs text-amber-700">
+          <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
             Ignoring {unmapped.length} column{unmapped.length === 1 ? "" : "s"} we don&apos;t
             recognise: {unmapped.join(", ")}
           </p>
@@ -138,7 +138,7 @@ export default function ImportWizard({ classNames }: { classNames: string[] }) {
       <ErrorNote message={fatal} />
 
       {pending && (
-        <p className="py-4 text-sm text-slate-500">Checking…</p>
+        <p className="py-4 text-sm text-ink-muted">Checking…</p>
       )}
 
       {result && !result.error && (
@@ -148,16 +148,16 @@ export default function ImportWizard({ classNames }: { classNames: string[] }) {
           className="mt-6"
         >
           {result.capMessage && (
-            <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-              <p className="text-sm font-semibold text-amber-900">
+            <div className="mb-4 rounded-xl border border-amber-500/35 bg-amber-500/12 px-4 py-3">
+              <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
                 This is more than your plan allows
               </p>
-              <p className="mt-1 text-sm leading-relaxed text-amber-800">
+              <p className="mt-1 text-sm leading-relaxed text-amber-800 dark:text-amber-200">
                 {result.capMessage}
               </p>
               <Link
                 href="/dashboard/billing"
-                className="mt-2 inline-block text-sm font-semibold text-amber-900 underline"
+                className="mt-2 inline-block text-sm font-semibold text-amber-800 dark:text-amber-200 underline"
               >
                 Open Billing
               </Link>
@@ -166,33 +166,33 @@ export default function ImportWizard({ classNames }: { classNames: string[] }) {
 
           {errors.length > 0 ? (
             <>
-              <p className="mb-3 text-sm font-semibold text-red-700">
+              <p className="mb-3 text-sm font-semibold text-red-700 dark:text-red-300">
                 {errors.length === 100 ? "First 100 problems" : `${errors.length} problem${errors.length === 1 ? "" : "s"}`}{" "}
                 across {byLine.size} line{byLine.size === 1 ? "" : "s"}. Nothing was imported.
               </p>
-              <div className="max-h-80 overflow-y-auto rounded-xl border border-slate-200">
+              <div className="max-h-80 overflow-y-auto rounded-xl border border-line">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50">
+                  <thead className="sticky top-0 bg-sunken">
                     <tr>
-                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                         Line
                       </th>
-                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                         Column
                       </th>
-                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                         Problem
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-line-soft">
                     {errors.map((e, i) => (
                       <tr key={`${e.line}-${e.field}-${i}`}>
-                        <td className="px-3 py-2 tabular-nums text-slate-500">{e.line}</td>
-                        <td className="px-3 py-2 font-mono text-xs text-slate-500">
+                        <td className="px-3 py-2 tabular-nums text-ink-muted">{e.line}</td>
+                        <td className="px-3 py-2 font-mono text-xs text-ink-muted">
                           {e.field.replace(/_/g, " ")}
                         </td>
-                        <td className="px-3 py-2 text-slate-800">{e.message}</td>
+                        <td className="px-3 py-2 text-ink">{e.message}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -207,18 +207,18 @@ export default function ImportWizard({ classNames }: { classNames: string[] }) {
               </SuccessNote>
               {result.sample && result.sample.length > 0 && (
                 <div className="mt-4">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-muted">
                     First few rows
                   </p>
                   <Table head={["Line", "Name", "Admission no.", "Class"]}>
                     {result.sample.map((s) => (
                       <tr key={s.line}>
-                        <td className="px-4 py-2 tabular-nums text-slate-500">{s.line}</td>
-                        <td className="px-4 py-2 font-medium text-slate-900">{s.name}</td>
-                        <td className="px-4 py-2 font-mono text-xs text-slate-600">
+                        <td className="px-4 py-2 tabular-nums text-ink-muted">{s.line}</td>
+                        <td className="px-4 py-2 font-medium text-ink">{s.name}</td>
+                        <td className="px-4 py-2 font-mono text-xs text-ink-muted">
                           {s.admission}
                         </td>
-                        <td className="px-4 py-2 text-slate-600">{s.className || "—"}</td>
+                        <td className="px-4 py-2 text-ink-muted">{s.className || "—"}</td>
                       </tr>
                     ))}
                   </Table>
@@ -232,7 +232,7 @@ export default function ImportWizard({ classNames }: { classNames: string[] }) {
               >
                 {pending ? "Enrolling…" : `Enrol ${result.total} students`}
               </button>
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-ink-muted">
                 All of them, or none. If any row fails, nothing is saved.
               </p>
             </>

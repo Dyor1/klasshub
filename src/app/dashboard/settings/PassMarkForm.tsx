@@ -30,7 +30,7 @@ export default function PassMarkForm({ passMark }: { passMark: number }) {
 
       <div className="flex flex-wrap items-end gap-3">
         <label className="block">
-          <span className="mb-1.5 block text-xs font-medium text-slate-600">
+          <span className="mb-1.5 block text-xs font-medium text-ink-muted">
             Pass mark (%)
           </span>
           <input

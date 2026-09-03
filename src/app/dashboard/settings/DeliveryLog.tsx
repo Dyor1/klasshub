@@ -30,7 +30,7 @@ const statusTone = {
 export default function DeliveryLog({ rows }: { rows: LogRow[] }) {
   if (rows.length === 0) {
     return (
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-ink-muted">
         Nothing has been queued yet. Emails and texts appear here as they are sent.
       </p>
     );
@@ -57,7 +57,7 @@ export default function DeliveryLog({ rows }: { rows: LogRow[] }) {
       </div>
 
       {firstSkip && (
-        <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-800">
+        <p className="mb-4 rounded-lg border border-amber-500/35 bg-amber-500/12 px-3.5 py-2.5 text-sm text-amber-800 dark:text-amber-200">
           Messages are being queued but not delivered: <code>{firstSkip}</code>. Set the
           provider keys as Supabase function secrets and they will send on the next run.
         </p>
@@ -66,21 +66,21 @@ export default function DeliveryLog({ rows }: { rows: LogRow[] }) {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[440px] text-sm">
           <thead>
-            <tr className="border-b border-slate-100">
+            <tr className="border-b border-line-soft">
               {["Channel", "Status", "Tries", "Queued", "Sent"].map((h) => (
                 <th
                   key={h}
-                  className="py-2 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500"
+                  className="py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted"
                 >
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-line-soft">
             {rows.slice(0, 15).map((r) => (
               <tr key={r.id}>
-                <td className="py-2.5 text-slate-700">
+                <td className="py-2.5 text-ink">
                   {r.channel ? channelLabel[r.channel] ?? r.channel : "—"}
                 </td>
                 <td className="py-2.5">
@@ -88,8 +88,8 @@ export default function DeliveryLog({ rows }: { rows: LogRow[] }) {
                     {r.status ?? "—"}
                   </Chip>
                 </td>
-                <td className="py-2.5 tabular-nums text-slate-500">{r.attempts ?? 0}</td>
-                <td className="py-2.5 text-xs text-slate-500">
+                <td className="py-2.5 tabular-nums text-ink-muted">{r.attempts ?? 0}</td>
+                <td className="py-2.5 text-xs text-ink-muted">
                   {r.queued_at
                     ? new Date(r.queued_at).toLocaleString("en-GB", {
                         day: "numeric",
@@ -99,7 +99,7 @@ export default function DeliveryLog({ rows }: { rows: LogRow[] }) {
                       })
                     : "—"}
                 </td>
-                <td className="py-2.5 text-xs text-slate-500">
+                <td className="py-2.5 text-xs text-ink-muted">
                   {r.sent_at
                     ? new Date(r.sent_at).toLocaleString("en-GB", {
                         day: "numeric",

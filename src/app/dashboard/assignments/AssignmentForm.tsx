@@ -113,17 +113,17 @@ export default function AssignmentForm({
           name="instructions"
           rows={3}
           placeholder="What should students do?"
-          className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+          className="w-full rounded-lg border border-line px-3.5 py-2.5 text-sm placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
         />
       </LabelledField>
 
       <div className="flex flex-wrap gap-5">
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
-          <input name="allow_text" type="checkbox" defaultChecked className="h-4 w-4 rounded border-slate-300" />
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-ink-muted">
+          <input name="allow_text" type="checkbox" defaultChecked className="h-4 w-4 rounded border-line-strong" />
           Allow typed answer
         </label>
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
-          <input name="allow_file" type="checkbox" defaultChecked className="h-4 w-4 rounded border-slate-300" />
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-ink-muted">
+          <input name="allow_file" type="checkbox" defaultChecked className="h-4 w-4 rounded border-line-strong" />
           Allow file upload
         </label>
       </div>
@@ -135,7 +135,7 @@ export default function AssignmentForm({
         </button>
       </div>
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-ink-subtle">
         Assignments start as drafts — students see nothing until you publish.
       </p>
     </form>

@@ -46,19 +46,19 @@ export default async function SubjectsPage() {
       ) : (
         <Table head={viewer.isStaff ? ["Subject", "Code", "Results recorded", ""] : ["Subject", "Code", "Results recorded"]}>
           {subjects.map((s) => (
-            <tr key={s.id} className="hover:bg-slate-50/60">
-              <td className="px-4 py-3 font-medium text-slate-900">{s.name}</td>
-              <td className="px-4 py-3 text-slate-600">
-                {s.code ?? <span className="text-slate-400">—</span>}
+            <tr key={s.id} className="hover:bg-hover">
+              <td className="px-4 py-3 font-medium text-ink">{s.name}</td>
+              <td className="px-4 py-3 text-ink-muted">
+                {s.code ?? <span className="text-ink-subtle">—</span>}
               </td>
-              <td className="px-4 py-3 text-slate-600">{usage.get(s.id) ?? 0}</td>
+              <td className="px-4 py-3 text-ink-muted">{usage.get(s.id) ?? 0}</td>
               {viewer.isStaff && (
                 <td className="px-4 py-3 text-right">
                   <form action={deleteSubject}>
                     <input type="hidden" name="id" value={s.id} />
                     <button
                       type="submit"
-                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                     >
                       Delete
                     </button>

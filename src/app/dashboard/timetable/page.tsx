@@ -93,7 +93,7 @@ export default async function TimetablePage({
             <Card className="mb-6">
               <form method="get" className="grid gap-4 sm:grid-cols-3 sm:items-end">
                 <label className="block">
-                  <span className="mb-1.5 block text-xs font-medium text-slate-600">Class</span>
+                  <span className="mb-1.5 block text-xs font-medium text-ink-muted">Class</span>
                   <select name="class" defaultValue={classId} className={inputClass}>
                     <option value="">Select…</option>
                     {classes.map((c) => (
@@ -104,7 +104,7 @@ export default async function TimetablePage({
                   </select>
                 </label>
                 <label className="block">
-                  <span className="mb-1.5 block text-xs font-medium text-slate-600">Session</span>
+                  <span className="mb-1.5 block text-xs font-medium text-ink-muted">Session</span>
                   <input name="year" defaultValue={year} className={inputClass} />
                 </label>
                 <button type="submit" className={btnGhost}>
@@ -136,20 +136,20 @@ export default async function TimetablePage({
             <div className="space-y-5">
               {activeDays.map((day) => (
                 <section key={day}>
-                  <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted">
                     {day}
                   </h2>
-                  <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                    <ul className="divide-y divide-slate-100">
+                  <div className="overflow-hidden rounded-xl border border-line bg-white">
+                    <ul className="divide-y divide-line-soft">
                       {(byDay.get(day) ?? []).map((s) => (
                         <li
                           key={s.id}
                           className="flex flex-wrap items-center gap-3 px-4 py-3"
                         >
-                          <span className="w-28 shrink-0 font-mono text-xs text-slate-500">
+                          <span className="w-28 shrink-0 font-mono text-xs text-ink-muted">
                             {s.start_time.slice(0, 5)}–{s.end_time.slice(0, 5)}
                           </span>
-                          <span className="min-w-0 flex-1 font-medium text-slate-900">
+                          <span className="min-w-0 flex-1 font-medium text-ink">
                             {s.subject_id
                               ? subjectName.get(s.subject_id) ?? "—"
                               : s.period_label || "Free period"}
@@ -163,7 +163,7 @@ export default async function TimetablePage({
                               <input type="hidden" name="id" value={s.id} />
                               <button
                                 type="submit"
-                                className="rounded-lg px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
+                                className="rounded-lg px-2.5 py-1 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                               >
                                 Remove
                               </button>

@@ -50,7 +50,7 @@ export default async function ExamDetailPage({
 
   return (
     <>
-      <Link href="/dashboard/cbt" className="text-sm text-slate-500 hover:text-brand-600">
+      <Link href="/dashboard/cbt" className="text-sm text-ink-muted hover:text-brand-600 dark:text-brand-300">
         &larr; All tests
       </Link>
 
@@ -81,7 +81,7 @@ export default async function ExamDetailPage({
                   <input type="hidden" name="status" value="closed" />
                   <button
                     type="submit"
-                    className="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    className="rounded-lg border border-line px-5 py-2.5 text-sm font-semibold text-ink hover:bg-hover"
                   >
                     Close
                   </button>
@@ -93,7 +93,7 @@ export default async function ExamDetailPage({
       </div>
 
       {exam.status === "published" && (
-        <p className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-800">
+        <p className="mb-6 rounded-lg border border-amber-500/35 bg-amber-500/12 px-3.5 py-2.5 text-sm text-amber-800 dark:text-amber-200">
           This test is live. Editing questions now will change the paper for
           anyone who hasn&apos;t started yet.
         </p>
@@ -126,12 +126,12 @@ export default async function ExamDetailPage({
                         <li
                           key={l}
                           className={`flex items-center gap-2 text-sm ${
-                            isCorrect ? "font-semibold text-emerald-700" : "text-slate-600"
+                            isCorrect ? "font-semibold text-emerald-700 dark:text-emerald-300" : "text-ink-muted"
                           }`}
                         >
                           <span
                             className={`flex h-5 w-5 shrink-0 items-center justify-center rounded text-[10px] font-bold uppercase ${
-                              isCorrect ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-500"
+                              isCorrect ? "bg-emerald-600 text-white" : "bg-sunken text-ink-muted"
                             }`}
                           >
                             {l}
@@ -141,7 +141,7 @@ export default async function ExamDetailPage({
                       );
                     })}
                   </ul>
-                  <p className="mt-2 text-xs text-slate-400">{q.marks} mark{Number(q.marks) === 1 ? "" : "s"}</p>
+                  <p className="mt-2 text-xs text-ink-subtle">{q.marks} mark{Number(q.marks) === 1 ? "" : "s"}</p>
                 </div>
 
                 <form action={deleteQuestion}>
@@ -149,7 +149,7 @@ export default async function ExamDetailPage({
                   <input type="hidden" name="exam_id" value={exam.id} />
                   <button
                     type="submit"
-                    className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                    className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10"
                   >
                     Remove
                   </button>
@@ -160,7 +160,7 @@ export default async function ExamDetailPage({
         </div>
       )}
 
-      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-ink-muted">
         Results ({(sessions ?? []).filter((s) => s.status !== "in_progress").length} submitted)
       </h2>
 
@@ -175,13 +175,13 @@ export default async function ExamDetailPage({
               const st = studentById.get(s.student_id);
               const name = st ? `${st.surname} ${st.first_name}` : "Unknown";
               return (
-                <tr key={s.id} className="hover:bg-slate-50/60">
+                <tr key={s.id} className="hover:bg-hover">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <Avatar name={name} />
                       <div className="min-w-0">
-                        <p className="font-medium text-slate-900">{name}</p>
-                        <p className="font-mono text-xs text-slate-400">
+                        <p className="font-medium text-ink">{name}</p>
+                        <p className="font-mono text-xs text-ink-subtle">
                           {st?.admission_number ?? ""}
                         </p>
                       </div>
@@ -196,13 +196,13 @@ export default async function ExamDetailPage({
                       {s.status.replace("_", " ")}
                     </Chip>
                   </td>
-                  <td className="px-4 py-3 font-semibold text-slate-900">
+                  <td className="px-4 py-3 font-semibold text-ink">
                     {s.score != null ? `${s.score} / ${s.total_marks}` : "—"}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">
+                  <td className="px-4 py-3 text-ink-muted">
                     {s.percentage != null ? `${s.percentage}%` : "—"}
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-500">
+                  <td className="px-4 py-3 text-xs text-ink-muted">
                     {s.submitted_at
                       ? new Date(s.submitted_at).toLocaleString("en-GB", {
                           day: "numeric",

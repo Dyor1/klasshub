@@ -23,7 +23,7 @@ function Submit() {
 }
 
 const cell =
-  "h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:border-brand-500 " +
+  "h-10 w-full rounded-lg border border-line px-3 text-sm focus:border-brand-500 " +
   "focus:outline-none focus:ring-4 focus:ring-brand-500/10";
 
 export default function GradingScaleForm({
@@ -76,26 +76,26 @@ export default function GradingScaleForm({
       <form action={formAction} className="space-y-4">
         <ErrorNote message={state.error} />
         {state.ok && (
-          <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-800">
+          <p className="rounded-lg border border-emerald-500/35 bg-emerald-500/12 px-3.5 py-2.5 text-sm text-emerald-800 dark:text-emerald-200">
             Scale saved with {state.saved} bands. Existing results were re-graded.
           </p>
         )}
 
-        <div className="overflow-x-auto rounded-xl border border-slate-200">
+        <div className="overflow-x-auto rounded-xl border border-line">
           <table className="w-full min-w-[560px] text-sm">
-            <thead className="border-b border-slate-100 bg-slate-50/70">
+            <thead className="border-b border-line-soft bg-sunken">
               <tr>
                 {["Grade", "From %", "To %", "Remark", ""].map((h) => (
                   <th
                     key={h}
-                    className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+                    className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-ink-muted"
                   >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-line-soft">
               {rows.map((r) => (
                 <tr key={r.key}>
                   <td className="w-24 px-3 py-2">
@@ -146,7 +146,7 @@ export default function GradingScaleForm({
                       type="button"
                       onClick={() => setRows((rs) => rs.filter((x) => x.key !== r.key))}
                       aria-label={`Remove grade ${r.grade || "row"}`}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-subtle transition-colors hover:bg-red-500/10 hover:text-red-600 dark:text-red-400"
                     >
                       <IconClose className="h-4 w-4" />
                     </button>
@@ -172,7 +172,7 @@ export default function GradingScaleForm({
           </button>
           <Submit />
           {coverage && (
-            <span className="text-xs font-medium text-amber-700">⚠ {coverage}</span>
+            <span className="text-xs font-medium text-amber-700 dark:text-amber-300">⚠ {coverage}</span>
           )}
         </div>
       </form>
@@ -180,7 +180,7 @@ export default function GradingScaleForm({
       <form action={resetGradingScale}>
         <button
           type="submit"
-          className="text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline"
+          className="text-xs font-medium text-ink-muted underline-offset-2 hover:text-ink hover:underline"
         >
           Reset to the default Nigerian scale
         </button>

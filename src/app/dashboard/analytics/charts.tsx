@@ -7,10 +7,10 @@
 /** Colour ramp keyed to performance, so a weak number looks weak at a glance
  *  without anyone reading the axis. */
 export function toneFor(pct: number): { bar: string; text: string } {
-  if (pct >= 70) return { bar: "#059669", text: "text-emerald-700" };
-  if (pct >= 50) return { bar: "#4f46e5", text: "text-brand-700" };
-  if (pct >= 40) return { bar: "#d97706", text: "text-amber-700" };
-  return { bar: "#dc2626", text: "text-red-700" };
+  if (pct >= 70) return { bar: "#059669", text: "text-emerald-700 dark:text-emerald-300" };
+  if (pct >= 50) return { bar: "#4f46e5", text: "text-brand-700 dark:text-brand-300" };
+  if (pct >= 40) return { bar: "#d97706", text: "text-amber-700 dark:text-amber-300" };
+  return { bar: "#dc2626", text: "text-red-700 dark:text-red-300" };
 }
 
 /** One labelled horizontal bar, scaled 0–100. */
@@ -36,14 +36,14 @@ export function BarRow({
   return (
     <div className="py-2.5">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="truncate text-sm font-medium text-slate-800">{label}</p>
+        <p className="truncate text-sm font-medium text-ink">{label}</p>
         <span className={`shrink-0 text-sm font-bold tabular-nums ${tone.text}`}>
           {value.toFixed(1)}
           {suffix}
         </span>
       </div>
-      {sublabel && <p className="mt-0.5 text-[11px] text-slate-400">{sublabel}</p>}
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+      {sublabel && <p className="mt-0.5 text-[11px] text-ink-subtle">{sublabel}</p>}
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-sunken">
         <div
           className="h-full rounded-full transition-all"
           style={{ width: `${pct}%`, backgroundColor: color ?? tone.bar }}
@@ -66,7 +66,7 @@ export function Columns({
     <div className="flex items-end gap-2 sm:gap-3">
       {data.map((d) => (
         <div key={d.label} className="flex min-w-0 flex-1 flex-col items-center gap-2">
-          <span className="text-xs font-bold tabular-nums text-slate-700">{d.value}</span>
+          <span className="text-xs font-bold tabular-nums text-ink">{d.value}</span>
           <div
             className="w-full rounded-t-lg transition-all"
             style={{
@@ -75,7 +75,7 @@ export function Columns({
               backgroundColor: d.color ?? "#4f46e5",
             }}
           />
-          <span className="w-full truncate text-center text-xs font-semibold text-slate-500">
+          <span className="w-full truncate text-center text-xs font-semibold text-ink-muted">
             {d.label}
           </span>
         </div>
@@ -95,7 +95,7 @@ export function Sparkline({
 }) {
   if (points.length < 2) {
     return (
-      <p className="py-8 text-center text-sm text-slate-400">
+      <p className="py-8 text-center text-sm text-ink-subtle">
         Not enough days marked yet to draw a trend.
       </p>
     );
@@ -155,7 +155,7 @@ export function Sparkline({
           vectorEffect="non-scaling-stroke"
         />
       </svg>
-      <div className="mt-2 flex justify-between text-[11px] text-slate-400">
+      <div className="mt-2 flex justify-between text-[11px] text-ink-subtle">
         <span>{first.label}</span>
         <span>{last.label}</span>
       </div>
@@ -173,7 +173,7 @@ export function StackedBar({
 
   return (
     <div>
-      <div className="flex h-3.5 overflow-hidden rounded-full bg-slate-100">
+      <div className="flex h-3.5 overflow-hidden rounded-full bg-sunken">
         {total > 0 &&
           segments.map((s) => (
             <div
@@ -190,8 +190,8 @@ export function StackedBar({
               className="h-2.5 w-2.5 shrink-0 rounded-full"
               style={{ backgroundColor: s.color }}
             />
-            <span className="text-slate-500">{s.label}</span>
-            <span className="font-semibold text-slate-800">{naira(s.value)}</span>
+            <span className="text-ink-muted">{s.label}</span>
+            <span className="font-semibold text-ink">{naira(s.value)}</span>
           </span>
         ))}
       </div>

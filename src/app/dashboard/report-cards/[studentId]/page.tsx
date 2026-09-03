@@ -91,7 +91,7 @@ export default async function ReportCardPage({
       <div className="kh-no-print mb-6 flex flex-wrap items-center justify-between gap-3">
         <Link
           href={`/dashboard/report-cards?class=${student.class_id ?? ""}&year=${encodeURIComponent(year)}&term=${term}`}
-          className="text-sm text-slate-500 hover:text-brand-600"
+          className="text-sm text-ink-muted hover:text-brand-600 dark:text-brand-300"
         >
           &larr; Back to report cards
         </Link>
@@ -102,8 +102,8 @@ export default async function ReportCardPage({
               href={`/dashboard/report-cards/${studentId}?year=${encodeURIComponent(year)}&term=${t.value}`}
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                 t.value === term
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-slate-600 hover:bg-slate-100"
+                  ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
+                  : "text-ink-muted hover:bg-hover"
               }`}
             >
               {t.label.replace(" Term", "")}
@@ -114,7 +114,7 @@ export default async function ReportCardPage({
       </div>
 
       {anyDraft && (
-        <p className="kh-no-print mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-800">
+        <p className="kh-no-print mb-4 rounded-lg border border-amber-500/35 bg-amber-500/12 px-3.5 py-2.5 text-sm text-amber-800 dark:text-amber-200">
           Some subjects on this card are still unpublished — students cannot see them yet.
         </p>
       )}
@@ -130,7 +130,7 @@ export default async function ReportCardPage({
           }
         />
       ) : (
-        <article className="kh-print-sheet mx-auto max-w-3xl rounded-2xl border border-slate-200/80 bg-white p-8 shadow-card">
+        <article className="kh-print-sheet mx-auto max-w-3xl rounded-2xl border border-line-soft bg-white p-8 shadow-card">
           {/* Masthead */}
           <header className="flex items-start justify-between gap-4 border-b-2 border-brand-900 pb-4">
             <div className="flex items-center gap-3">
@@ -139,32 +139,32 @@ export default async function ReportCardPage({
                 <h1 className="text-xl font-extrabold leading-tight text-brand-900">
                   {school?.name ?? "School"}
                 </h1>
-                <p className="text-[11px] uppercase tracking-widest text-slate-500">
+                <p className="text-[11px] uppercase tracking-widest text-ink-muted">
                   Termly Report Card
                 </p>
               </div>
             </div>
-            <div className="text-right text-xs text-slate-600">
-              <p className="font-semibold text-slate-900">{termLabel}</p>
+            <div className="text-right text-xs text-ink-muted">
+              <p className="font-semibold text-ink">{termLabel}</p>
               <p>{year}</p>
             </div>
           </header>
 
           {/* Student */}
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-2 border-b border-slate-200 py-4 text-sm sm:grid-cols-4">
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-2 border-b border-line py-4 text-sm sm:grid-cols-4">
             <div className="col-span-2">
-              <dt className="text-[11px] uppercase tracking-wide text-slate-400">Student</dt>
-              <dd className="font-bold text-slate-900">{fullName}</dd>
+              <dt className="text-[11px] uppercase tracking-wide text-ink-subtle">Student</dt>
+              <dd className="font-bold text-ink">{fullName}</dd>
             </div>
             <div>
-              <dt className="text-[11px] uppercase tracking-wide text-slate-400">Admission no.</dt>
-              <dd className="font-mono text-xs font-semibold text-slate-800">
+              <dt className="text-[11px] uppercase tracking-wide text-ink-subtle">Admission no.</dt>
+              <dd className="font-mono text-xs font-semibold text-ink">
                 {student.admission_number}
               </dd>
             </div>
             <div>
-              <dt className="text-[11px] uppercase tracking-wide text-slate-400">Class</dt>
-              <dd className="font-semibold text-slate-800">
+              <dt className="text-[11px] uppercase tracking-wide text-ink-subtle">Class</dt>
+              <dd className="font-semibold text-ink">
                 {klass ? `${klass.name}${klass.section ? ` ${klass.section}` : ""}` : "—"}
               </dd>
             </div>
@@ -173,7 +173,7 @@ export default async function ReportCardPage({
           {/* Subjects */}
           <table className="mt-5 w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-300 text-[11px] uppercase tracking-wide text-slate-500">
+              <tr className="border-b border-line-strong text-[11px] uppercase tracking-wide text-ink-muted">
                 <th className="pb-2 text-left font-semibold">Subject</th>
                 <th className="pb-2 text-right font-semibold">CA</th>
                 <th className="pb-2 text-right font-semibold">Exam</th>
@@ -183,26 +183,26 @@ export default async function ReportCardPage({
                 <th className="pb-2 text-right font-semibold">Position</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-line-soft">
               {results.map((r) => (
                 <tr key={r.subject_id}>
-                  <td className="py-2 font-medium text-slate-900">
+                  <td className="py-2 font-medium text-ink">
                     {subjectName.get(r.subject_id ?? "") ?? "—"}
                   </td>
-                  <td className="py-2 text-right text-slate-600">{r.ca_score}</td>
-                  <td className="py-2 text-right text-slate-600">{r.exam_score}</td>
-                  <td className="py-2 text-right font-semibold text-slate-900">
+                  <td className="py-2 text-right text-ink-muted">{r.ca_score}</td>
+                  <td className="py-2 text-right text-ink-muted">{r.exam_score}</td>
+                  <td className="py-2 text-right font-semibold text-ink">
                     {r.total_score}
                   </td>
-                  <td className="py-2 text-right text-slate-600">{r.percentage}%</td>
+                  <td className="py-2 text-right text-ink-muted">{r.percentage}%</td>
                   <td className="py-2 text-center">
-                    <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-brand-50 px-1.5 text-xs font-bold text-brand-700">
+                    <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-brand-500/10 px-1.5 text-xs font-bold text-brand-700 dark:text-brand-300">
                       {r.grade ?? "—"}
                     </span>
                   </td>
-                  <td className="py-2 text-right text-slate-600">
+                  <td className="py-2 text-right text-ink-muted">
                     {r.subject_position}
-                    <span className="text-slate-400">/{r.subject_cohort}</span>
+                    <span className="text-ink-subtle">/{r.subject_cohort}</span>
                   </td>
                 </tr>
               ))}
@@ -217,8 +217,8 @@ export default async function ReportCardPage({
               { label: "Average", value: `${average}%` },
               { label: "Overall grade", value: overallGrade?.grade ?? "—" },
             ].map((item) => (
-              <div key={item.label} className="rounded-xl bg-slate-50 px-3 py-2.5">
-                <p className="text-[10px] uppercase tracking-wide text-slate-400">
+              <div key={item.label} className="rounded-xl bg-sunken px-3 py-2.5">
+                <p className="text-[10px] uppercase tracking-wide text-ink-subtle">
                   {item.label}
                 </p>
                 <p className="text-sm font-bold text-brand-900">{item.value}</p>
@@ -227,20 +227,20 @@ export default async function ReportCardPage({
           </div>
 
           {overallGrade?.remark && (
-            <p className="mt-4 rounded-xl border border-brand-100 bg-brand-50/60 px-4 py-3 text-sm text-brand-900">
+            <p className="mt-4 rounded-xl border border-brand-500/25 bg-brand-500/10 px-4 py-3 text-sm text-brand-900">
               <span className="font-semibold">Overall remark:</span> {overallGrade.remark}
             </p>
           )}
 
           {/* Grading key */}
-          <div className="mt-6 border-t border-slate-200 pt-4">
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-slate-400">
+          <div className="mt-6 border-t border-line pt-4">
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-ink-subtle">
               Grading scale
             </p>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-ink-muted">
               {(bands ?? []).map((b) => (
                 <span key={b.grade}>
-                  <span className="font-bold text-slate-800">{b.grade}</span> {b.min_score}–
+                  <span className="font-bold text-ink">{b.grade}</span> {b.min_score}–
                   {b.max_score}
                   {b.remark ? ` (${b.remark})` : ""}
                 </span>
@@ -252,8 +252,8 @@ export default async function ReportCardPage({
           <div className="mt-10 grid grid-cols-2 gap-10">
             {["Class teacher", "Head teacher"].map((role) => (
               <div key={role}>
-                <div className="h-10 border-b border-slate-400" />
-                <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-500">{role}</p>
+                <div className="h-10 border-b border-line-strong" />
+                <p className="mt-1 text-[11px] uppercase tracking-wide text-ink-muted">{role}</p>
               </div>
             ))}
           </div>

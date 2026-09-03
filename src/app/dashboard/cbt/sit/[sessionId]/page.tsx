@@ -44,21 +44,21 @@ export default async function SitPage({
         <Card>
           {reveal ? (
             <div className="text-center">
-              <p className="text-xs uppercase tracking-wide text-slate-400">Your score</p>
+              <p className="text-xs uppercase tracking-wide text-ink-subtle">Your score</p>
               <p className="mt-1 text-4xl font-extrabold text-brand-900">
-                {session.score} <span className="text-2xl text-slate-400">/ {session.total_marks}</span>
+                {session.score} <span className="text-2xl text-ink-subtle">/ {session.total_marks}</span>
               </p>
-              <p className="mt-1 text-lg font-semibold text-slate-600">{session.percentage}%</p>
+              <p className="mt-1 text-lg font-semibold text-ink-muted">{session.percentage}%</p>
               {session.status === "expired" && (
-                <p className="mt-3 inline-block rounded-lg bg-amber-50 px-3 py-1.5 text-xs text-amber-800">
+                <p className="mt-3 inline-block rounded-lg bg-amber-500/12 px-3 py-1.5 text-xs text-amber-800 dark:text-amber-200">
                   Your time ran out — answers saved before the deadline were still marked.
                 </p>
               )}
             </div>
           ) : (
             <div className="text-center">
-              <p className="text-sm font-semibold text-slate-700">Your answers have been submitted</p>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="text-sm font-semibold text-ink">Your answers have been submitted</p>
+              <p className="mt-1 text-sm text-ink-muted">
                 Your teacher will release the score.
               </p>
             </div>

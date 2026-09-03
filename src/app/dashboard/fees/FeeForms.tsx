@@ -31,7 +31,7 @@ function Note({ state }: { state: FeeState }) {
   if (state.error) return <ErrorNote message={state.error} />;
   if (state.ok && state.message)
     return (
-      <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-800">
+      <p className="rounded-lg border border-emerald-500/35 bg-emerald-500/12 px-3.5 py-2.5 text-sm text-emerald-800 dark:text-emerald-200">
         {state.message}
       </p>
     );
@@ -88,15 +88,15 @@ export function FeeItemForm({
           </select>
         </LabelledField>
         <div className="flex items-end pb-1">
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
-            <input name="is_optional" type="checkbox" className="h-4 w-4 rounded border-slate-300" />
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-ink-muted">
+            <input name="is_optional" type="checkbox" className="h-4 w-4 rounded border-line-strong" />
             Optional levy
           </label>
         </div>
       </div>
 
       <Submit label="Add fee item" busyLabel="Adding…" />
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-ink-subtle">
         Optional levies are left off generated invoices — add them per student
         when a parent opts in.
       </p>
@@ -139,7 +139,7 @@ export function RaiseInvoicesForm({
         <Submit label="Raise invoices" busyLabel="Raising…" />
       </div>
 
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-ink-subtle">
         Safe to re-run — students already billed for this term are skipped, not
         billed twice.
       </p>
@@ -173,7 +173,7 @@ export function PaymentForm({
     return (
       <button
         onClick={() => setOpen(true)}
-        className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+        className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink hover:bg-hover"
       >
         Record payment
       </button>
@@ -185,9 +185,9 @@ export function PaymentForm({
       <input type="hidden" name="invoice_id" value={invoiceId} />
       <Note state={state} />
 
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-ink-muted">
         {studentName} owes{" "}
-        <span className="font-semibold text-slate-800">
+        <span className="font-semibold text-ink">
           ₦{balance.toLocaleString()}
         </span>
       </p>
@@ -201,12 +201,12 @@ export function PaymentForm({
           step="0.01"
           required
           placeholder="Amount"
-          className="h-10 w-32 rounded-lg border border-slate-200 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
+          className="h-10 w-32 rounded-lg border border-line px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
         />
         <select
           name="method"
           defaultValue="transfer"
-          className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm"
+          className="h-10 rounded-lg border border-line bg-white px-3 text-sm"
         >
           <option value="transfer">Transfer</option>
           <option value="cash">Cash</option>
@@ -218,7 +218,7 @@ export function PaymentForm({
         <input
           name="reference"
           placeholder="Ref (optional)"
-          className="h-10 w-32 rounded-lg border border-slate-200 px-3 text-sm"
+          className="h-10 w-32 rounded-lg border border-line px-3 text-sm"
         />
         <Submit label="Save" busyLabel="Saving…" />
         <button type="button" onClick={() => setOpen(false)} className={btnGhost}>

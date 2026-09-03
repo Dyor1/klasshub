@@ -49,13 +49,13 @@ export default async function BillingPage() {
   const banner =
     access === "locked"
       ? {
-          tone: "border-red-200 bg-red-50 text-red-900",
+          tone: "border-red-400/40 bg-red-500/10 text-red-900",
           title: "Your subscription has ended",
           body: "Everything is still here and still readable, and you can export or delete it at any time. Recording new work needs an active plan.",
         }
       : access === "grace"
         ? {
-            tone: "border-amber-200 bg-amber-50 text-amber-900",
+            tone: "border-amber-500/35 bg-amber-500/12 text-amber-800 dark:text-amber-200",
             title: "Your plan has lapsed",
             body: `You can keep working for ${Math.max(0, 7 + (days ?? 0))} more day${
               Math.max(0, 7 + (days ?? 0)) === 1 ? "" : "s"
@@ -63,7 +63,7 @@ export default async function BillingPage() {
           }
         : access === "trial" && (days ?? 99) <= 7
           ? {
-              tone: "border-amber-200 bg-amber-50 text-amber-900",
+              tone: "border-amber-500/35 bg-amber-500/12 text-amber-800 dark:text-amber-200",
               title: `${days} day${days === 1 ? "" : "s"} left on your trial`,
               body: "Choose a plan below to keep recording after it ends. Nothing is deleted either way.",
             }
@@ -95,7 +95,7 @@ export default async function BillingPage() {
               {access}
             </Chip>
           </div>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-ink-muted">
             {/* Tense matters: in grace the date is already in the past, and
                 "Runs until 26 August" reads as though it still does. */}
             {access === "locked"
@@ -120,30 +120,30 @@ export default async function BillingPage() {
           <p className="text-2xl font-extrabold text-brand-900">
             {students}
             {cap !== null && (
-              <span className="text-base font-semibold text-slate-400"> / {cap}</span>
+              <span className="text-base font-semibold text-ink-subtle"> / {cap}</span>
             )}
           </p>
           {cap !== null ? (
             <>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-sunken">
                 <div
                   className={`h-full rounded-full ${nearCap ? "bg-amber-500" : "bg-brand-500"}`}
                   style={{ width: `${usage}%` }}
                 />
               </div>
               {nearCap && (
-                <p className="mt-2 text-xs font-medium text-amber-700">
+                <p className="mt-2 text-xs font-medium text-amber-700 dark:text-amber-300">
                   You are close to your limit. Enrolling past {cap} needs a larger plan.
                 </p>
               )}
             </>
           ) : (
-            <p className="mt-2 text-sm text-slate-500">Unlimited on your plan.</p>
+            <p className="mt-2 text-sm text-ink-muted">Unlimited on your plan.</p>
           )}
         </Card>
       </div>
 
-      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-ink-muted">
         Plans
       </h2>
       <div className="grid gap-4 lg:grid-cols-3">
@@ -165,14 +165,14 @@ export default async function BillingPage() {
 
       {(history ?? []).length > 0 && (
         <div className="mt-8">
-          <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+          <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-ink-muted">
             Payment history
           </h2>
           <Table head={["Plan", "Amount", "Status", "Covers until", "Reference"]}>
             {(history ?? []).map((h) => (
-              <tr key={h.id} className="hover:bg-slate-50/60">
-                <td className="px-4 py-3 font-medium capitalize text-slate-900">{h.plan}</td>
-                <td className="px-4 py-3 text-slate-600">
+              <tr key={h.id} className="hover:bg-hover">
+                <td className="px-4 py-3 font-medium capitalize text-ink">{h.plan}</td>
+                <td className="px-4 py-3 text-ink-muted">
                   ₦{Number(h.amount).toLocaleString("en-NG")}
                 </td>
                 <td className="px-4 py-3">
@@ -184,7 +184,7 @@ export default async function BillingPage() {
                     {h.status}
                   </Chip>
                 </td>
-                <td className="px-4 py-3 text-slate-600">
+                <td className="px-4 py-3 text-ink-muted">
                   {h.period_end
                     ? new Date(h.period_end).toLocaleDateString("en-GB", {
                         day: "numeric",
@@ -193,7 +193,7 @@ export default async function BillingPage() {
                       })
                     : "—"}
                 </td>
-                <td className="px-4 py-3 font-mono text-[11px] text-slate-400">
+                <td className="px-4 py-3 font-mono text-[11px] text-ink-subtle">
                   {h.reference}
                 </td>
               </tr>

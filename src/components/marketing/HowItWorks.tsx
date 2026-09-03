@@ -21,7 +21,7 @@ export default function HowItWorks() {
     <section id="how-it-works" className="scroll-mt-24 py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-300">
             How it works
           </span>
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
