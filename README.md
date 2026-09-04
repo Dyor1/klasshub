@@ -101,6 +101,7 @@ another school's children.
 | `01_tenant_isolation` | Two complete schools. Neither can read, aggregate or write the other's rows — tables and analytics views alike. Plus `anon` seeing nothing at all. |
 | `02_role_and_column_guards` | Rules RLS cannot express: a pupil owns their submission row but must not write the score on it, cannot edit after marking, cannot promote themselves. An admin sees delivery *status* but never message bodies or phone numbers. |
 | `03_billing_enforcement` | The trial→grace→locked machine, plan caps, and that a locked school keeps every byte readable and deletable. |
+| `04_action_guards` | The six server actions that mutate without an auth check of their own. Three rely on RLS, three on guards inside SECURITY DEFINER functions — pinned so a future policy change cannot quietly open them. |
 
 Three conventions make these worth having:
 
