@@ -105,13 +105,19 @@ export default async function ResultsPage({
   }
 
   // ------------------------------------------------------------------ staff
-  const [{ data: classes }, { data: subjects }] = await Promise.all([
+  const [{ data: classes }, { data: subjects }, { data: bands }] = await Promise.all([
     supabase
       .from("classes")
       .select("id, name, academic_year")
       .order("academic_year", { ascending: false })
       .order("name"),
     supabase.from("subjects").select("id, name").order("name"),
+    // The school's own scale, so the grade previewed while typing is the one
+    // the database trigger will actually store.
+    supabase
+      .from("grade_bands")
+      .select("grade, min_score, max_score, remark")
+      .order("sort_order"),
   ]);
 
   const year = sp.year?.trim() || currentAcademicYear();
@@ -289,6 +295,12 @@ export default async function ResultsPage({
                 term={term}
                 caMax={caMax}
                 examMax={examMax}
+                bands={(bands ?? []).map((b) => ({
+                  grade: b.grade,
+                  min_score: Number(b.min_score),
+                  max_score: Number(b.max_score),
+                  remark: b.remark,
+                }))}
               />
             </>
           )}

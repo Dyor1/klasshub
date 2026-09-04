@@ -61,6 +61,17 @@ export default async function ReportCardPage({
         : Promise.resolve({ data: null }),
     ]);
 
+  // Every pupil's average for this class and term, so overall position is a
+  // real ranking. Per-subject position already comes from results_ranked.
+  const { data: cohort } = student.class_id
+    ? await supabase
+        .from("student_term_summary")
+        .select("student_id, avg_percentage")
+        .eq("class_id", student.class_id)
+        .eq("academic_year", year)
+        .eq("term", term)
+    : { data: null };
+
   const { data: subjects } = await supabase.from("subjects").select("id, name");
   const subjectName = new Map((subjects ?? []).map((s) => [s.id, s.name]));
 
@@ -84,6 +95,37 @@ export default async function ReportCardPage({
     (bands ?? []).find((b) => average >= Number(b.min_score) && average <= Number(b.max_score)) ??
     null;
   const anyDraft = results.some((r) => !r.published);
+
+  // Ranked on the same average shown on the card, ties sharing a place.
+  const ranked = [...(cohort ?? [])]
+    .map((c) => ({ id: c.student_id, avg: Number(c.avg_percentage ?? 0) }))
+    .sort((a, b) => b.avg - a.avg);
+  const myAvg = ranked.find((c) => c.id === studentId)?.avg ?? null;
+  const position =
+    myAvg === null ? null : ranked.filter((c) => c.avg > myAvg).length + 1;
+  const cohortSize = ranked.length;
+  const ordinal = (n: number) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  };
+
+  // Colour a grade by where its band sits in the school's own scale rather
+  // than by hardcoded thresholds — a school that grades A/B/C/D/E/F and one
+  // that grades A1..F9 both come out sensible.
+  const ordered = (bands ?? [])
+    .map((b) => ({ ...b, min: Number(b.min_score) }))
+    .sort((a, b) => b.min - a.min);
+  const gradeTone = (grade: string | null) => {
+    if (!grade) return "bg-sunken text-ink-muted";
+    const i = ordered.findIndex((b) => b.grade === grade);
+    if (i === -1) return "bg-sunken text-ink-muted";
+    const share = ordered.length <= 1 ? 0 : i / (ordered.length - 1);
+    if (share <= 0.2) return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300";
+    if (share <= 0.5) return "bg-sky-500/15 text-sky-700 dark:text-sky-300";
+    if (share <= 0.75) return "bg-amber-500/18 text-amber-800 dark:text-amber-200";
+    return "bg-red-500/15 text-red-700 dark:text-red-300";
+  };
 
   return (
     <>
@@ -130,7 +172,17 @@ export default async function ReportCardPage({
           }
         />
       ) : (
-        <article className="kh-print-sheet mx-auto max-w-3xl rounded-2xl border border-line-soft bg-card p-8 shadow-card">
+        <article className="kh-print-sheet relative mx-auto max-w-3xl overflow-hidden rounded-2xl border border-line-soft bg-card p-8 shadow-card">
+          {/* Watermark. Low enough not to fight the text, present enough that a
+              photocopy is visibly a copy of something official. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.04]"
+          >
+            <LogoMark className="h-80 w-80" />
+          </div>
+
+          <div className="relative">
           {/* Masthead */}
           <header className="flex items-start justify-between gap-4 border-b-2 border-brand-900 pb-4">
             <div className="flex items-center gap-3">
@@ -196,7 +248,9 @@ export default async function ReportCardPage({
                   </td>
                   <td className="py-2 text-right text-ink-muted">{r.percentage}%</td>
                   <td className="py-2 text-center">
-                    <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-brand-500/10 px-1.5 text-xs font-bold text-brand-700 dark:text-brand-300">
+                    <span
+                      className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-xs font-bold ${gradeTone(r.grade)}`}
+                    >
                       {r.grade ?? "—"}
                     </span>
                   </td>
@@ -210,11 +264,16 @@ export default async function ReportCardPage({
           </table>
 
           {/* Summary */}
-          <div className="mt-6 grid gap-3 sm:grid-cols-4">
+          <div className="mt-6 grid gap-3 sm:grid-cols-5">
             {[
               { label: "Subjects", value: results.length },
               { label: "Marks obtained", value: `${obtained} / ${obtainable}` },
               { label: "Average", value: `${average}%` },
+              {
+                label: "Position in class",
+                value:
+                  position && cohortSize > 1 ? `${ordinal(position)} of ${cohortSize}` : "—",
+              },
               { label: "Overall grade", value: overallGrade?.grade ?? "—" },
             ].map((item) => (
               <div key={item.label} className="rounded-xl bg-sunken px-3 py-2.5">
@@ -248,14 +307,29 @@ export default async function ReportCardPage({
             </div>
           </div>
 
+          {/* Written remarks. Left blank on purpose — a head teacher signing a
+              card wants to write on it, and a printed placeholder sentence is
+              worse than an empty box. */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {["Class teacher's remarks", "Head teacher's remarks"].map((label) => (
+              <div key={label}>
+                <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-ink-subtle">
+                  {label}
+                </p>
+                <div className="h-16 rounded-lg border border-dashed border-line" />
+              </div>
+            ))}
+          </div>
+
           {/* Signatures */}
-          <div className="mt-10 grid grid-cols-2 gap-10">
+          <div className="mt-8 grid grid-cols-2 gap-10">
             {["Class teacher", "Head teacher"].map((role) => (
               <div key={role}>
                 <div className="h-10 border-b border-line-strong" />
                 <p className="mt-1 text-[11px] uppercase tracking-wide text-ink-muted">{role}</p>
               </div>
             ))}
+          </div>
           </div>
         </article>
       )}
