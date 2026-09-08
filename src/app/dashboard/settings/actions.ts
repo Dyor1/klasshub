@@ -145,6 +145,119 @@ export async function savePassMark(
   return { error: null, ok: true };
 }
 
+const ALL_TERMS = ["first", "second", "third"] as const;
+type TermValue = (typeof ALL_TERMS)[number];
+
+/** When each term of a session runs. Report cards print the closing and
+ *  resumption dates from this, and per-term attendance is only computable
+ *  because of it — attendance rows are dated, but without a window there is no
+ *  way to say which marks belong to which term. */
+export async function saveTermDates(
+  _prev: ScaleState,
+  formData: FormData
+): Promise<ScaleState> {
+  const viewer = await requireViewer();
+  if (!viewer.isAdmin) {
+    return { error: "Only administrators can change term dates." };
+  }
+
+  const year = String(formData.get("academic_year") ?? "").trim();
+  if (!/^\d{4}\/\d{4}$/.test(year)) {
+    return { error: "Academic year must look like 2025/2026." };
+  }
+  const [from, to] = year.split("/").map(Number);
+  if (to !== from + 1) {
+    return { error: `A session runs across two consecutive years — did you mean ${from}/${from + 1}?` };
+  }
+
+  const resumes = String(formData.get("next_term_starts_on") ?? "").trim();
+
+  const rows: {
+    school_id: string;
+    academic_year: string;
+    term: TermValue;
+    starts_on: string;
+    ends_on: string;
+    next_term_starts_on: string | null;
+  }[] = [];
+  const cleared: TermValue[] = [];
+
+  for (const term of ALL_TERMS) {
+    const starts = String(formData.get(`${term}_starts_on`) ?? "").trim();
+    const ends = String(formData.get(`${term}_ends_on`) ?? "").trim();
+
+    // Both blank means "this term isn't set" — a legitimate state while a
+    // school is filling the session in one term at a time.
+    if (!starts && !ends) {
+      cleared.push(term);
+      continue;
+    }
+    if (!starts || !ends) {
+      return { error: `Give both a start and an end date for the ${term} term, or leave both blank.` };
+    }
+    if (ends <= starts) {
+      return { error: `The ${term} term ends on or before it starts.` };
+    }
+
+    rows.push({
+      school_id: viewer.schoolId,
+      academic_year: year,
+      term,
+      starts_on: starts,
+      ends_on: ends,
+      // Only the third term carries this. The first two derive their
+      // resumption from the term that follows them.
+      next_term_starts_on: term === "third" && resumes ? resumes : null,
+    });
+  }
+
+  if (rows.length === 0 && cleared.length === 3) {
+    return { error: "Set at least one term, or there is nothing to save." };
+  }
+
+  // Terms must not overlap: an attendance date inside two windows would be
+  // counted on two different report cards.
+  const ordered = [...rows].sort((a, b) => a.starts_on.localeCompare(b.starts_on));
+  for (let i = 1; i < ordered.length; i++) {
+    if (ordered[i].starts_on <= ordered[i - 1].ends_on) {
+      return {
+        error: `The ${ordered[i - 1].term} and ${ordered[i].term} terms overlap.`,
+      };
+    }
+  }
+
+  const third = rows.find((r) => r.term === "third");
+  if (resumes && third && resumes <= third.ends_on) {
+    return { error: "The next session cannot begin before the third term ends." };
+  }
+  if (resumes && !third) {
+    return { error: "Set the third term's dates before saying when the next session begins." };
+  }
+
+  const supabase = await createClient();
+
+  if (rows.length > 0) {
+    const { error } = await supabase
+      .from("term_dates")
+      .upsert(rows, { onConflict: "school_id,academic_year,term" });
+    if (error) return { error: error.message };
+  }
+
+  // A term emptied in the form is a term removed, not one left untouched.
+  if (cleared.length > 0) {
+    const { error } = await supabase
+      .from("term_dates")
+      .delete()
+      .eq("academic_year", year)
+      .in("term", cleared);
+    if (error) return { error: error.message };
+  }
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard/report-cards");
+  return { error: null, ok: true, saved: rows.length };
+}
+
 export async function resetGradingScale(): Promise<void> {
   const viewer = await requireViewer();
   if (!viewer.isAdmin) return;

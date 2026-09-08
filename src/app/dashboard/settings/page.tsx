@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { requireViewer } from "@/lib/auth";
+import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { PageHeader, Card } from "@/components/ui";
 import GradingScaleForm from "./GradingScaleForm";
+import TermDatesForm from "./TermDatesForm";
 import PassMarkForm from "./PassMarkForm";
 import DeliveryRoutesForm from "./DeliveryRoutesForm";
 import DeliveryLog from "./DeliveryLog";
@@ -25,7 +26,7 @@ export default async function SettingsPage() {
 
   const { data: school } = await supabase.from("schools").select("pass_mark").single();
 
-  const [{ data: routes }, { data: deliveries }, { count: reachableBySms }] =
+  const [{ data: routes }, { data: deliveries }, { count: reachableBySms }, { data: termDates }] =
     await Promise.all([
       supabase.from("notification_routes").select("kind, email, sms"),
       supabase
@@ -38,6 +39,10 @@ export default async function SettingsPage() {
         .from("profiles")
         .select("id", { count: "exact", head: true })
         .not("phone", "is", null),
+      supabase
+        .from("term_dates")
+        .select("academic_year, term, starts_on, ends_on, next_term_starts_on")
+        .order("starts_on"),
     ]);
 
   return (
@@ -68,6 +73,23 @@ export default async function SettingsPage() {
         className="mt-6"
       >
         <PassMarkForm passMark={Number(school?.pass_mark ?? 40)} />
+      </Card>
+
+      <Card
+        title="Term dates"
+        description="When each term opens and closes. Report cards print the closing and resumption dates, and attendance on a card is counted inside these windows."
+        className="mt-6"
+      >
+        <TermDatesForm
+          terms={(termDates ?? []).map((t) => ({
+            academic_year: t.academic_year,
+            term: t.term,
+            starts_on: t.starts_on,
+            ends_on: t.ends_on,
+            next_term_starts_on: t.next_term_starts_on,
+          }))}
+          currentYear={currentAcademicYear()}
+        />
       </Card>
 
       <Card

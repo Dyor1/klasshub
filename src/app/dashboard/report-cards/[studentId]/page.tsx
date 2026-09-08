@@ -72,6 +72,15 @@ export default async function ReportCardPage({
         .eq("term", term)
     : { data: null };
 
+  // Term window, resumption date and attendance inside it, resolved in SQL so
+  // the derived-vs-explicit resumption rule lives in one place.
+  const { data: ctxRows } = await supabase.rpc("report_card_term_context", {
+    p_student: studentId,
+    p_academic_year: year,
+    p_term: term,
+  });
+  const ctx = Array.isArray(ctxRows) ? ctxRows[0] : ctxRows;
+
   const { data: subjects } = await supabase.from("subjects").select("id, name");
   const subjectName = new Map((subjects ?? []).map((s) => [s.id, s.name]));
 
@@ -104,6 +113,20 @@ export default async function ReportCardPage({
   const position =
     myAvg === null ? null : ranked.filter((c) => c.avg > myAvg).length + 1;
   const cohortSize = ranked.length;
+  const longDate = (d: string | null | undefined) =>
+    d
+      ? new Date(d).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : null;
+
+  const daysOpen = Number(ctx?.days_open ?? 0);
+  const daysPresent = Number(ctx?.days_present ?? 0);
+  const attendancePct =
+    daysOpen > 0 ? Math.round((daysPresent / daysOpen) * 1000) / 10 : null;
+
   const ordinal = (n: number) => {
     const s = ["th", "st", "nd", "rd"];
     const v = n % 100;
@@ -199,6 +222,11 @@ export default async function ReportCardPage({
             <div className="text-right text-xs text-ink-muted">
               <p className="font-semibold text-ink">{termLabel}</p>
               <p>{year}</p>
+              {ctx?.starts_on && (
+                <p className="mt-1 text-[11px]">
+                  {longDate(ctx.starts_on)} &ndash; {longDate(ctx.ends_on)}
+                </p>
+              )}
             </div>
           </header>
 
@@ -220,6 +248,37 @@ export default async function ReportCardPage({
                 {klass ? `${klass.name}${klass.section ? ` ${klass.section}` : ""}` : "—"}
               </dd>
             </div>
+
+            {/* Attendance, only once the register says the school actually
+                opened. "0 of 0 days" reads like a fault, not like a fact. */}
+            {daysOpen > 0 && (
+              <>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-ink-subtle">
+                    Days opened
+                  </dt>
+                  <dd className="font-semibold text-ink">{daysOpen}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-ink-subtle">
+                    Days present
+                  </dt>
+                  <dd className="font-semibold text-ink">{daysPresent}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-ink-subtle">
+                    Days absent
+                  </dt>
+                  <dd className="font-semibold text-ink">{ctx?.days_absent ?? 0}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-ink-subtle">
+                    Attendance
+                  </dt>
+                  <dd className="font-semibold text-ink">{attendancePct}%</dd>
+                </div>
+              </>
+            )}
           </dl>
 
           {/* Subjects */}
@@ -330,6 +389,13 @@ export default async function ReportCardPage({
               </div>
             ))}
           </div>
+
+          {/* The line parents actually look for, so it is last and it is loud. */}
+          {ctx?.resumes_on && (
+            <p className="mt-8 rounded-xl bg-brand-500/10 px-4 py-3 text-center text-sm font-semibold text-ink">
+              Next term begins {longDate(ctx.resumes_on)}
+            </p>
+          )}
           </div>
         </article>
       )}

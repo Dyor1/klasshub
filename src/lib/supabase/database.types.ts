@@ -2022,6 +2022,44 @@ export type Database = {
           },
         ]
       }
+      term_dates: {
+        Row: {
+          academic_year: string
+          ends_on: string
+          next_term_starts_on: string | null
+          school_id: string
+          starts_on: string
+          term: Database["public"]["Enums"]["term"]
+          updated_at: string
+        }
+        Insert: {
+          academic_year: string
+          ends_on: string
+          next_term_starts_on?: string | null
+          school_id: string
+          starts_on: string
+          term: Database["public"]["Enums"]["term"]
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string
+          ends_on?: string
+          next_term_starts_on?: string | null
+          school_id?: string
+          starts_on?: string
+          term?: Database["public"]["Enums"]["term"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "term_dates_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       timetable: {
         Row: {
           academic_year: string
@@ -2653,6 +2691,21 @@ export type Database = {
         Returns: string
       }
       replace_grade_bands: { Args: { p_bands: Json }; Returns: undefined }
+      report_card_term_context: {
+        Args: {
+          p_academic_year: string
+          p_student: string
+          p_term: Database["public"]["Enums"]["term"]
+        }
+        Returns: {
+          days_absent: number
+          days_open: number
+          days_present: number
+          ends_on: string
+          resumes_on: string
+          starts_on: string
+        }[]
+      }
       send_fee_reminders: {
         Args: {
           p_academic_year: string
