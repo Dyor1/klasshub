@@ -223,8 +223,12 @@ export default async function ReportCardPage({
               <p className="font-semibold text-ink">{termLabel}</p>
               <p>{year}</p>
               {ctx?.starts_on && (
+                // Each date stays whole; only the range itself may wrap.
+                // Otherwise a narrow card breaks "31 August" across two lines.
                 <p className="mt-1 text-[11px]">
-                  {longDate(ctx.starts_on)} &ndash; {longDate(ctx.ends_on)}
+                  <span className="whitespace-nowrap">{longDate(ctx.starts_on)}</span>{" "}
+                  &ndash;{" "}
+                  <span className="whitespace-nowrap">{longDate(ctx.ends_on)}</span>
                 </p>
               )}
             </div>
