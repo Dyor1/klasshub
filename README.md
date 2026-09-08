@@ -324,13 +324,18 @@ If you ever move the Supabase project, move this with it.
 - [ ] A password reset arrives, and the link sets a new password
 - [ ] A test-card payment reaches the ledger, and the webhook shows a 200
 - [ ] Supabase → Authentication → Leaked password protection is on
-- [ ] **Every placeholder in `/terms` and `/privacy` is filled, and a lawyer has
-      read both.** `grep -rn "<Fill>" src/app/\(legal\)` lists them — 21 at the
-      time of writing. They render as loud amber marks on the live page, so an
-      unfilled one is embarrassing rather than invisible; that is deliberate.
-      The liability section in particular is marked as needing a lawyer, not a
-      template
-- [ ] `/about` and `/contact` exist — the site footer already links to both
+- [ ] **Every placeholder on `/terms`, `/privacy`, `/about` and `/contact` is
+      filled, and a lawyer has read the first two.** List them with
+      `grep -rn "<Fill[ >]" src/app/\(site\)` — 34 at the time of writing.
+      (Match `<Fill[ >]`, not `<Fill>`: several take a `key` prop and a literal
+      search silently misses ten of them.) They render as loud amber marks on
+      the live page, so an unfilled one is embarrassing rather than invisible;
+      that is deliberate. The liability section is marked as needing a lawyer,
+      not a template
+- [ ] Contact page carries real addresses — it deliberately has no form. A
+      public unauthenticated form needs rate limiting to be worth having, and
+      the mail credentials are Supabase function secrets rather than Next env
+      vars, so a working form means a new Edge Function
 - [ ] A paid Supabase plan if this holds real records — the free tier has no
       point-in-time recovery, and a school roll is not something to restore
       from a week-old snapshot
