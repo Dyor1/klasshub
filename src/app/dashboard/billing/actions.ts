@@ -1,20 +1,14 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { siteOrigin } from "@/lib/site-url";
 import { requireViewer } from "@/lib/auth";
 
 export type SubscribeState = { error: string | null };
 
 async function callbackUrl(): Promise<string> {
-  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
-  if (explicit) return `${explicit}/dashboard/billing`;
-
-  const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  return `${proto}://${host}/dashboard/billing`;
+  return `${await siteOrigin()}/dashboard/billing`;
 }
 
 /** Sends an admin to Paystack to pay for a term.

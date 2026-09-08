@@ -11,11 +11,21 @@ const initialState: AuthState = { error: null };
 
 function LoginForm() {
   const [state, formAction] = useActionState(login, initialState);
-  const next = useSearchParams().get("next") ?? "/dashboard";
+  const params = useSearchParams();
+  const next = params.get("next") ?? "/dashboard";
+  const justReset = params.get("reset") === "done";
 
   return (
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="next" value={next} />
+      {justReset && (
+        <p
+          role="status"
+          className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300"
+        >
+          Password changed. Sign in with your new one.
+        </p>
+      )}
       <FormError message={state.error} />
 
       <Field
@@ -32,6 +42,15 @@ function LoginForm() {
         placeholder="••••••••"
         autoComplete="current-password"
       />
+
+      <div className="text-right">
+        <Link
+          href="/forgot-password"
+          className="text-[13px] font-semibold text-brand-600 hover:underline"
+        >
+          Forgot password?
+        </Link>
+      </div>
 
       <SubmitButton>Sign in</SubmitButton>
     </form>

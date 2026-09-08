@@ -183,6 +183,42 @@ an admin can confirm a notice went out without being able to read anyone's mail.
 > grant rather than narrowing it — the outbox has to `REVOKE ALL` first. See
 > `20260827064500_messaging_outbox_revoke_default_grants.sql`.
 
+## Password reset
+
+```
+/forgot-password ──▶ Supabase sends a link ──▶ /auth/callback ──▶ /reset-password
+```
+
+`/auth/callback` accepts both shapes Supabase can send. The default email
+template produces `?code=`, which is the PKCE flow: it needs the verifier
+cookie this app set when the reset was requested, so **the link only works in
+the browser that asked for it**. Someone who requests a reset on a laptop and
+opens the mail on their phone gets an expired-link page.
+
+If that matters, change the Reset Password template (Authentication → Email
+Templates) to point at the callback directly:
+
+```html
+<a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password">
+  Reset your password
+</a>
+```
+
+That path carries no verifier, so it works on any device. The route already
+handles it — switching is a dashboard edit, not a code change.
+
+Two behaviours worth not "fixing" later:
+
+**The form says the same thing whether or not the address has an account.**
+Anything else is a membership oracle: a stranger can sit on the form and learn
+which staff at a school are registered, which is the list you would want before
+writing a phishing mail.
+
+**A completed reset signs the account out everywhere**, not just in the browser
+doing the resetting. Someone resetting a password may be doing it precisely
+because another party is in the account, and leaving that session alive would
+defeat the exercise.
+
 ## Online fee payment (Paystack)
 
 The rule that shapes this: **the browser is never told a payment succeeded.**
@@ -269,6 +305,11 @@ If you ever move the Supabase project, move this with it.
    `https://klasshub.ng/**` plus your `*.vercel.app` preview domain to Redirect
    URLs. Miss this and sign-in appears to work but bounces back to localhost.
 
+   The `/**` matters: password-reset links return to
+   `https://klasshub.ng/auth/callback`, and a redirect target Supabase does not
+   recognise is silently replaced with the Site URL. The symptom is a reset link
+   that drops someone on the homepage, still signed out, with no error anywhere.
+
 5. **Set the function secrets** — see the Email/SMS and Paystack sections
    above — and add the Paystack webhook URL in their dashboard.
 
@@ -280,6 +321,7 @@ If you ever move the Supabase project, move this with it.
 - [ ] `npm test` and `npm run test:db` both pass against production
 - [ ] A real sign-up creates a school and lands on the dashboard
 - [ ] An invite email actually arrives
+- [ ] A password reset arrives, and the link sets a new password
 - [ ] A test-card payment reaches the ledger, and the webhook shows a 200
 - [ ] Supabase → Authentication → Leaked password protection is on
 - [ ] A paid Supabase plan if this holds real records — the free tier has no
