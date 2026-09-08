@@ -1,13 +1,22 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
+import { FilterBar, SearchField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import { PageHeader, Card, EmptyState, Table, Chip, Avatar } from "@/components/ui";
 import LinkForm from "./LinkForm";
 import { unlinkGuardian } from "./actions";
 
 export const metadata = { title: "Guardians — KlassHub" };
 
-export default async function GuardiansPage() {
+export default async function GuardiansPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+
   const viewer = await requireViewer();
   // Nav hides this from parents, but the URL is still guessable. RLS would
   // stop any write regardless; this just avoids showing them an admin tool.
@@ -15,11 +24,48 @@ export default async function GuardiansPage() {
 
   const supabase = await createClient();
 
+  // A link row holds two ids and no names, so searching it means resolving the
+  // term against students and parents first and matching on the ids that come
+  // back. Filtering the fetched links in JS would have been shorter and would
+  // have quietly stopped working past a thousand links.
+  const matchIds = term
+    ? await Promise.all([
+        supabase
+          .from("students")
+          .select("id")
+          .or(orIlike(["surname", "first_name", "other_names", "admission_number"], term)!),
+        supabase
+          .from("profiles")
+          .select("id")
+          .eq("role", "parent")
+          .or(orIlike(["full_name", "email"], term)!),
+      ])
+    : null;
+
+  const matchedStudentIds = (matchIds?.[0].data ?? []).map((r) => r.id);
+  const matchedParentIds = (matchIds?.[1].data ?? []).map((r) => r.id);
+
   const [{ data: links }, { data: students }, { data: parents }] = await Promise.all([
-    supabase
-      .from("student_guardians")
-      .select("id, relationship, student_id, profile_id, created_at")
-      .order("created_at", { ascending: false }),
+    (async () => {
+      let q = supabase
+        .from("student_guardians")
+        .select("id, relationship, student_id, profile_id, created_at")
+        .order("created_at", { ascending: false });
+
+      if (term) {
+        const clauses: string[] = [];
+        if (matchedStudentIds.length)
+          clauses.push(`student_id.in.(${matchedStudentIds.join(",")})`);
+        if (matchedParentIds.length)
+          clauses.push(`profile_id.in.(${matchedParentIds.join(",")})`);
+        // Nothing matched either side, so nothing can match a link. Without
+        // this the absent .or() would return every link and look like the
+        // search had been ignored.
+        if (clauses.length === 0) return { data: [], error: null };
+        q = q.or(clauses.join(","));
+      }
+      return q;
+    })(),
     supabase
       .from("students")
       .select("id, surname, first_name, other_names, admission_number")
@@ -82,6 +128,15 @@ export default async function GuardiansPage() {
             will see an empty portal until linked.
           </p>
         </div>
+      )}
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Child or guardian name…" />
+        <FilterActions clearHref="/dashboard/guardians" isFiltered={Boolean(term)} />
+      </FilterBar>
+
+      {links && links.length > 0 && (
+        <ResultCount shown={links.length} noun="link" term={term || undefined} />
       )}
 
       {!links || links.length === 0 ? (

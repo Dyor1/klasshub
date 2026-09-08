@@ -1,29 +1,56 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Table, Chip } from "@/components/ui";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import ClassForm from "./ClassForm";
 import { deleteClass } from "./actions";
 
 export const metadata = { title: "Classes — KlassHub" };
 
-export default async function ClassesPage() {
+export default async function ClassesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; year?: string }>;
+}) {
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const year = sp.year ?? "";
+  const isFiltered = Boolean(term || year);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
   // RLS scopes all three queries to the viewer's school.
-  const [{ data: classes }, { data: teachers }, { data: students }] = await Promise.all([
-    supabase
-      .from("classes")
-      .select("id, name, grade_level, section, academic_year, capacity, class_teacher_id")
-      .order("academic_year", { ascending: false })
-      .order("name"),
+  const [{ data: classes }, { data: teachers }, { data: students }, { data: allYears }] =
+    await Promise.all([
+    (async () => {
+      let q = supabase
+        .from("classes")
+        .select("id, name, grade_level, section, academic_year, capacity, class_teacher_id")
+        .order("academic_year", { ascending: false })
+        .order("name");
+      if (year) q = q.eq("academic_year", year);
+      const search = orIlike(["name", "grade_level", "section"], term);
+      if (search) q = q.or(search);
+      return q;
+    })(),
     supabase
       .from("profiles")
       .select("id, full_name")
       .in("role", ["teacher", "admin"])
       .order("full_name"),
     supabase.from("students").select("id, class_id"),
+    // Sessions come from their own query, not from the filtered list — reading
+    // them off `classes` would mean picking a session removed every other
+    // option from the dropdown, leaving no way back.
+    supabase
+      .from("classes")
+      .select("academic_year")
+      .order("academic_year", { ascending: false }),
   ]);
+
+  const sessions = [...new Set((allYears ?? []).map((c) => c.academic_year))];
 
   const teacherById = new Map((teachers ?? []).map((t) => [t.id, t.full_name]));
   const countByClass = new Map<string, number>();
@@ -49,6 +76,22 @@ export default async function ClassesPage() {
             defaultYear={currentAcademicYear()}
           />
         </Card>
+      )}
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Class, grade or section…" />
+        <SelectField
+          name="year"
+          label="Session"
+          defaultValue={year}
+          allLabel="All sessions"
+          options={sessions.map((y) => ({ value: y, label: y }))}
+        />
+        <FilterActions clearHref="/dashboard/classes" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {classes && classes.length > 0 && (
+        <ResultCount shown={classes.length} noun="class" term={term || undefined} />
       )}
 
       {!classes || classes.length === 0 ? (

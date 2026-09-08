@@ -11,13 +11,15 @@ import {
   inputClass,
   btnGhost,
 } from "@/components/ui";
+import { SearchField } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 
 export const metadata = { title: "Report cards — KlassHub" };
 
 export default async function ReportCardsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ class?: string; term?: string; year?: string }>;
+  searchParams: Promise<{ class?: string; term?: string; year?: string; q?: string }>;
 }) {
   const sp = await searchParams;
   const viewer = await requireViewer();
@@ -95,14 +97,23 @@ export default async function ReportCardsPage({
     .order("name");
 
   const classId = sp.class || "";
+  const nameTerm = displayTerm(sp.q);
 
   const { data: students } = classId
-    ? await supabase
-        .from("students")
-        .select("id, surname, first_name, other_names, admission_number")
-        .eq("class_id", classId)
-        .eq("status", "active")
-        .order("surname")
+    ? await (async () => {
+        let q = supabase
+          .from("students")
+          .select("id, surname, first_name, other_names, admission_number")
+          .eq("class_id", classId)
+          .eq("status", "active")
+          .order("surname");
+        const search = orIlike(
+          ["surname", "first_name", "other_names", "admission_number"],
+          nameTerm
+        );
+        if (search) q = q.or(search);
+        return q;
+      })()
     : { data: null };
 
   // How many subjects each student already has marks for this term.
@@ -138,7 +149,7 @@ export default async function ReportCardsPage({
       ) : (
         <>
           <Card className="mb-6">
-            <form method="get" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
+            <form method="get" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:items-end">
               <label className="block">
                 <span className="mb-1.5 block text-xs font-medium text-ink-muted">Class</span>
                 <select name="class" defaultValue={classId} className={inputClass}>
@@ -164,6 +175,11 @@ export default async function ReportCardsPage({
                 <span className="mb-1.5 block text-xs font-medium text-ink-muted">Session</span>
                 <input name="year" defaultValue={year} className={inputClass} />
               </label>
+              <SearchField
+                label="Find a pupil"
+                defaultValue={nameTerm}
+                placeholder="Name or admission no…"
+              />
               <button type="submit" className={btnGhost}>
                 Load class
               </button>

@@ -50,6 +50,19 @@ export default function Register({
   const [marks, setMarks] = useState<Record<string, string>>(
     Object.fromEntries(rows.map((r) => [r.studentId, r.status]))
   );
+  const [find, setFind] = useState("");
+
+  // Finding a pupil in a class of forty should not mean scrolling. This hides
+  // non-matching rows rather than removing them: every student_id input stays
+  // in the form, because a display:none input still submits and a removed one
+  // does not. Filtering the list itself would mean searching for one name and
+  // then saving a register that silently left everybody else unmarked.
+  const needle = find.trim().toLowerCase();
+  const matches = (r: Row) =>
+    !needle ||
+    r.name.toLowerCase().includes(needle) ||
+    r.admissionNumber.toLowerCase().includes(needle);
+  const shownCount = rows.filter(matches).length;
 
   const counts = OPTIONS.map((o) => ({
     ...o,
@@ -88,12 +101,34 @@ export default function Register({
         </button>
       </div>
 
+      <div className="flex flex-wrap items-center gap-3">
+        <input
+          type="search"
+          value={find}
+          onChange={(e) => setFind(e.target.value)}
+          placeholder="Find a pupil in this register…"
+          aria-label="Find a pupil in this register"
+          className="h-11 min-w-56 flex-1 rounded-xl border border-line bg-card px-4 text-sm text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
+        />
+        {needle && (
+          <p className="text-sm text-ink-muted">
+            <span className="font-semibold text-ink">{shownCount}</span> of {rows.length}{" "}
+            shown &mdash; all {rows.length} still save
+          </p>
+        )}
+      </div>
+
       <div className="overflow-hidden rounded-xl border border-line bg-card">
         <ul className="divide-y divide-line-soft">
           {rows.map((r) => (
             <li
               key={r.studentId}
-              className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
+              // Not the `hidden` attribute: that is a user-agent rule and the
+              // `flex` class below outranks it, so the row would stay visible.
+              // One of flex/hidden, never both.
+              className={`${
+                matches(r) ? "flex" : "hidden"
+              } flex-wrap items-center justify-between gap-3 px-4 py-3`}
             >
               <input type="hidden" name="student_id" value={r.studentId} />
               <input

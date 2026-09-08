@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import { PageHeader, Card, EmptyState, Table, Chip, ErrorNote } from "@/components/ui";
 import ExamForm from "./ExamForm";
 import { startExam, setExamStatus, deleteExam } from "./actions";
@@ -12,9 +14,21 @@ const statusTone = { draft: "slate", published: "green", closed: "amber" } as co
 export default async function CbtPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    q?: string;
+    class?: string;
+    subject?: string;
+    status?: string;
+  }>;
 }) {
+  const CBT_STATUSES = ["draft", "published", "closed"] as const;
   const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const classFilter = sp.class ?? "";
+  const subjectFilter = sp.subject ?? "";
+  const examStatus = CBT_STATUSES.find((s) => s === sp.status);
+  const isFiltered = Boolean(term || classFilter || subjectFilter || examStatus);
   const viewer = await requireViewer();
   const supabase = await createClient();
 
@@ -22,10 +36,18 @@ export default async function CbtPage({
   // their class.
   const [{ data: exams }, { data: classes }, { data: subjects }, { data: sessions }] =
     await Promise.all([
-      supabase
-        .from("cbt_exams")
-        .select("id, title, class_id, subject_id, duration_minutes, term, academic_year, status, created_at")
-        .order("created_at", { ascending: false }),
+      (async () => {
+        let q = supabase
+          .from("cbt_exams")
+          .select("id, title, class_id, subject_id, duration_minutes, term, academic_year, status, created_at")
+          .order("created_at", { ascending: false });
+        if (classFilter) q = q.eq("class_id", classFilter);
+        if (subjectFilter) q = q.eq("subject_id", subjectFilter);
+        if (examStatus) q = q.eq("status", examStatus);
+        const search = orIlike(["title"], term);
+        if (search) q = q.or(search);
+        return q;
+      })(),
       supabase.from("classes").select("id, name").order("name"),
       supabase.from("subjects").select("id, name").order("name"),
       supabase
@@ -125,6 +147,40 @@ export default async function CbtPage({
           />
         }
       />
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Test title…" />
+        <SelectField
+          name="class"
+          label="Class"
+          defaultValue={classFilter}
+          allLabel="All classes"
+          options={(classes ?? []).map((c) => ({ value: c.id, label: c.name }))}
+        />
+        <SelectField
+          name="subject"
+          label="Subject"
+          defaultValue={subjectFilter}
+          allLabel="All subjects"
+          options={(subjects ?? []).map((s) => ({ value: s.id, label: s.name }))}
+        />
+        <SelectField
+          name="status"
+          label="Status"
+          defaultValue={examStatus ?? ""}
+          allLabel="Any status"
+          options={[
+            { value: "draft", label: "Draft" },
+            { value: "published", label: "Published" },
+            { value: "closed", label: "Closed" },
+          ]}
+        />
+        <FilterActions clearHref="/dashboard/cbt" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {exams && exams.length > 0 && (
+        <ResultCount shown={exams.length} noun="test" term={term || undefined} />
+      )}
 
       {!exams || exams.length === 0 ? (
         <EmptyState

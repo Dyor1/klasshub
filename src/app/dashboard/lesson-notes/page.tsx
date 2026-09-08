@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import { FILE_BUCKET, formatBytes } from "@/lib/files";
 import { PageHeader, Card, EmptyState, Chip } from "@/components/ui";
 import LessonForm from "./LessonForm";
@@ -15,7 +17,20 @@ const statusTone = {
   rejected: "amber",
 } as const;
 
-export default async function LessonNotesPage() {
+export default async function LessonNotesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; subject?: string; term?: string; status?: string }>;
+}) {
+  const TERMS_V = ["first", "second", "third"] as const;
+  const STATUSES = ["draft", "submitted", "approved", "rejected"] as const;
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const subjectFilter = sp.subject ?? "";
+  const termFilter = TERMS_V.find((t) => t === sp.term);
+  const status = STATUSES.find((s) => s === sp.status);
+  const isFiltered = Boolean(term || subjectFilter || termFilter || status);
+
   const viewer = await requireViewer();
   // Students and parents have no business here; RLS returns nothing for them
   // anyway, but an empty page would just be confusing.
@@ -26,12 +41,22 @@ export default async function LessonNotesPage() {
   // RLS: a teacher sees only their own notes, an admin sees the whole school.
   const [{ data: notes }, { data: classes }, { data: subjects }, { data: staff }] =
     await Promise.all([
-      supabase
-        .from("lesson_notes")
-        .select(
-          "id, topic, description, week_number, term, academic_year, status, admin_feedback, teacher_id, class_id, subject_id, file_path, file_name, file_size, created_at, reviewed_at"
-        )
-        .order("created_at", { ascending: false }),
+      (async () => {
+        let q = supabase
+          .from("lesson_notes")
+          .select(
+            "id, topic, description, week_number, term, academic_year, status, admin_feedback, teacher_id, class_id, subject_id, file_path, file_name, file_size, created_at, reviewed_at"
+          )
+          .order("created_at", { ascending: false });
+        // A teacher already only sees their own notes — RLS decides that, not
+        // this. These only narrow it further.
+        if (subjectFilter) q = q.eq("subject_id", subjectFilter);
+        if (termFilter) q = q.eq("term", termFilter);
+        if (status) q = q.eq("status", status);
+        const search = orIlike(["topic", "description"], term);
+        if (search) q = q.or(search);
+        return q;
+      })(),
       supabase.from("classes").select("id, name").order("name"),
       supabase.from("subjects").select("id, name").order("name"),
       supabase.from("profiles").select("id, full_name"),
@@ -72,6 +97,45 @@ export default async function LessonNotesPage() {
         <p className="mb-6 rounded-lg border border-amber-500/35 bg-amber-500/12 px-3.5 py-2.5 text-sm text-amber-800 dark:text-amber-200">
           {awaiting} note{awaiting === 1 ? "" : "s"} awaiting your review.
         </p>
+      )}
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Topic or description…" />
+        <SelectField
+          name="subject"
+          label="Subject"
+          defaultValue={subjectFilter}
+          allLabel="All subjects"
+          options={(subjects ?? []).map((s) => ({ value: s.id, label: s.name }))}
+        />
+        <SelectField
+          name="term"
+          label="Term"
+          defaultValue={termFilter ?? ""}
+          allLabel="Any term"
+          options={[
+            { value: "first", label: "First term" },
+            { value: "second", label: "Second term" },
+            { value: "third", label: "Third term" },
+          ]}
+        />
+        <SelectField
+          name="status"
+          label="Status"
+          defaultValue={status ?? ""}
+          allLabel="Any status"
+          options={[
+            { value: "draft", label: "Draft" },
+            { value: "submitted", label: "Submitted" },
+            { value: "approved", label: "Approved" },
+            { value: "rejected", label: "Needs work" },
+          ]}
+        />
+        <FilterActions clearHref="/dashboard/lesson-notes" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {notes && notes.length > 0 && (
+        <ResultCount shown={notes.length} noun="lesson note" term={term || undefined} />
       )}
 
       {!notes || notes.length === 0 ? (

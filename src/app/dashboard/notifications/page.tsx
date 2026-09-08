@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import { PageHeader, Card, EmptyState, Chip, btnGhost } from "@/components/ui";
 import ReminderForm from "./ReminderForm";
 import PreferencesForm from "./PreferencesForm";
@@ -28,18 +30,44 @@ function ago(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
-export default async function NotificationsPage() {
+export default async function NotificationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; kind?: string; unread?: string }>;
+}) {
+  const KINDS = [
+    "announcement",
+    "result",
+    "attendance",
+    "fees",
+    "lesson_note",
+    "general",
+  ] as const;
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const kind = KINDS.find((k) => k === sp.kind);
+  const unreadOnly = sp.unread === "1";
+  const isFiltered = Boolean(term || kind || unreadOnly);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
   // RLS restricts this to the caller's own inbox — even an admin cannot read
   // anyone else's.
   const [{ data: items }, { data: profile }, { data: prefs }] = await Promise.all([
-    supabase
-      .from("notifications")
-      .select("id, kind, title, body, link, read_at, created_at")
-      .order("created_at", { ascending: false })
-      .limit(100),
+    (async () => {
+      let q = supabase
+        .from("notifications")
+        .select("id, kind, title, body, link, read_at, created_at")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      // Still the caller's own inbox — RLS sees to that. These only narrow it.
+      if (kind) q = q.eq("kind", kind);
+      if (unreadOnly) q = q.is("read_at", null);
+      const search = orIlike(["title", "body"], term);
+      if (search) q = q.or(search);
+      return q;
+    })(),
     supabase.from("profiles").select("email, phone").eq("id", viewer.id).single(),
     supabase
       .from("notification_preferences")
@@ -89,6 +117,39 @@ export default async function NotificationsPage() {
           smsEnabled={prefs?.sms_enabled ?? true}
         />
       </Card>
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Title or wording…" />
+        <SelectField
+          name="kind"
+          label="Type"
+          defaultValue={kind ?? ""}
+          allLabel="All types"
+          options={[
+            { value: "announcement", label: "Announcements" },
+            { value: "result", label: "Results" },
+            { value: "attendance", label: "Attendance" },
+            { value: "fees", label: "Fees" },
+            { value: "lesson_note", label: "Lesson notes" },
+            { value: "general", label: "General" },
+          ]}
+        />
+        <label className="flex min-h-11 items-center gap-2 text-sm text-ink">
+          <input
+            type="checkbox"
+            name="unread"
+            value="1"
+            defaultChecked={unreadOnly}
+            className="h-4 w-4 rounded border-line accent-brand-500"
+          />
+          Unread only
+        </label>
+        <FilterActions clearHref="/dashboard/notifications" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {items && items.length > 0 && (
+        <ResultCount shown={items.length} noun="notification" term={term || undefined} />
+      )}
 
       {!items || items.length === 0 ? (
         <EmptyState

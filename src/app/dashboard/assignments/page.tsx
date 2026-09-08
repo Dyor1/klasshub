@@ -2,6 +2,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Table, Chip } from "@/components/ui";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import AssignmentForm from "./AssignmentForm";
 import { setAssignmentStatus, deleteAssignment } from "./actions";
 
@@ -21,7 +23,24 @@ function dueLabel(due: string | null) {
   })}`;
 }
 
-export default async function AssignmentsPage() {
+export default async function AssignmentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    q?: string;
+    class?: string;
+    subject?: string;
+    status?: string;
+  }>;
+}) {
+  const STATUSES = ["draft", "published", "closed"] as const;
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const classFilter = sp.class ?? "";
+  const subjectFilter = sp.subject ?? "";
+  const status = STATUSES.find((s) => s === sp.status);
+  const isFiltered = Boolean(term || classFilter || subjectFilter || status);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
@@ -29,10 +48,18 @@ export default async function AssignmentsPage() {
   // for their own class.
   const [{ data: assignments }, { data: classes }, { data: subjects }, { data: subs }] =
     await Promise.all([
-      supabase
-        .from("assignments")
-        .select("id, title, class_id, subject_id, due_at, max_score, status, term, academic_year, created_at")
-        .order("created_at", { ascending: false }),
+      (async () => {
+        let q = supabase
+          .from("assignments")
+          .select("id, title, class_id, subject_id, due_at, max_score, status, term, academic_year, created_at")
+          .order("created_at", { ascending: false });
+        if (classFilter) q = q.eq("class_id", classFilter);
+        if (subjectFilter) q = q.eq("subject_id", subjectFilter);
+        if (status) q = q.eq("status", status);
+        const search = orIlike(["title"], term);
+        if (search) q = q.or(search);
+        return q;
+      })(),
       supabase.from("classes").select("id, name").order("name"),
       supabase.from("subjects").select("id, name").order("name"),
       supabase
@@ -128,10 +155,48 @@ export default async function AssignmentsPage() {
         }
       />
 
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Assignment title…" />
+        <SelectField
+          name="class"
+          label="Class"
+          defaultValue={classFilter}
+          allLabel="All classes"
+          options={(classes ?? []).map((c) => ({ value: c.id, label: c.name }))}
+        />
+        <SelectField
+          name="subject"
+          label="Subject"
+          defaultValue={subjectFilter}
+          allLabel="All subjects"
+          options={(subjects ?? []).map((s) => ({ value: s.id, label: s.name }))}
+        />
+        <SelectField
+          name="status"
+          label="Status"
+          defaultValue={status ?? ""}
+          allLabel="Any status"
+          options={[
+            { value: "draft", label: "Draft" },
+            { value: "published", label: "Published" },
+            { value: "closed", label: "Closed" },
+          ]}
+        />
+        <FilterActions clearHref="/dashboard/assignments" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {assignments && assignments.length > 0 && (
+        <ResultCount shown={assignments.length} noun="assignment" term={term || undefined} />
+      )}
+
       {!assignments || assignments.length === 0 ? (
         <EmptyState
-          title="No assignments yet"
-          hint="Set one, then publish it so the class can see it."
+          title={isFiltered ? "Nothing matches those filters" : "No assignments yet"}
+          hint={
+            isFiltered
+              ? "Try a different search, or clear the filters."
+              : "Set one, then publish it so the class can see it."
+          }
         />
       ) : (
         <Table head={["Assignment", "Class", "Due", "Submitted", "Graded", "Status", ""]}>

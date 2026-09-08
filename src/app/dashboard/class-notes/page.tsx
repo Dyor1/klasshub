@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import { FILE_BUCKET, formatBytes } from "@/lib/files";
 import { PageHeader, Card, EmptyState, Chip } from "@/components/ui";
 import NoteForm from "./NoteForm";
@@ -7,17 +9,37 @@ import { deleteClassNote } from "./actions";
 
 export const metadata = { title: "Class notes — KlassHub" };
 
-export default async function ClassNotesPage() {
+export default async function ClassNotesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; class?: string; subject?: string; term?: string }>;
+}) {
+  const TERMS_V = ["first", "second", "third"] as const;
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const classFilter = sp.class ?? "";
+  const subjectFilter = sp.subject ?? "";
+  const termFilter = TERMS_V.find((t) => t === sp.term);
+  const isFiltered = Boolean(term || classFilter || subjectFilter || termFilter);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
   // RLS limits this to the viewer's school, and for students/parents to the
   // classes they actually belong to.
   const [{ data: notes }, { data: classes }, { data: subjects }] = await Promise.all([
-    supabase
-      .from("class_notes")
-      .select("id, title, description, class_id, subject_id, file_path, file_name, file_size, term, academic_year, created_at")
-      .order("created_at", { ascending: false }),
+    (async () => {
+      let q = supabase
+        .from("class_notes")
+        .select("id, title, description, class_id, subject_id, file_path, file_name, file_size, term, academic_year, created_at")
+        .order("created_at", { ascending: false });
+      if (classFilter) q = q.eq("class_id", classFilter);
+      if (subjectFilter) q = q.eq("subject_id", subjectFilter);
+      if (termFilter) q = q.eq("term", termFilter);
+      const search = orIlike(["title", "description", "file_name"], term);
+      if (search) q = q.or(search);
+      return q;
+    })(),
     supabase
       .from("classes")
       .select("id, name, academic_year")
@@ -57,6 +79,40 @@ export default async function ClassNotesPage() {
           ) : undefined
         }
       />
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Title, description or file…" />
+        <SelectField
+          name="class"
+          label="Class"
+          defaultValue={classFilter}
+          allLabel="All classes"
+          options={(classes ?? []).map((c) => ({ value: c.id, label: c.name }))}
+        />
+        <SelectField
+          name="subject"
+          label="Subject"
+          defaultValue={subjectFilter}
+          allLabel="All subjects"
+          options={(subjects ?? []).map((s) => ({ value: s.id, label: s.name }))}
+        />
+        <SelectField
+          name="term"
+          label="Term"
+          defaultValue={termFilter ?? ""}
+          allLabel="Any term"
+          options={[
+            { value: "first", label: "First term" },
+            { value: "second", label: "Second term" },
+            { value: "third", label: "Third term" },
+          ]}
+        />
+        <FilterActions clearHref="/dashboard/class-notes" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {notes && notes.length > 0 && (
+        <ResultCount shown={notes.length} noun="note" term={term || undefined} />
+      )}
 
       {!notes || notes.length === 0 ? (
         <EmptyState

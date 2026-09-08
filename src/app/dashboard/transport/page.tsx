@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import { PageHeader, Card, EmptyState, Chip, Avatar } from "@/components/ui";
 import RouteForm from "./RouteForm";
 import AssignForm from "./AssignForm";
@@ -24,16 +26,32 @@ function timeOf(ts: string | null) {
   return new Date(ts).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 }
 
-export default async function TransportPage() {
+export default async function TransportPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; status?: string }>;
+}) {
+  const STATUSES = ["active", "inactive"] as const;
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const status = STATUSES.find((s) => s === sp.status);
+  const isFiltered = Boolean(term || status);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
   // RLS: staff see every rider, a student or parent only their own.
   const [{ data: routes }, { data: riders }, { data: students }] = await Promise.all([
-    supabase
-      .from("transport_routes")
-      .select("id, name, vehicle_number, driver_name, driver_phone, capacity, pickup_points, status")
-      .order("name"),
+    (async () => {
+      let q = supabase
+        .from("transport_routes")
+        .select("id, name, vehicle_number, driver_name, driver_phone, capacity, pickup_points, status")
+        .order("name");
+      if (status) q = q.eq("status", status);
+      const search = orIlike(["name", "vehicle_number", "driver_name"], term);
+      if (search) q = q.or(search);
+      return q;
+    })(),
     supabase
       .from("student_transport")
       .select("id, student_id, route_id, pickup_point, board_status, board_updated_at"),
@@ -147,10 +165,33 @@ export default async function TransportPage() {
         action={<RouteForm />}
       />
 
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Route, vehicle or driver…" />
+        <SelectField
+          name="status"
+          label="Status"
+          defaultValue={status ?? ""}
+          allLabel="Any status"
+          options={[
+            { value: "active", label: "Active" },
+            { value: "inactive", label: "Inactive" },
+          ]}
+        />
+        <FilterActions clearHref="/dashboard/transport" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {routes && routes.length > 0 && (
+        <ResultCount shown={routes.length} noun="route" term={term || undefined} />
+      )}
+
       {!routes || routes.length === 0 ? (
         <EmptyState
-          title="No routes yet"
-          hint="Add a route, then assign the students who ride it."
+          title={isFiltered ? "No routes match those filters" : "No routes yet"}
+          hint={
+            isFiltered
+              ? "Try a different search, or clear the filters."
+              : "Add a route, then assign the students who ride it."
+          }
         />
       ) : (
         <>
