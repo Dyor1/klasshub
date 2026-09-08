@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card, Chip, Avatar, roleChip } from "@/components/ui";
 import { FilterBar, SearchField, SelectField, FilterActions } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import InviteForm from "./InviteForm";
 import { revokeInvitation } from "./actions";
 
@@ -31,8 +31,7 @@ export default async function TeamPage({
         .select("id, full_name, email, role, created_at")
         .order("created_at", { ascending: true });
       if (role) q = q.eq("role", role);
-      const search = orIlike(["full_name", "email"], term);
-      if (search) q = q.or(search);
+      for (const clause of searchClauses(["full_name", "email"], term)) q = q.or(clause);
       return q;
     })(),
     supabase

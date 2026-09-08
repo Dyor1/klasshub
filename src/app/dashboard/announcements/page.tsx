@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Chip } from "@/components/ui";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import AnnouncementForm from "./AnnouncementForm";
 import { deleteAnnouncement } from "./actions";
 
@@ -42,8 +42,7 @@ export default async function AnnouncementsPage({
       // all, so a filter can never reveal one addressed elsewhere.
       if (audience) q = q.eq("audience", audience);
       if (classFilter) q = q.eq("class_id", classFilter);
-      const search = orIlike(["title", "body"], term);
-      if (search) q = q.or(search);
+      for (const clause of searchClauses(["title", "body"], term)) q = q.or(clause);
       return q;
     })(),
     supabase.from("classes").select("id, name").order("name"),

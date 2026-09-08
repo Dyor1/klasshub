@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Chip } from "@/components/ui";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import EventForm from "./EventForm";
 import { deleteEvent } from "./actions";
 
@@ -41,8 +41,7 @@ export default async function EventsPage({
   if (when === "upcoming") eventQuery = eventQuery.gte("event_date", today);
   if (when === "past") eventQuery = eventQuery.lt("event_date", today);
 
-  const search = orIlike(["title", "description", "location"], term);
-  if (search) eventQuery = eventQuery.or(search);
+  for (const clause of searchClauses(["title", "description", "location"], term)) eventQuery = eventQuery.or(clause);
 
   const [{ data: events }, { count: totalEvents }] = await Promise.all([
     eventQuery,

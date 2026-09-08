@@ -9,7 +9,7 @@ import {
   FilterActions,
   ResultCount,
 } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import StudentForm from "./StudentForm";
 import { deleteStudent } from "./actions";
 
@@ -60,11 +60,7 @@ export default async function StudentsPage({
       if (gender) q = q.eq("gender", gender);
       if (status) q = q.eq("status", status);
 
-      const search = orIlike(
-        ["surname", "first_name", "other_names", "admission_number"],
-        term
-      );
-      if (search) q = q.or(search);
+      for (const clause of searchClauses(["surname", "first_name", "other_names", "admission_number"], term)) q = q.or(clause);
 
       return q;
     })(),

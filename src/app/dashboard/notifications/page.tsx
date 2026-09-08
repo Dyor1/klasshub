@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import { PageHeader, Card, EmptyState, Chip, btnGhost } from "@/components/ui";
 import ReminderForm from "./ReminderForm";
 import PreferencesForm from "./PreferencesForm";
@@ -64,8 +64,7 @@ export default async function NotificationsPage({
       // Still the caller's own inbox — RLS sees to that. These only narrow it.
       if (kind) q = q.eq("kind", kind);
       if (unreadOnly) q = q.is("read_at", null);
-      const search = orIlike(["title", "body"], term);
-      if (search) q = q.or(search);
+      for (const clause of searchClauses(["title", "body"], term)) q = q.or(clause);
       return q;
     })(),
     supabase.from("profiles").select("email, phone").eq("id", viewer.id).single(),

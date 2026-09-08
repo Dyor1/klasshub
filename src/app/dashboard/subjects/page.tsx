@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Table } from "@/components/ui";
 import { FilterBar, SearchField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import SubjectForm from "./SubjectForm";
 import { deleteSubject } from "./actions";
 
@@ -20,8 +20,7 @@ export default async function SubjectsPage({
   const supabase = await createClient();
 
   let subjectQuery = supabase.from("subjects").select("id, name, code").order("name");
-  const search = orIlike(["name", "code"], term);
-  if (search) subjectQuery = subjectQuery.or(search);
+  for (const clause of searchClauses(["name", "code"], term)) subjectQuery = subjectQuery.or(clause);
 
   const [{ data: subjects }, { count: totalSubjects }] = await Promise.all([
     subjectQuery,

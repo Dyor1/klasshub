@@ -12,7 +12,7 @@ import {
   btnGhost,
 } from "@/components/ui";
 import { SearchField } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 
 export const metadata = { title: "Report cards — KlassHub" };
 
@@ -107,11 +107,7 @@ export default async function ReportCardsPage({
           .eq("class_id", classId)
           .eq("status", "active")
           .order("surname");
-        const search = orIlike(
-          ["surname", "first_name", "other_names", "admission_number"],
-          nameTerm
-        );
-        if (search) q = q.or(search);
+        for (const clause of searchClauses(["surname", "first_name", "other_names", "admission_number"], nameTerm)) q = q.or(clause);
         return q;
       })()
     : { data: null };

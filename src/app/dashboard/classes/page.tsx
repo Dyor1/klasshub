@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Table, Chip } from "@/components/ui";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import ClassForm from "./ClassForm";
 import { deleteClass } from "./actions";
 
@@ -31,8 +31,7 @@ export default async function ClassesPage({
         .order("academic_year", { ascending: false })
         .order("name");
       if (year) q = q.eq("academic_year", year);
-      const search = orIlike(["name", "grade_level", "section"], term);
-      if (search) q = q.or(search);
+      for (const clause of searchClauses(["name", "grade_level", "section"], term)) q = q.or(clause);
       return q;
     })(),
     supabase

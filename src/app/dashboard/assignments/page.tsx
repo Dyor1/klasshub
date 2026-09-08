@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Table, Chip } from "@/components/ui";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import AssignmentForm from "./AssignmentForm";
 import { setAssignmentStatus, deleteAssignment } from "./actions";
 
@@ -56,8 +56,7 @@ export default async function AssignmentsPage({
         if (classFilter) q = q.eq("class_id", classFilter);
         if (subjectFilter) q = q.eq("subject_id", subjectFilter);
         if (status) q = q.eq("status", status);
-        const search = orIlike(["title"], term);
-        if (search) q = q.or(search);
+        for (const clause of searchClauses(["title"], term)) q = q.or(clause);
         return q;
       })(),
       supabase.from("classes").select("id, name").order("name"),

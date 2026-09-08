@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { FilterBar, SearchField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import { PageHeader, Card, EmptyState, Table, Chip, Avatar } from "@/components/ui";
 import LinkForm from "./LinkForm";
 import { unlinkGuardian } from "./actions";
@@ -30,15 +30,23 @@ export default async function GuardiansPage({
   // have quietly stopped working past a thousand links.
   const matchIds = term
     ? await Promise.all([
-        supabase
-          .from("students")
-          .select("id")
-          .or(orIlike(["surname", "first_name", "other_names", "admission_number"], term)!),
-        supabase
-          .from("profiles")
-          .select("id")
-          .eq("role", "parent")
-          .or(orIlike(["full_name", "email"], term)!),
+        (() => {
+          let q = supabase.from("students").select("id");
+          for (const clause of searchClauses(
+            ["surname", "first_name", "other_names", "admission_number"],
+            term
+          )) {
+            q = q.or(clause);
+          }
+          return q;
+        })(),
+        (() => {
+          let q = supabase.from("profiles").select("id").eq("role", "parent");
+          for (const clause of searchClauses(["full_name", "email"], term)) {
+            q = q.or(clause);
+          }
+          return q;
+        })(),
       ])
     : null;
 

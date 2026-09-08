@@ -71,3 +71,41 @@ test("displayTerm echoes what was typed, not the pattern", () => {
   assert.equal(displayTerm("  Okafor "), "Okafor");
   assert.equal(displayTerm(null), "");
 });
+
+// --- multi-word search -----------------------------------------------------
+// Added after the browser showed that searching a pupil's actual full name
+// returned nothing: surname and first_name are separate columns, so no single
+// ilike pattern can span them.
+import { searchClauses } from "../src/lib/search.ts";
+
+test("one clause per word, each spanning every column", () => {
+  assert.deepEqual(searchClauses(["surname", "first_name"], "Okafor Emeka"), [
+    "surname.ilike.%Okafor%,first_name.ilike.%Okafor%",
+    "surname.ilike.%Emeka%,first_name.ilike.%Emeka%",
+  ]);
+});
+
+test("a single word still yields a single clause", () => {
+  assert.deepEqual(searchClauses(["surname"], "Okafor"), ["surname.ilike.%Okafor%"]);
+});
+
+test("nothing to search for yields no clauses", () => {
+  assert.deepEqual(searchClauses(["surname"], ""), []);
+  assert.deepEqual(searchClauses(["surname"], "   "), []);
+  assert.deepEqual(searchClauses(["surname"], ",,,"), []);
+  assert.deepEqual(searchClauses([], "Okafor"), []);
+});
+
+test("punctuation between words becomes a word break, not a broken filter", () => {
+  assert.deepEqual(searchClauses(["surname", "first_name"], "Okafor, Emeka"), [
+    "surname.ilike.%Okafor%,first_name.ilike.%Okafor%",
+    "surname.ilike.%Emeka%,first_name.ilike.%Emeka%",
+  ]);
+});
+
+test("wildcards stay escaped per word", () => {
+  assert.deepEqual(searchClauses(["code"], "50% off"), [
+    "code.ilike.%50\\%%",
+    "code.ilike.%off%",
+  ]);
+});

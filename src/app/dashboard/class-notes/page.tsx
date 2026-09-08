@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import { FILE_BUCKET, formatBytes } from "@/lib/files";
 import { PageHeader, Card, EmptyState, Chip } from "@/components/ui";
 import NoteForm from "./NoteForm";
@@ -36,8 +36,7 @@ export default async function ClassNotesPage({
       if (classFilter) q = q.eq("class_id", classFilter);
       if (subjectFilter) q = q.eq("subject_id", subjectFilter);
       if (termFilter) q = q.eq("term", termFilter);
-      const search = orIlike(["title", "description", "file_name"], term);
-      if (search) q = q.or(search);
+      for (const clause of searchClauses(["title", "description", "file_name"], term)) q = q.or(clause);
       return q;
     })(),
     supabase

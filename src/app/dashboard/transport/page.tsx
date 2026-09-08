@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import { PageHeader, Card, EmptyState, Chip, Avatar } from "@/components/ui";
 import RouteForm from "./RouteForm";
 import AssignForm from "./AssignForm";
@@ -48,8 +48,7 @@ export default async function TransportPage({
         .select("id, name, vehicle_number, driver_name, driver_phone, capacity, pickup_points, status")
         .order("name");
       if (status) q = q.eq("status", status);
-      const search = orIlike(["name", "vehicle_number", "driver_name"], term);
-      if (search) q = q.or(search);
+      for (const clause of searchClauses(["name", "vehicle_number", "driver_name"], term)) q = q.or(clause);
       return q;
     })(),
     supabase

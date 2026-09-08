@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import { FILE_BUCKET, formatBytes } from "@/lib/files";
 import { PageHeader, Card, EmptyState, Chip } from "@/components/ui";
 import LessonForm from "./LessonForm";
@@ -53,8 +53,7 @@ export default async function LessonNotesPage({
         if (subjectFilter) q = q.eq("subject_id", subjectFilter);
         if (termFilter) q = q.eq("term", termFilter);
         if (status) q = q.eq("status", status);
-        const search = orIlike(["topic", "description"], term);
-        if (search) q = q.or(search);
+        for (const clause of searchClauses(["topic", "description"], term)) q = q.or(clause);
         return q;
       })(),
       supabase.from("classes").select("id, name").order("name"),

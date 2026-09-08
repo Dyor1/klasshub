@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
-import { orIlike, displayTerm } from "@/lib/search";
+import { searchClauses, displayTerm } from "@/lib/search";
 import { PageHeader, Card, EmptyState, Table, Chip, ErrorNote } from "@/components/ui";
 import ExamForm from "./ExamForm";
 import { startExam, setExamStatus, deleteExam } from "./actions";
@@ -44,8 +44,7 @@ export default async function CbtPage({
         if (classFilter) q = q.eq("class_id", classFilter);
         if (subjectFilter) q = q.eq("subject_id", subjectFilter);
         if (examStatus) q = q.eq("status", examStatus);
-        const search = orIlike(["title"], term);
-        if (search) q = q.or(search);
+        for (const clause of searchClauses(["title"], term)) q = q.or(clause);
         return q;
       })(),
       supabase.from("classes").select("id, name").order("name"),

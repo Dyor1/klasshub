@@ -17,7 +17,32 @@ export default function AutoSubmit() {
     const form = anchor.current?.closest("form");
     if (!form) return;
 
-    const onChange = (event: Event) => {
+    // A GET form submits every field it owns, so an untouched bar produces
+    // ?q=&class=&gender=female&status= — which works, but makes a nonsense of
+    // the point of putting filters in the URL. Empty controls are disabled for
+    // the instant of submission so the browser leaves them out; the page
+    // re-renders immediately afterwards, so nothing stays disabled.
+    const onSubmit = () => {
+      const emptied: HTMLInputElement[] | HTMLSelectElement[] = [];
+      const controls = form.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
+        "input[name], select[name]"
+      );
+      controls.forEach((el) => {
+        if (el instanceof HTMLInputElement && el.type === "checkbox") return;
+        if (el.name.startsWith("$")) return; // React's own action fields
+        if (el.value === "") {
+          el.disabled = true;
+          (emptied as HTMLElement[]).push(el);
+        }
+      });
+      // Re-enable on the next tick in case the navigation is cancelled.
+      setTimeout(() => (emptied as HTMLElement[]).forEach((el) => {
+        (el as HTMLInputElement).disabled = false;
+      }), 0);
+    };
+    form.addEventListener("submit", onSubmit);
+
+    const onChangeHandler = (event: Event) => {
       const target = event.target as HTMLElement | null;
       if (!target) return;
       if (target.hasAttribute("data-no-auto-submit")) return;
@@ -29,8 +54,11 @@ export default function AutoSubmit() {
       form.requestSubmit();
     };
 
-    form.addEventListener("change", onChange);
-    return () => form.removeEventListener("change", onChange);
+    form.addEventListener("change", onChangeHandler);
+    return () => {
+      form.removeEventListener("change", onChangeHandler);
+      form.removeEventListener("submit", onSubmit);
+    };
   }, []);
 
   return <span ref={anchor} hidden />;
