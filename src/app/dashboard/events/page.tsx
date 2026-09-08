@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Chip } from "@/components/ui";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import EventForm from "./EventForm";
 import { deleteEvent } from "./actions";
 
@@ -14,16 +16,39 @@ function formatDay(d: string) {
   });
 }
 
-export default async function EventsPage() {
+export default async function EventsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; when?: string }>;
+}) {
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const when = sp.when === "upcoming" || sp.when === "past" ? sp.when : "";
+  const isFiltered = Boolean(term || when);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
-  const { data: events } = await supabase
+  const today = new Date().toISOString().slice(0, 10);
+
+  let eventQuery = supabase
     .from("events")
     .select("id, title, description, event_date, event_time, location")
     .order("event_date");
 
-  const today = new Date().toISOString().slice(0, 10);
+  // The date split happens in SQL so a school with years of history is not
+  // shipping all of it to the browser to hide most of it again.
+  if (when === "upcoming") eventQuery = eventQuery.gte("event_date", today);
+  if (when === "past") eventQuery = eventQuery.lt("event_date", today);
+
+  const search = orIlike(["title", "description", "location"], term);
+  if (search) eventQuery = eventQuery.or(search);
+
+  const [{ data: events }, { count: totalEvents }] = await Promise.all([
+    eventQuery,
+    supabase.from("events").select("id", { count: "exact", head: true }),
+  ]);
+
   const upcoming = (events ?? []).filter((e) => e.event_date >= today);
   const past = (events ?? []).filter((e) => e.event_date < today).reverse();
 
@@ -34,6 +59,30 @@ export default async function EventsPage() {
         subtitle="What's coming up at your school."
         action={viewer.isStaff ? <EventForm /> : undefined}
       />
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Title, description or place…" />
+        <SelectField
+          name="when"
+          label="When"
+          defaultValue={when}
+          allLabel="All dates"
+          options={[
+            { value: "upcoming", label: "Upcoming" },
+            { value: "past", label: "Past" },
+          ]}
+        />
+        <FilterActions clearHref="/dashboard/events" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {(events ?? []).length > 0 && (
+        <ResultCount
+          shown={events!.length}
+          total={totalEvents ?? undefined}
+          noun="event"
+          term={term || undefined}
+        />
+      )}
 
       {(events ?? []).length === 0 ? (
         <EmptyState

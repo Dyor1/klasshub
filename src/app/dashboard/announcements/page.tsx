@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Chip } from "@/components/ui";
+import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import AnnouncementForm from "./AnnouncementForm";
 import { deleteAnnouncement } from "./actions";
 
@@ -13,17 +15,37 @@ const audienceTone = {
   staff: "slate",
 } as const;
 
-export default async function AnnouncementsPage() {
+export default async function AnnouncementsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; audience?: string; class?: string }>;
+}) {
+  const AUDIENCES = ["everyone", "students", "parents", "staff"] as const;
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const audience = AUDIENCES.find((a) => a === sp.audience);
+  const classFilter = sp.class ?? "";
+  const isFiltered = Boolean(term || audience || classFilter);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
   // RLS decides what each role sees: staff get everything, students and
   // parents only what is addressed to them and to a class they belong to.
   const [{ data: posts }, { data: classes }, { data: authors }] = await Promise.all([
-    supabase
-      .from("announcements")
-      .select("id, title, body, audience, class_id, created_at, created_by")
-      .order("created_at", { ascending: false }),
+    (async () => {
+      let q = supabase
+        .from("announcements")
+        .select("id, title, body, audience, class_id, created_at, created_by")
+        .order("created_at", { ascending: false });
+      // Narrowing only. RLS already decides which notices this role may see at
+      // all, so a filter can never reveal one addressed elsewhere.
+      if (audience) q = q.eq("audience", audience);
+      if (classFilter) q = q.eq("class_id", classFilter);
+      const search = orIlike(["title", "body"], term);
+      if (search) q = q.or(search);
+      return q;
+    })(),
     supabase.from("classes").select("id, name").order("name"),
     supabase.from("profiles").select("id, full_name"),
   ]);
@@ -45,13 +67,45 @@ export default async function AnnouncementsPage() {
         }
       />
 
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Title or wording…" />
+        <SelectField
+          name="audience"
+          label="Audience"
+          defaultValue={audience ?? ""}
+          allLabel="Everyone's notices"
+          options={[
+            { value: "everyone", label: "Whole school" },
+            { value: "students", label: "Students" },
+            { value: "parents", label: "Parents" },
+            { value: "staff", label: "Staff" },
+          ]}
+        />
+        {viewer.isStaff && (classes ?? []).length > 0 && (
+          <SelectField
+            name="class"
+            label="Class"
+            defaultValue={classFilter}
+            allLabel="Any class"
+            options={(classes ?? []).map((c) => ({ value: c.id, label: c.name }))}
+          />
+        )}
+        <FilterActions clearHref="/dashboard/announcements" isFiltered={isFiltered} />
+      </FilterBar>
+
+      {posts && posts.length > 0 && (
+        <ResultCount shown={posts.length} noun="announcement" term={term || undefined} />
+      )}
+
       {!posts || posts.length === 0 ? (
         <EmptyState
-          title="No announcements yet"
+          title={isFiltered ? "Nothing matches those filters" : "No announcements yet"}
           hint={
-            viewer.isStaff
-              ? "Post one and it appears instantly for the audience you choose."
-              : "Notices from your school will show up here."
+            isFiltered
+              ? "Try a different search, or clear the filters."
+              : viewer.isStaff
+                ? "Post one and it appears instantly for the audience you choose."
+                : "Notices from your school will show up here."
           }
         />
       ) : (

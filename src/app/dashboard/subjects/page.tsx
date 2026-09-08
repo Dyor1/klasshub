@@ -1,19 +1,32 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card, EmptyState, Table } from "@/components/ui";
+import { FilterBar, SearchField, FilterActions, ResultCount } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import SubjectForm from "./SubjectForm";
 import { deleteSubject } from "./actions";
 
 export const metadata = { title: "Subjects — KlassHub" };
 
-export default async function SubjectsPage() {
+export default async function SubjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
-  const { data: subjects } = await supabase
-    .from("subjects")
-    .select("id, name, code")
-    .order("name");
+  let subjectQuery = supabase.from("subjects").select("id, name, code").order("name");
+  const search = orIlike(["name", "code"], term);
+  if (search) subjectQuery = subjectQuery.or(search);
+
+  const [{ data: subjects }, { count: totalSubjects }] = await Promise.all([
+    subjectQuery,
+    supabase.from("subjects").select("id", { count: "exact", head: true }),
+  ]);
 
   const { data: results } = await supabase.from("results").select("subject_id");
   const usage = new Map<string, number>();
@@ -32,6 +45,20 @@ export default async function SubjectsPage() {
         <Card title="Add a subject" className="mb-8">
           <SubjectForm />
         </Card>
+      )}
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Subject name or code…" />
+        <FilterActions clearHref="/dashboard/subjects" isFiltered={Boolean(term)} />
+      </FilterBar>
+
+      {subjects && subjects.length > 0 && (
+        <ResultCount
+          shown={subjects.length}
+          total={totalSubjects ?? undefined}
+          noun="subject"
+          term={term || undefined}
+        />
       )}
 
       {!subjects || subjects.length === 0 ? (

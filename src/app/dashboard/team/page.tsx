@@ -1,22 +1,40 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
 import { PageHeader, Card, Chip, Avatar, roleChip } from "@/components/ui";
+import { FilterBar, SearchField, SelectField, FilterActions } from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import InviteForm from "./InviteForm";
 import { revokeInvitation } from "./actions";
 
 export const metadata = { title: "Team — KlassHub" };
 
-export default async function TeamPage() {
+export default async function TeamPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; role?: string }>;
+}) {
+  const ROLES = ["admin", "teacher", "student", "parent"] as const;
+  const sp = await searchParams;
+  const term = displayTerm(sp.q);
+  const role = ROLES.find((r) => r === sp.role);
+  const isFiltered = Boolean(term || role);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
   // RLS scopes both queries to the caller's school. Non-admins get zero
   // invitations back, so the section simply doesn't render for them.
   const [{ data: members }, { data: invites }] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("id, full_name, email, role, created_at")
-      .order("created_at", { ascending: true }),
+    (async () => {
+      let q = supabase
+        .from("profiles")
+        .select("id, full_name, email, role, created_at")
+        .order("created_at", { ascending: true });
+      if (role) q = q.eq("role", role);
+      const search = orIlike(["full_name", "email"], term);
+      if (search) q = q.or(search);
+      return q;
+    })(),
     supabase
       .from("invitations")
       .select("id, email, role, expires_at")
@@ -27,6 +45,23 @@ export default async function TeamPage() {
   return (
     <>
       <PageHeader title="Team" subtitle="Everyone with access to your school." />
+
+      <FilterBar>
+        <SearchField defaultValue={term} placeholder="Name or email…" />
+        <SelectField
+          name="role"
+          label="Role"
+          defaultValue={role ?? ""}
+          allLabel="All roles"
+          options={[
+            { value: "admin", label: "Administrators" },
+            { value: "teacher", label: "Teachers" },
+            { value: "student", label: "Students" },
+            { value: "parent", label: "Parents" },
+          ]}
+        />
+        <FilterActions clearHref="/dashboard/team" isFiltered={isFiltered} />
+      </FilterBar>
 
       {viewer.isAdmin ? (
         <div className="mb-8">
@@ -92,7 +127,10 @@ export default async function TeamPage() {
         </section>
       )}
 
-      <Card title={`Members (${members?.length ?? 0})`}>
+      <Card
+        title={`Members (${members?.length ?? 0})`}
+        description={isFiltered ? "Filtered — clear the filters above to see everyone." : undefined}
+      >
         <ul className="divide-y divide-line-soft">
           {members?.map((m) => (
             <li key={m.id} className="flex items-center justify-between gap-4 py-3 first:pt-0">

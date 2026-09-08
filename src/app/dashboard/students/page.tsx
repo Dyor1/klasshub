@@ -1,7 +1,15 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
-import { PageHeader, Card, EmptyState, Table, Chip, Avatar, btnGhost } from "@/components/ui";
+import { PageHeader, EmptyState, Table, Chip, Avatar, btnGhost } from "@/components/ui";
+import {
+  FilterBar,
+  SearchField,
+  SelectField,
+  FilterActions,
+  ResultCount,
+} from "@/components/Filters";
+import { orIlike, displayTerm } from "@/lib/search";
 import StudentForm from "./StudentForm";
 import { deleteStudent } from "./actions";
 
@@ -10,13 +18,30 @@ export const metadata = { title: "Students — KlassHub" };
 export default async function StudentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ class?: string }>;
+  searchParams: Promise<{
+    class?: string;
+    q?: string;
+    gender?: string;
+    status?: string;
+  }>;
 }) {
-  const { class: classFilter } = await searchParams;
+  // Whitelisted rather than cast. A query string is caller-controlled, and an
+  // unrecognised value should fall back to "no filter" instead of being handed
+  // to PostgREST as an enum it will reject with a 400.
+  const STATUSES = ["active", "graduated", "withdrawn", "suspended"] as const;
+  const GENDERS = ["male", "female"] as const;
+
+  const sp = await searchParams;
+  const classFilter = sp.class ?? "";
+  const term = displayTerm(sp.q);
+  const gender = GENDERS.find((g) => g === sp.gender);
+  const status = STATUSES.find((s) => s === sp.status);
+  const isFiltered = Boolean(classFilter || term || gender || status);
+
   const viewer = await requireViewer();
   const supabase = await createClient();
 
-  const [{ data: classes }, studentsRes] = await Promise.all([
+  const [{ data: classes }, studentsRes, { count: total }] = await Promise.all([
     supabase
       .from("classes")
       .select("id, name, academic_year")
@@ -27,9 +52,25 @@ export default async function StudentsPage({
         .from("students")
         .select("id, admission_number, surname, first_name, other_names, gender, status, class_id")
         .order("surname");
+
+      // Narrowed in SQL rather than in the browser: RLS still bounds the rows
+      // to this school, and PostgREST would cap a fetch-everything approach at
+      // 1000 pupils without saying so.
       if (classFilter) q = q.eq("class_id", classFilter);
+      if (gender) q = q.eq("gender", gender);
+      if (status) q = q.eq("status", status);
+
+      const search = orIlike(
+        ["surname", "first_name", "other_names", "admission_number"],
+        term
+      );
+      if (search) q = q.or(search);
+
       return q;
     })(),
+    // The unfiltered size, so "12 of 340" reads as a narrow filter rather than
+    // an empty school.
+    supabase.from("students").select("id", { count: "exact", head: true }),
   ]);
 
   const students = studentsRes.data;
@@ -56,34 +97,52 @@ export default async function StudentsPage({
         }
       />
 
-      {viewer.isStaff && classes && classes.length > 0 && (
-        <Card className="mb-6">
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href="/dashboard/students"
-              className={`inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                !classFilter
-                  ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
-                  : "text-ink-muted hover:bg-hover"
-              }`}
-            >
-              All classes
-            </Link>
-            {classes.map((c) => (
-              <Link
-                key={c.id}
-                href={`/dashboard/students?class=${c.id}`}
-                className={`inline-flex min-h-11 items-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                  classFilter === c.id
-                    ? "bg-brand-500/10 text-brand-700 dark:text-brand-300"
-                    : "text-ink-muted hover:bg-hover"
-                }`}
-              >
-                {c.name}
-              </Link>
-            ))}
-          </div>
-        </Card>
+      {viewer.isStaff && (
+        <FilterBar>
+          <SearchField
+            defaultValue={term}
+            placeholder="Name or admission number…"
+          />
+          <SelectField
+            name="class"
+            label="Class"
+            defaultValue={classFilter}
+            allLabel="All classes"
+            options={(classes ?? []).map((c) => ({ value: c.id, label: c.name }))}
+          />
+          <SelectField
+            name="gender"
+            label="Gender"
+            defaultValue={gender ?? ""}
+            allLabel="Any"
+            options={[
+              { value: "male", label: "Male" },
+              { value: "female", label: "Female" },
+            ]}
+          />
+          <SelectField
+            name="status"
+            label="Status"
+            defaultValue={status ?? ""}
+            allLabel="Any"
+            options={[
+              { value: "active", label: "Active" },
+              { value: "graduated", label: "Graduated" },
+              { value: "withdrawn", label: "Withdrawn" },
+              { value: "suspended", label: "Suspended" },
+            ]}
+          />
+          <FilterActions clearHref="/dashboard/students" isFiltered={isFiltered} />
+        </FilterBar>
+      )}
+
+      {viewer.isStaff && students && students.length > 0 && (
+        <ResultCount
+          shown={students.length}
+          total={total ?? undefined}
+          noun="student"
+          term={term || undefined}
+        />
       )}
 
       {!students || students.length === 0 ? (
@@ -91,8 +150,8 @@ export default async function StudentsPage({
           title="No students found"
           hint={
             viewer.isStaff
-              ? classFilter
-                ? "No students are assigned to this class yet."
+              ? isFiltered
+                ? "Nothing matches these filters. Try clearing one."
                 : "Enrol your first student to get started."
               : "Your record hasn't been linked yet — ask your school administrator."
           }
