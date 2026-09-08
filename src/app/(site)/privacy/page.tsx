@@ -85,6 +85,10 @@ export default function PrivacyPage() {
               "Message delivery records",
               "Whether an email or SMS was sent, when, and whether it succeeded.",
             ],
+            [
+              "Contact form messages",
+              "If you write to us through the contact page: your name, email address, the subject you pick and the message itself. We also store a one-way hash of your IP address and your browser's user-agent, used only to stop the form being flooded — the hash cannot be turned back into an address, and the salt is not kept in the database.",
+            ],
           ]}
         />
         <p>

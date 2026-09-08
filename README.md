@@ -219,6 +219,58 @@ doing the resetting. Someone resetting a password may be doing it precisely
 because another party is in the account, and leaving that session alive would
 defeat the exercise.
 
+## Contact form
+
+```
+browser ─▶ Next server action ─▶ contact function ─▶ contact_messages ─▶ Brevo
+```
+
+The browser never calls the function. Routing through a server action means
+there is no CORS surface and no endpoint a script can hammer directly — the
+shared secret is the gate, and the rate limiting behind it is a second line
+rather than the only one.
+
+**The row is written before the email is attempted.** That is the whole reason
+to prefer a form over a `mailto:` link: a form that hands straight to a
+provider loses every message that provider rejects. Here a failed send leaves
+the row marked `failed` with the provider's reason on it, so nothing is lost
+and you can see what happened.
+
+```bash
+supabase functions deploy contact --no-verify-jwt
+supabase secrets set CONTACT_SECRET="$(openssl rand -hex 32)" \
+  CONTACT_TO=hello@yourdomain.ng \
+  CONTACT_IP_SALT="$(openssl rand -hex 32)"
+```
+
+Then set the **same** `CONTACT_SECRET` as a plain (not `NEXT_PUBLIC_`)
+environment variable in Vercel. Unset, the form refuses to send and says so —
+it never pretends to have delivered.
+
+Three limits apply per hour: three messages per IP, three per email address,
+and sixty overall. The first two are the ordinary cases; the global cap is what
+stops a distributed flood turning into a Brevo bill.
+
+Some deliberate choices worth not undoing:
+
+- **Mail only ever goes to `CONTACT_TO`.** Never to the submitter, and never to
+  an address taken from the request body — a form that mails arbitrary
+  recipients on demand is an open relay with better manners. `replyTo` carries
+  the sender, so replying from the inbox works.
+- **IP addresses are stored as a salted hash**, with the salt held as a
+  function secret rather than in the database, because IPv4 is small enough to
+  enumerate against an unsalted hash.
+- **The honeypot answers with success.** Telling a bot its submission was
+  rejected teaches whoever wrote it which field to leave alone next time.
+
+```bash
+deno test supabase/functions/contact/    # 11 tests, no database needed
+```
+
+Those cover the two rules that fail in opposite directions: an email pattern
+strict enough to reject `head.teacher+enquiries@…` turns away paying customers,
+and a honeypot that reports honestly stops working.
+
 ## Online fee payment (Paystack)
 
 The rule that shapes this: **the browser is never told a payment succeeded.**
@@ -332,10 +384,9 @@ If you ever move the Supabase project, move this with it.
       the live page, so an unfilled one is embarrassing rather than invisible;
       that is deliberate. The liability section is marked as needing a lawyer,
       not a template
-- [ ] Contact page carries real addresses — it deliberately has no form. A
-      public unauthenticated form needs rate limiting to be worth having, and
-      the mail credentials are Supabase function secrets rather than Next env
-      vars, so a working form means a new Edge Function
+- [ ] `contact` function deployed, its three secrets set, and `CONTACT_SECRET`
+      matching in Vercel — then send yourself a test message and confirm it
+      both arrives and appears in `contact_messages`
 - [ ] A paid Supabase plan if this holds real records — the free tier has no
       point-in-time recovery, and a school roll is not something to restore
       from a week-old snapshot
