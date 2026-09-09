@@ -4,6 +4,7 @@ import { PageHeader, Card, Chip, Avatar, roleChip } from "@/components/ui";
 import { FilterBar, SearchField, SelectField, FilterActions } from "@/components/Filters";
 import { searchClauses, displayTerm } from "@/lib/search";
 import InviteForm from "./InviteForm";
+import BulkInviteForm from "./BulkInviteForm";
 import { revokeInvitation } from "./actions";
 
 export const metadata = { title: "Team — KlassHub" };
@@ -63,8 +64,14 @@ export default async function TeamPage({
       </FilterBar>
 
       {viewer.isAdmin ? (
-        <div className="mb-8">
+        <div className="mb-8 space-y-6">
           <InviteForm />
+          <Card
+            title="Invite several people"
+            description="Onboarding a school means inviting the whole staff room. One address at a time is where an admin gives up and starts sharing a login."
+          >
+            <BulkInviteForm />
+          </Card>
         </div>
       ) : (
         <p className="mb-8 rounded-lg border border-line bg-card px-4 py-3 text-sm text-ink-muted">
