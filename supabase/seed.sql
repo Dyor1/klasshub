@@ -28,6 +28,11 @@
 --   student@numamu.test   Nwosu Chidi          student
 --   parent@numamu.test    Mr Ikenna Nwosu      parent (Chidi's father)
 --
+-- Three more parents exist without logins, so the guardians list has something
+-- to search. Between them they cover the cases that behave differently: a
+-- child with two guardians, a guardian with children in two different classes,
+-- and a pupil with no guardian recorded at all.
+--
 --   password: klasshub-demo
 
 do $$
@@ -50,6 +55,12 @@ declare
   u_teacher  constant uuid := '44444444-4444-4444-8444-000000000002';
   u_student  constant uuid := '44444444-4444-4444-8444-000000000003';
   u_parent   constant uuid := '44444444-4444-4444-8444-000000000004';
+  -- Guardians without a login. A school records far more parents than ever
+  -- sign in, and a fixture where every guardian happens to have an account
+  -- would hide anything that assumes one.
+  u_par_mum  constant uuid := '44444444-4444-4444-8444-000000000005';
+  u_par_oka  constant uuid := '44444444-4444-4444-8444-000000000006';
+  u_par_ade  constant uuid := '44444444-4444-4444-8444-000000000007';
 
   v_school   uuid;
   v_year     constant text := '2025/2026';
@@ -106,6 +117,31 @@ begin
     (u_student, v_school, 'student', 'Nwosu Chidi',     'student@numamu.test'),
     (u_parent,  v_school, 'parent',  'Mr Ikenna Nwosu', 'parent@numamu.test');
 
+  -- Guardians who exist on the roll but cannot sign in. profiles.id references
+  -- auth.users, so they still need a user row — it simply carries no
+  -- encrypted_password, and they get no auth.identities row further down, so
+  -- there is nothing to authenticate against.
+  insert into auth.users (
+    instance_id, id, aud, role, email, email_confirmed_at,
+    raw_app_meta_data, raw_user_meta_data, created_at, updated_at
+  )
+  select '00000000-0000-0000-0000-000000000000', u.id, 'authenticated', 'authenticated',
+         u.email, now(),
+         '{"provider":"email","providers":["email"]}'::jsonb,
+         jsonb_build_object('full_name', u.full_name),
+         now(), now()
+  from (values
+    (u_par_mum, 'ngozi.nwosu@example.test',  'Mrs Ngozi Nwosu'),
+    (u_par_oka, 'amaka.okafor@example.test', 'Mrs Amaka Okafor'),
+    (u_par_ade, 'sule.adeyemi@example.test', 'Mr Sule Adeyemi')
+  ) as u(id, email, full_name);
+
+  insert into public.profiles (id, school_id, role, full_name, email)
+  values
+    (u_par_mum, v_school, 'parent', 'Mrs Ngozi Nwosu',  'ngozi.nwosu@example.test'),
+    (u_par_oka, v_school, 'parent', 'Mrs Amaka Okafor', 'amaka.okafor@example.test'),
+    (u_par_ade, v_school, 'parent', 'Mr Sule Adeyemi',  'sule.adeyemi@example.test');
+
   -- Email/password sign-in needs an identity row alongside the user; without
   -- it GoTrue finds the account but no way to authenticate against it.
   insert into auth.identities (
@@ -116,6 +152,9 @@ begin
          jsonb_build_object('sub', u.id::text, 'email', u.email, 'email_verified', true),
          'email', u.id::text, now(), now(), now()
   from auth.users u
+  -- Only the four accounts meant to sign in get an identity. The guardians
+  -- above deliberately have none, so they exist as people on the roll without
+  -- being able to log in.
   where u.id in (u_admin, u_teacher, u_student, u_parent);
 
   -- ------------------------------------------------------ classes, subjects
@@ -145,8 +184,25 @@ begin
     (p_ngozi,  v_school, c_1b, null,      'KH/26/005', 'Eze',     'Ngozi',  'female', '2014-05-30', '2025-09-15'),
     (p_fatima, v_school, c_1b, null,      'KH/26/006', 'Ibrahim', 'Fatima', 'female', '2013-12-08', '2025-09-15');
 
+  -- Six links over four guardians and five children, chosen so the shapes that
+  -- behave differently are all present:
+  --   * Chidi has two guardians      — a child can have more than one
+  --   * Mrs Okafor has two children  — in *different classes*, which is what
+  --                                    catches a parent view that assumes one
+  --   * Mr Adeyemi has two children  — in the same class, the other shape
+  --   * Aisha has none               — an unlinked pupil is normal, not a bug
+  --
+  -- "Ngozi" is deliberately both a pupil (Eze Ngozi) and a guardian (Mrs Ngozi
+  -- Nwosu). Searching it has to return links matched from either side, which
+  -- is the whole point of resolving the term against both tables.
   insert into public.student_guardians (school_id, student_id, profile_id, relationship, is_primary)
-  values (v_school, p_chidi, u_parent, 'Father', true);
+  values
+    (v_school, p_chidi,  u_parent,   'Father', true),
+    (v_school, p_chidi,  u_par_mum,  'Mother', false),
+    (v_school, p_emeka,  u_par_oka,  'Mother', true),   -- JSS 1A
+    (v_school, p_fatima, u_par_oka,  'Aunt',   false),  -- JSS 1B
+    (v_school, p_tunde,  u_par_ade,  'Father', true),
+    (v_school, p_ngozi,  u_par_ade,  'Uncle',  false);
 
   -- ------------------------------------------------------------- term dates
   -- First and second deliberately leave next_term_starts_on null so the report
