@@ -11,6 +11,7 @@ import {
 } from "@/components/Filters";
 import { searchClauses, displayTerm } from "@/lib/search";
 import StudentForm from "./StudentForm";
+import BulkActions, { SelectAll, BULK_FORM_ID } from "./BulkActions";
 import { deleteStudent } from "./actions";
 
 export const metadata = { title: "Students — KlassHub" };
@@ -133,6 +134,10 @@ export default async function StudentsPage({
       )}
 
       {viewer.isStaff && students && students.length > 0 && (
+        <BulkActions classes={(classes ?? []).map((c) => ({ id: c.id, name: c.name }))} />
+      )}
+
+      {viewer.isStaff && students && students.length > 0 && (
         <ResultCount
           shown={students.length}
           total={total ?? undefined}
@@ -156,12 +161,27 @@ export default async function StudentsPage({
         <Table
           head={
             viewer.isStaff
-              ? ["Admission no.", "Name", "Class", "Gender", "Status", ""]
+              ? [<SelectAll key="all" />, "Admission no.", "Name", "Class", "Gender", "Status", ""]
               : ["Admission no.", "Name", "Class", "Gender", "Status"]
           }
         >
           {students.map((s) => (
             <tr key={s.id} className="hover:bg-hover">
+              {viewer.isStaff && (
+                <td className="px-4 py-3">
+                  {/* Belongs to the bulk form above via `form`, not by being
+                      nested in it — the delete form in the last cell means a
+                      wrapping form would be a form inside a form. */}
+                  <input
+                    type="checkbox"
+                    form={BULK_FORM_ID}
+                    name="student_id"
+                    value={s.id}
+                    aria-label={`Select ${s.surname} ${s.first_name}`}
+                    className="h-4 w-4 rounded border-line accent-brand-500"
+                  />
+                </td>
+              )}
               <td className="px-4 py-3 font-mono text-xs text-ink-muted">
                 {s.admission_number}
               </td>

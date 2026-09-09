@@ -4,6 +4,7 @@ import { PageHeader, Card, EmptyState, Table } from "@/components/ui";
 import { FilterBar, SearchField, FilterActions, ResultCount } from "@/components/Filters";
 import { searchClauses, displayTerm } from "@/lib/search";
 import SubjectForm from "./SubjectForm";
+import BulkSubjectForm from "./BulkSubjectForm";
 import { deleteSubject } from "./actions";
 
 export const metadata = { title: "Subjects — KlassHub" };
@@ -41,9 +42,17 @@ export default async function SubjectsPage({
       />
 
       {viewer.isStaff && (
-        <Card title="Add a subject" className="mb-8">
-          <SubjectForm />
-        </Card>
+        <div className="mb-8 grid gap-6 lg:grid-cols-2">
+          <Card title="Add a subject">
+            <SubjectForm />
+          </Card>
+          <Card
+            title="Add several at once"
+            description="Paste your subject list — setting up a school one form at a time is the slowest hour on any portal."
+          >
+            <BulkSubjectForm />
+          </Card>
+        </div>
       )}
 
       <FilterBar>

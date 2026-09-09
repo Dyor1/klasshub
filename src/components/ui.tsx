@@ -233,7 +233,9 @@ export function Table({
   children,
   minWidth = 640,
 }: {
-  head: string[];
+  /** ReactNode rather than string so a header cell can carry a control — the
+   *  select-all checkbox on the students table sits in one. */
+  head: ReactNode[];
   children: ReactNode;
   /** Lower this for narrow tables. 640 forces a scroll on a phone even when
    *  three columns would have fitted. */
@@ -246,7 +248,7 @@ export function Table({
           <tr>
             {head.map((h, i) => (
               <th
-                key={`${h}-${i}`}
+                key={i}
                 className="whitespace-nowrap px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle"
               >
                 {h}

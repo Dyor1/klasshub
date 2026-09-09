@@ -4,6 +4,7 @@ import { PageHeader, Card, EmptyState, Table, Chip } from "@/components/ui";
 import { FilterBar, SearchField, SelectField, FilterActions, ResultCount } from "@/components/Filters";
 import { searchClauses, displayTerm } from "@/lib/search";
 import ClassForm from "./ClassForm";
+import BulkClassForm from "./BulkClassForm";
 import { deleteClass } from "./actions";
 
 export const metadata = { title: "Classes — KlassHub" };
@@ -65,16 +66,23 @@ export default async function ClassesPage({
       />
 
       {viewer.isStaff && (
-        <Card
-          title="Add a class"
-          description="Sessions run September to July, e.g. 2026/2027."
-          className="mb-8"
-        >
-          <ClassForm
-            teachers={teachers ?? []}
-            defaultYear={currentAcademicYear()}
-          />
-        </Card>
+        <div className="mb-8 space-y-6">
+          <Card
+            title="Create a whole year group"
+            description="A grade level plus its arms, in one go. This is the bulk of setting a school up."
+          >
+            <BulkClassForm defaultYear={currentAcademicYear()} />
+          </Card>
+          <Card
+            title="Add a single class"
+            description="Sessions run September to July, e.g. 2026/2027."
+          >
+            <ClassForm
+              teachers={teachers ?? []}
+              defaultYear={currentAcademicYear()}
+            />
+          </Card>
+        </div>
       )}
 
       <FilterBar>
