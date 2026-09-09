@@ -1,5 +1,6 @@
 import SiteHeader from "@/components/marketing/SiteHeader";
 import Hero from "@/components/marketing/Hero";
+import ReportCardShowcase from "@/components/marketing/ReportCardShowcase";
 import Features from "@/components/marketing/Features";
 import HowItWorks from "@/components/marketing/HowItWorks";
 import Pricing from "@/components/marketing/Pricing";
@@ -13,6 +14,7 @@ export default function HomePage() {
       <SiteHeader />
       <main className="flex-1">
         <Hero />
+        <ReportCardShowcase />
         <Features />
         <HowItWorks />
         <Pricing />

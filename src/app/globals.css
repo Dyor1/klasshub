@@ -336,3 +336,128 @@ body {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Marketing motion and texture.
+
+   All of it is CSS: a hero that costs a JavaScript bundle to animate is a
+   hero that pops in late on the 3G connection a lot of Nigerian schools are
+   browsing on. Every animation below is also switched off wholesale under
+   prefers-reduced-motion at the end of this file.
+   --------------------------------------------------------------------------- */
+
+/* Slow-drifting colour wash behind the hero. Two blobs on opposing timings so
+   the loop never lines up visibly. */
+.kh-aurora::before,
+.kh-aurora::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(72px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.kh-aurora::before {
+  inset: -18% auto auto -12%;
+  width: 46rem;
+  height: 30rem;
+  background: radial-gradient(closest-side, #6366f1, transparent);
+  animation: kh-drift-a 22s ease-in-out infinite alternate;
+}
+.kh-aurora::after {
+  inset: -10% -14% auto auto;
+  width: 40rem;
+  height: 28rem;
+  background: radial-gradient(closest-side, #a855f7, transparent);
+  animation: kh-drift-b 27s ease-in-out infinite alternate;
+}
+[data-theme="dark"] .kh-aurora::before,
+[data-theme="dark"] .kh-aurora::after {
+  opacity: 0.32;
+}
+
+@keyframes kh-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(4rem, 2.5rem, 0) scale(1.12); }
+}
+@keyframes kh-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.08); }
+  to   { transform: translate3d(-3.5rem, 3rem, 0) scale(1); }
+}
+
+/* Faint engineering grid, faded out towards the edges so it never draws a
+   hard line across the page. */
+.kh-grid {
+  background-image:
+    linear-gradient(to right, var(--line-soft) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line-soft) 1px, transparent 1px);
+  background-size: 3.5rem 3.5rem;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* Gentle bob for the floating cards in the hero composition. */
+.animate-float {
+  animation: kh-float 6s ease-in-out infinite;
+}
+.animate-float-slow {
+  animation: kh-float 9s ease-in-out infinite;
+}
+@keyframes kh-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-0.55rem); }
+}
+
+/* One-shot reveal used down the marketing page. Paired with a delay utility
+   inline so each element can stagger without a wrapper per item. */
+.animate-rise {
+  animation: kh-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@keyframes kh-rise {
+  from { opacity: 0; transform: translateY(1.25rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* A mark being written into the grid, then the grade landing beside it. */
+.animate-tally {
+  animation: kh-tally 5s ease-in-out infinite;
+}
+@keyframes kh-tally {
+  0%, 12%   { opacity: 0; transform: translateY(0.35rem); }
+  22%, 88%  { opacity: 1; transform: translateY(0); }
+  100%      { opacity: 1; transform: translateY(0); }
+}
+
+/* Caret blink on the mock's active cell. */
+.animate-caret {
+  animation: kh-caret 1.1s step-end infinite;
+}
+@keyframes kh-caret {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* Bar that fills from nothing on reveal. Width is set inline per row. */
+.animate-fill {
+  animation: kh-fill 1.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@keyframes kh-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kh-aurora::before,
+  .kh-aurora::after,
+  .animate-float,
+  .animate-float-slow,
+  .animate-rise,
+  .animate-tally,
+  .animate-caret,
+  .animate-fill {
+    animation: none !important;
+  }
+  .animate-rise,
+  .animate-tally { opacity: 1; transform: none; }
+  .animate-fill { transform: scaleX(1); }
+}
