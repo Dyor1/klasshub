@@ -26,7 +26,12 @@ export async function GET(request: NextRequest) {
   await supabase.auth.signOut().catch(() => {});
 
   const origin = await siteOrigin();
-  const response = NextResponse.redirect(`${origin}/login?signedout=1`);
+
+  // Carried through so the login page can say why, rather than silently
+  // dumping someone back at a sign-in box they just came from.
+  const reason = request.nextUrl.searchParams.get("reason");
+  const query = reason === "no-profile" ? "?reason=no-profile" : "?signedout=1";
+  const response = NextResponse.redirect(`${origin}/login${query}`);
 
   // Supabase chunks large auth cookies into `.0`, `.1` and so on, so this
   // matches on the prefix rather than an exact name — missing a chunk leaves

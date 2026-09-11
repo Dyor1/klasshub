@@ -13,9 +13,21 @@ export type Viewer = {
   isAdmin: boolean;
 };
 
-/** Resolves the signed-in user's profile. Redirects to /login if there is no
- *  session, and to /dashboard if the account has no profile yet (which happens
- *  only if a signup somehow skipped provisioning). */
+/** Resolves the signed-in user's profile.
+ *
+ *  No session goes to /login. A session with no profile row goes to /logout
+ *  instead, and that difference is load-bearing: sending it to /login creates
+ *  an unbreakable redirect loop, because the proxy sees a valid token there and
+ *  sends it straight back to /dashboard, which lands here again. The browser
+ *  gives up with "redirected too many times" and the person is locked out with
+ *  no way to sign in as anyone else.
+ *
+ *  /logout is outside the protected area and needs no profile, so it always
+ *  terminates: it clears the session and explains what happened.
+ *
+ *  A valid token with no profile is rare but real — a sign-up where the
+ *  provisioning trigger did not run, a profile deleted while its owner was
+ *  still signed in, or an auth user created straight in the database. */
 export async function requireViewer(): Promise<Viewer> {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
@@ -28,7 +40,7 @@ export async function requireViewer(): Promise<Viewer> {
     .eq("id", uid)
     .single();
 
-  if (!profile) redirect("/login");
+  if (!profile) redirect("/logout?reason=no-profile");
 
   return {
     id: profile.id,

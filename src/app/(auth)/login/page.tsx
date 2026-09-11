@@ -15,10 +15,21 @@ function LoginForm() {
   const next = params.get("next") ?? "/dashboard";
   const justReset = params.get("reset") === "done";
   const justSignedOut = params.get("signedout") === "1";
+  const noProfile = params.get("reason") === "no-profile";
 
   return (
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="next" value={next} />
+      {noProfile && (
+        <p
+          role="alert"
+          className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100"
+        >
+          That account signed in, but it is not linked to any school, so there
+          is nothing for it to open. Ask your school administrator to invite the
+          address again, or sign in with a different one.
+        </p>
+      )}
       {justSignedOut && (
         <p
           role="status"
