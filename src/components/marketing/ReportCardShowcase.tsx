@@ -39,7 +39,10 @@ export default function ReportCardShowcase() {
   return (
     <section
       id="report-card"
-      className="scroll-mt-24 border-t border-line-soft bg-hover py-24"
+      // overflow-hidden because the glow behind the card is deliberately
+      // larger than the card (-inset-4) and would otherwise push the page
+      // 19px wider than the viewport on a phone.
+      className="scroll-mt-24 overflow-hidden border-t border-line-soft bg-hover py-24"
     >
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">

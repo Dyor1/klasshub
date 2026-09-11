@@ -2,7 +2,7 @@ const steps = [
   {
     step: "01",
     title: "Register your school",
-    body: "Tell us your school name and pick your subdomain. You get your own isolated space — your data never mixes with another school's.",
+    body: "Tell us your school name and you are in. Your school gets its own isolated space, enforced by the database itself — no other school can read a single row of your data.",
   },
   {
     step: "02",
@@ -29,12 +29,25 @@ export default function HowItWorks() {
           </h2>
         </div>
 
-        <ol className="mt-14 grid gap-6 md:grid-cols-3">
+        <ol className="relative mt-14 grid gap-6 md:grid-cols-3">
+          {/* One line running behind all three cards, rather than three
+              separate connectors that drift out of alignment when a card grows
+              taller than its neighbours. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-0 right-0 top-[4.5rem] hidden h-px bg-gradient-to-r from-transparent via-line to-transparent md:block"
+          />
           {steps.map((item, i) => (
-            <li key={item.step} className="relative">
-              <div className="h-full rounded-2xl border border-line bg-card p-7 shadow-card">
-                <span className="text-brand-gradient text-3xl font-extrabold">{item.step}</span>
-                <h3 className="mt-4 text-lg font-bold text-ink">{item.title}</h3>
+            <li
+              key={item.step}
+              style={{ animationDelay: `${i * 110}ms` }}
+              className="animate-rise relative"
+            >
+              <div className="group h-full rounded-2xl border border-line bg-card p-7 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-card-hover">
+                <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-gradient text-lg font-extrabold text-white shadow-brand transition-transform duration-300 group-hover:scale-105">
+                  {item.step}
+                </span>
+                <h3 className="mt-5 text-lg font-bold text-ink">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">{item.body}</p>
               </div>
               {i < steps.length - 1 && (

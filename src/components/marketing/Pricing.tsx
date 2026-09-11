@@ -70,16 +70,23 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {plans.map((plan) => (
+        <div className="mt-14 grid items-start gap-6 lg:grid-cols-3">
+          {plans.map((plan, i) => (
             <div
               key={plan.name}
-              className={`relative flex flex-col rounded-2xl border p-7 ${
+              style={{ animationDelay: `${i * 90}ms` }}
+              className={`animate-rise relative flex flex-col rounded-2xl border p-7 transition-all duration-300 ${
                 plan.featured
-                  ? "border-brand-300 bg-card shadow-brand ring-1 ring-brand-500/30"
-                  : "border-line bg-card shadow-card"
+                  ? "border-brand-400/60 bg-card shadow-brand ring-2 ring-brand-500/25 lg:-mt-4 lg:pb-10 lg:pt-11"
+                  : "border-line bg-card shadow-card hover:-translate-y-1 hover:shadow-card-hover"
               }`}
             >
+              {plan.featured && (
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-brand-500 to-transparent"
+                />
+              )}
               {plan.featured && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-gradient px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
                   Most popular
@@ -124,6 +131,21 @@ export default function Pricing() {
               </Link>
             </div>
           ))}
+        </div>
+
+        {/* The promise schools have been burned by before, made in public. It
+            is also in the terms, and it is enforced: a locked account is
+            read-only, not a closed door. */}
+        <div className="mx-auto mt-12 max-w-3xl rounded-2xl border border-line-soft bg-card p-6 text-center shadow-card">
+          <h3 className="text-base font-bold text-ink">
+            Miss a payment and you still keep your records
+          </h3>
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-ink-muted">
+            An unpaid term makes the account read-only — you cannot add new
+            entries, but every pupil record, report card and invoice stays
+            readable, exportable and deletable. We do not hold a school&apos;s
+            register hostage over an invoice.
+          </p>
         </div>
       </div>
     </section>

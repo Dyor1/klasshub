@@ -154,7 +154,7 @@ export default async function DashboardPage() {
         subtitle={
           s && (
             <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="font-mono text-xs text-ink-subtle">{s.slug}.klasshub.ng</span>
+              <span className="font-mono text-xs text-ink-subtle">{s.slug}</span>
               <Chip tone="brand">{s.plan}</Chip>
               {s.plan === "trial" && (
                 <Chip tone={daysLeft <= 7 ? "amber" : "slate"}>{daysLeft} days left</Chip>

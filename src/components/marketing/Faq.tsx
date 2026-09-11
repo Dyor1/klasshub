@@ -27,7 +27,7 @@ const faqs = [
 
 export default function Faq() {
   return (
-    <section id="faq" className="scroll-mt-24 py-24">
+    <section id="faq" className="scroll-mt-24 border-t border-line-soft py-24">
       <div className="mx-auto max-w-3xl px-6">
         <div className="text-center">
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-300">
@@ -38,21 +38,35 @@ export default function Faq() {
           </h2>
         </div>
 
-        <div className="mt-12 divide-y divide-line border-y border-line">
-          {faqs.map((item) => (
-            <details key={item.q} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
-                <span className="text-base font-semibold text-ink">{item.q}</span>
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sunken text-ink-muted transition-transform group-open:rotate-45">
+        <div className="mt-12 space-y-3">
+          {faqs.map((item, i) => (
+            <details
+              key={item.q}
+              style={{ animationDelay: `${i * 60}ms` }}
+              className="animate-rise group rounded-2xl border border-line bg-card px-5 shadow-card transition-colors open:border-brand-500/30 hover:border-brand-500/25"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left">
+                <span className="text-[15px] font-semibold text-ink">{item.q}</span>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sunken text-ink-muted transition-all duration-300 group-open:rotate-45 group-open:bg-brand-500 group-open:text-white">
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M12 5v14M5 12h14" strokeLinecap="round" />
                   </svg>
                 </span>
               </summary>
-              <p className="mt-3 pr-11 text-sm leading-relaxed text-ink-muted">{item.a}</p>
+              <p className="-mt-1 pb-5 pr-12 text-sm leading-relaxed text-ink-muted">
+                {item.a}
+              </p>
             </details>
           ))}
         </div>
+
+        <p className="mt-10 text-center text-sm text-ink-muted">
+          Something we have not covered?{" "}
+          <a href="/contact" className="font-semibold text-brand-600 hover:underline dark:text-brand-300">
+            Ask us directly
+          </a>
+          .
+        </p>
       </div>
     </section>
   );
