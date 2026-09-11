@@ -144,7 +144,10 @@ export default async function PlatformPage() {
           <ul className="divide-y divide-line-soft">
             {audit.map((a, i) => (
               <li key={i} className="flex flex-wrap items-baseline gap-x-2 py-2.5 text-sm">
-                <Chip tone="slate">{a.action}</Chip>
+                {/* The chip capitalises, but CSS does not treat an underscore
+                    as a word break, so the raw enum renders as
+                    "Extend_trial". */}
+                <Chip tone="slate">{a.action.replace(/_/g, " ")}</Chip>
                 <span className="font-medium text-ink">{a.school_name ?? "—"}</span>
                 <span className="text-ink-muted">by {a.actor_email ?? "unknown"}</span>
                 <span className="ml-auto text-xs text-ink-subtle">
