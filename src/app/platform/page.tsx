@@ -40,7 +40,15 @@ export default async function PlatformPage() {
   await requirePlatformOperator();
   const supabase = await createClient();
 
-  const [{ data: schools }, { data: audit }] = await Promise.all([
+  // The errors are kept, not dropped. A failed read returns null data, and
+  // rendering that as "no schools" or "nothing yet" states something false
+  // about the business rather than admitting the page could not load — which
+  // is how an audit trail ends up looking empty on a screen that promises
+  // nothing goes unrecorded.
+  const [
+    { data: schools, error: schoolsError },
+    { data: audit, error: auditError },
+  ] = await Promise.all([
     supabase.rpc("platform_schools"),
     supabase.rpc("platform_recent_actions", { p_limit: 25 }),
   ]);
@@ -73,6 +81,16 @@ export default async function PlatformPage() {
           </Link>
         }
       />
+
+      {schoolsError && (
+        <p
+          role="alert"
+          className="mb-6 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100"
+        >
+          The school list could not be loaded, so the totals below are not real
+          figures. Reload before acting on anything here.
+        </p>
+      )}
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -138,7 +156,15 @@ export default async function PlatformPage() {
         description="Written by the database when an action runs, not by the app — so nothing an operator does here is unrecorded."
         className="mt-8"
       >
-        {!audit || audit.length === 0 ? (
+        {auditError ? (
+          <p
+            role="alert"
+            className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100"
+          >
+            The audit trail could not be loaded, so this is not a record of
+            nothing happening. Reload to try again.
+          </p>
+        ) : !audit || audit.length === 0 ? (
           <p className="text-sm text-ink-muted">Nothing yet.</p>
         ) : (
           <ul className="divide-y divide-line-soft">
