@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { proxyRedirect } from "@/lib/routing";
 
 /** Next.js 16 renamed middleware to proxy. Refreshes the Supabase session on
  *  every request and gates the authenticated area.
@@ -44,12 +45,14 @@ export async function proxy(request: NextRequest) {
   const claims = data?.claims;
 
   const { pathname } = request.nextUrl;
-  const isAuthPage = pathname === "/login" || pathname === "/register";
-  // /platform is guarded again inside the page, and every platform function
-  // re-checks membership in SQL. This is only here so an anonymous visitor is
-  // sent to sign in rather than rendering a shell first.
-  const isProtected =
-    pathname.startsWith("/dashboard") || pathname.startsWith("/platform");
+  // The rule lives in lib/routing so it can be tested against the other half
+  // of the redirect graph. /platform is guarded again inside the page, and
+  // every platform function re-checks membership in SQL; this is only here so
+  // an anonymous visitor is sent to sign in rather than rendering a shell.
+  const destination = proxyRedirect(
+    { hasClaims: Boolean(claims), hasProfile: false, isOperator: false },
+    pathname
+  );
 
   // Development only. A redirect loop is invisible from the outside — the
   // browser just gives up — so the one thing worth seeing is which rule fired
@@ -73,14 +76,14 @@ export async function proxy(request: NextRequest) {
     return redirect;
   };
 
-  if (!claims && isProtected) {
+  if (destination === "/login") {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("next", pathname);
     return redirectTo(url);
   }
 
-  if (claims && isAuthPage) {
+  if (destination === "/dashboard") {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     url.search = "";

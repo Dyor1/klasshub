@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
+import { missingProfileRedirect } from "@/lib/routing";
 
 export type Role = Database["public"]["Enums"]["user_role"];
 
@@ -40,7 +41,14 @@ export async function requireViewer(): Promise<Viewer> {
     .eq("id", uid)
     .single();
 
-  if (!profile) redirect("/logout?reason=no-profile");
+  if (!profile) {
+    // A platform operator legitimately has no school, and sign-in lands
+    // everyone on /dashboard, so without this the founder would be signed out
+    // every time they opened the app. Checked only on the way to failing, so
+    // the ordinary path still costs one query.
+    const { error } = await supabase.rpc("platform_schools");
+    redirect(missingProfileRedirect(!error));
+  }
 
   return {
     id: profile.id,
@@ -70,22 +78,28 @@ export const TERMS = [
  *
  *  Membership is decided in the database by private.is_platform_operator(),
  *  reached only through the SECURITY DEFINER functions the area uses — there
- *  is no roster to read from the app and no claim to trust. A non-operator is
- *  sent to their own dashboard rather than shown a refusal, because whether
- *  the area exists is not something a school's admin needs to learn.
+ *  is no roster to read from the app and no claim to trust.
+ *
+ *  Deliberately does not call requireViewer. An operator belongs to the
+ *  platform, not to a school, so requiring a profiles row would lock out
+ *  exactly the accounts this area exists for: an operator added straight to
+ *  the roster has no school and needs none. The two notions of identity are
+ *  separate and the check has to stay separate with them.
  *
  *  This is a convenience for rendering, not the security boundary. Every
  *  platform function re-checks membership itself, so a page that forgot to
  *  call this still cannot read or change anything. */
-export async function requirePlatformOperator(): Promise<Viewer> {
-  const viewer = await requireViewer();
-
+export async function requirePlatformOperator(): Promise<void> {
   const supabase = await createClient();
+
+  const { data } = await supabase.auth.getClaims();
+  if (!data?.claims?.sub) redirect("/login?next=/platform");
+
   const { error } = await supabase.rpc("platform_schools");
 
   // 42501 is the function's own refusal. Any other error is a fault worth
-  // failing closed on rather than guessing about.
+  // failing closed on rather than guessing about. Non-operators go to
+  // /dashboard rather than seeing a refusal, because whether this area exists
+  // is not something a school's admin needs to learn.
   if (error) redirect("/dashboard");
-
-  return viewer;
 }
