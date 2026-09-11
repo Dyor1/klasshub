@@ -174,13 +174,13 @@ export default function ImportWizard({ classNames }: { classNames: string[] }) {
                 <table className="w-full text-sm">
                   <thead className="sticky top-0 bg-sunken">
                     <tr>
-                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
+                      <th scope="col" className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                         Line
                       </th>
-                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
+                      <th scope="col" className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                         Column
                       </th>
-                      <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
+                      <th scope="col" className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                         Problem
                       </th>
                     </tr>

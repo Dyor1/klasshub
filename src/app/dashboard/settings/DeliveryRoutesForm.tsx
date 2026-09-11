@@ -63,13 +63,13 @@ export default function DeliveryRoutesForm({
         <table className="w-full min-w-[420px] text-sm">
           <thead>
             <tr className="border-b border-line-soft">
-              <th className="py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
+              <th scope="col" className="py-2 text-left text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                 Event
               </th>
-              <th className="w-20 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-ink-muted">
+              <th scope="col" className="w-20 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                 Email
               </th>
-              <th className="w-20 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-ink-muted">
+              <th scope="col" className="w-20 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-ink-muted">
                 SMS
               </th>
             </tr>

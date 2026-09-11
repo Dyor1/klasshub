@@ -112,12 +112,12 @@ export default function ReportCardShowcase() {
                 <table className="mt-4 w-full text-sm">
                   <thead>
                     <tr className="border-b border-line-strong text-[10px] uppercase tracking-wide text-ink-muted">
-                      <th className="pb-2 text-left font-semibold">Subject</th>
-                      <th className="pb-2 text-right font-semibold">CA</th>
-                      <th className="pb-2 text-right font-semibold">Exam</th>
-                      <th className="pb-2 text-right font-semibold">%</th>
-                      <th className="pb-2 text-center font-semibold">Grade</th>
-                      <th className="pb-2 text-right font-semibold">Pos.</th>
+                      <th scope="col" className="pb-2 text-left font-semibold">Subject</th>
+                      <th scope="col" className="pb-2 text-right font-semibold">CA</th>
+                      <th scope="col" className="pb-2 text-right font-semibold">Exam</th>
+                      <th scope="col" className="pb-2 text-right font-semibold">%</th>
+                      <th scope="col" className="pb-2 text-center font-semibold">Grade</th>
+                      <th scope="col" className="pb-2 text-right font-semibold">Pos.</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-line-soft">

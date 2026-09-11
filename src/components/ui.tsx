@@ -249,6 +249,10 @@ export function Table({
             {head.map((h, i) => (
               <th
                 key={i}
+                // Without scope, a screen reader reads a cell as a bare number
+                // with no idea which column it came from — on the tables that
+                // hold marks and fees, that is the whole content.
+                scope="col"
                 className="whitespace-nowrap px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle"
               >
                 {h}

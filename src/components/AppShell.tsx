@@ -159,6 +159,7 @@ export default function AppShell({
       className="kh-shell min-h-screen bg-page"
       style={{ "--kh-sidebar-w": collapsed ? "4.75rem" : "16.5rem" } as React.CSSProperties}
     >
+      <a href="#main" className="kh-skip">Skip to content</a>
       {mobileOpen && (
         <div
           className="fixed inset-0 z-30 bg-sand-950/50 backdrop-blur-sm lg:hidden"
@@ -330,7 +331,7 @@ export default function AppShell({
           </div>
         </header>
 
-        <main className="px-4 py-7 sm:px-8 sm:py-9">
+        <main id="main" tabIndex={-1} className="px-4 py-7 sm:px-8 sm:py-9">
           <div className="mx-auto max-w-6xl">{children}</div>
         </main>
       </div>

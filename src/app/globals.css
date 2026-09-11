@@ -583,3 +583,51 @@ body {
     var(--clay-top),
     var(--clay-bottom);
 }
+
+/* ---------------------------------------------------------------------------
+   Keyboard focus.
+
+   Buttons and links carried no focus styling of their own, so a keyboard user
+   got whatever the browser drew — which on a brand-gradient button is close to
+   invisible. This is an explicit, on-brand ring instead.
+
+   :focus-visible rather than :focus, so it appears for keyboard and
+   programmatic focus but not when a mouse click already made the target
+   obvious. Text fields are excluded on purpose: a focused field should look
+   focused however it was reached, and those already ring on :focus.
+
+   Wrapped in :where() so it carries zero specificity — any component can still
+   style its own focus without fighting this.
+   --------------------------------------------------------------------------- */
+/* The ring colour is per-theme. brand-500 measures 6.29:1 on a light card but
+   only 2.67:1 on a dark one, under the 3:1 a focus indicator has to clear — the
+   exact situation where a keyboard user cannot see where they are. */
+:root { --focus-ring: var(--color-brand-500); }
+[data-theme="dark"] { --focus-ring: var(--color-brand-300); }
+
+:where(a, button, summary, [role="button"], [role="tab"], input[type="checkbox"], input[type="radio"]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-lg, 0.5rem);
+}
+
+/* Skip link. Off-screen until focused, then pinned top-left.
+   Without it, reaching the page content past the sidebar is roughly twenty
+   tab presses — on every single page. */
+.kh-skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.kh-skip:focus {
+  left: 0.75rem;
+  top: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-brand-500);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: var(--clay-drop);
+}

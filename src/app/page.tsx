@@ -11,8 +11,9 @@ import SiteFooter from "@/components/marketing/SiteFooter";
 export default function HomePage() {
   return (
     <>
+      <a href="#main" className="kh-skip">Skip to content</a>
       <SiteHeader />
-      <main className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         <Hero />
         <ReportCardShowcase />
         <Features />

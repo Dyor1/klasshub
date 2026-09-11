@@ -255,18 +255,18 @@ export default function ResultsGrid({
         <table className="w-full min-w-[720px] text-sm">
           <thead className="border-b border-line-soft bg-sunken">
             <tr>
-              <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
+              <th scope="col" className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
                 Student
               </th>
               <ColumnHead label={`CA / ${caMax}`} max={caMax} onFill={(v) => fillColumn("ca", v)} />
               <ColumnHead label={`Exam / ${examMax}`} max={examMax} onFill={(v) => fillColumn("exam", v)} />
-              <th className="w-20 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
+              <th scope="col" className="w-20 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
                 Total
               </th>
-              <th className="w-20 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
+              <th scope="col" className="w-20 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
                 %
               </th>
-              <th className="w-28 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
+              <th scope="col" className="w-28 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
                 Grade
               </th>
             </tr>
@@ -386,7 +386,7 @@ function ColumnHead({
   const [value, setValue] = useState("");
 
   return (
-    <th className="w-40 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
+    <th scope="col" className="w-40 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-[0.09em] text-ink-subtle">
       <div className="flex items-center gap-2">
         <span>{label}</span>
         <button
