@@ -37,7 +37,7 @@ export function FilterBar({
     <form
       method="get"
       action={action}
-      className="mb-6 rounded-2xl border border-line-soft bg-card p-4 shadow-card"
+      className="mb-6 rounded-2xl border border-line-soft bg-card p-4 kh-clay"
     >
       {Object.entries(hidden ?? {}).map(([k, v]) =>
         v ? <input key={k} type="hidden" name={k} value={v} /> : null
@@ -200,7 +200,7 @@ export function SegmentedFilter({
           aria-current={o.value === current ? "true" : undefined}
           className={`inline-flex min-h-9 items-center rounded-lg px-3 text-sm font-medium transition-colors ${
             o.value === current
-              ? "bg-card text-brand-700 shadow-card dark:text-brand-300"
+              ? "bg-card text-brand-700 kh-clay dark:text-brand-300"
               : "text-ink-muted hover:text-ink"
           }`}
         >

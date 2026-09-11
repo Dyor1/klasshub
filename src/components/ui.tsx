@@ -330,7 +330,7 @@ export function Chip({
 /** Skeleton row used by route-level loading.tsx files. */
 export function SkeletonTable({ rows = 5 }: { rows?: number }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-line-soft bg-card shadow-card">
+    <div className="overflow-hidden rounded-2xl border border-line-soft bg-card kh-clay">
       <div className="h-12 border-b border-line-soft bg-sunken" />
       <div className="divide-y divide-line-soft">
         {Array.from({ length: rows }).map((_, i) => (
@@ -354,7 +354,7 @@ export function SkeletonStats({ count = 4 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="flex items-start gap-4 rounded-2xl border border-line-soft bg-card p-5 shadow-card"
+          className="kh-clay flex items-start gap-4 rounded-2xl border border-line-soft bg-card p-5"
         >
           <div className="h-11 w-11 animate-pulse rounded-xl bg-sunken" />
           <div className="flex-1 space-y-2">

@@ -31,7 +31,7 @@ export default function InviteForm() {
   const [copied, setCopied] = useState(false);
 
   return (
-    <div className="rounded-xl border border-line bg-card p-5 shadow-card">
+    <div className="rounded-xl border border-line bg-card p-5 kh-clay">
       <h2 className="text-sm font-bold text-ink">Invite someone</h2>
       <p className="mt-0.5 text-xs text-ink-muted">
         They&apos;ll join your school with the role you choose here.

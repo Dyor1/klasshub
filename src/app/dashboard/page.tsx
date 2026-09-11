@@ -259,7 +259,7 @@ export default async function DashboardPage() {
             key={a.href}
             href={a.href}
             data-hue={a.hue}
-            className="flex items-center gap-3.5 rounded-2xl border border-line-soft bg-card p-4 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-line hover:shadow-card-hover"
+            className="flex items-center gap-3.5 rounded-2xl border border-line-soft bg-card p-4 kh-clay transition-all duration-200 hover:-translate-y-0.5 hover:border-line kh-clay-lift"
           >
             <span className="kh-tint flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
               <span className="h-5 w-5">{a.icon}</span>

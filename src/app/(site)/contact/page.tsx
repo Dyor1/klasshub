@@ -66,7 +66,7 @@ export default function ContactPage() {
             rather write from your own mail client, the addresses are below.
           </p>
 
-          <div className="mt-10 rounded-2xl border border-line-soft bg-card p-6 shadow-card sm:p-8">
+          <div className="mt-10 rounded-2xl border border-line-soft bg-card p-6 kh-clay sm:p-8">
             <ContactForm />
           </div>
 
@@ -78,7 +78,7 @@ export default function ContactPage() {
             {channels.map((c) => (
               <div
                 key={c.heading}
-                className="rounded-2xl border border-line-soft bg-card p-6 shadow-card"
+                className="rounded-2xl border border-line-soft bg-card p-6 kh-clay"
               >
                 <h3 className="text-[15px] font-bold text-ink">{c.heading}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">{c.body}</p>

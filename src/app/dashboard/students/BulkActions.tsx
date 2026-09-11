@@ -56,7 +56,7 @@ export default function BulkActions({
     <form
       id={BULK_FORM_ID}
       action={formAction}
-      className="mb-4 rounded-2xl border border-line-soft bg-card p-4 shadow-card"
+      className="mb-4 rounded-2xl border border-line-soft bg-card p-4 kh-clay"
     >
       <ErrorNote message={state.error} />
       {state.moved !== undefined && (

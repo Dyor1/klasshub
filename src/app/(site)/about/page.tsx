@@ -104,7 +104,7 @@ export default function AboutPage() {
             {principles.map((p) => (
               <div
                 key={p.title}
-                className="rounded-2xl border border-line-soft bg-card p-6 shadow-card"
+                className="rounded-2xl border border-line-soft bg-card p-6 kh-clay"
               >
                 <h3 className="text-[15px] font-bold text-ink">{p.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">{p.body}</p>

@@ -43,7 +43,7 @@ export default function Faq() {
             <details
               key={item.q}
               style={{ animationDelay: `${i * 60}ms` }}
-              className="animate-rise group rounded-2xl border border-line bg-card px-5 shadow-card transition-colors open:border-brand-500/30 hover:border-brand-500/25"
+              className="animate-rise group rounded-2xl border border-line bg-card px-5 kh-clay transition-colors open:border-brand-500/30 hover:border-brand-500/25"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left">
                 <span className="text-[15px] font-semibold text-ink">{item.q}</span>
