@@ -127,6 +127,46 @@ each suite lends itself access for the length of its own transaction.
 To confirm the suite can still fail, break something on purpose — swap a policy
 for `using (true)` inside a transaction and watch `01` catch it.
 
+## Platform operators
+
+`/platform` is the operator area — the people who run KlassHub, as opposed to
+the people who run a school. It is the one place that reads across tenants, so
+it is built as the narrowest opening rather than a general key.
+
+**Membership cannot be granted through the application.** The roster is
+`private.platform_operators`, in a schema revoked from `anon` and
+`authenticated`, so no API role can read or write it. Adding an operator needs
+a direct SQL connection — database credentials, not an account takeover:
+
+```sql
+insert into private.platform_operators (user_id, note)
+select id, 'founder' from auth.users where email = 'you@example.com';
+```
+
+**No existing policy was widened.** The shortcut would have been
+`or private.is_platform_operator()` inside every RLS policy, which puts a second
+door on every table in the system. Instead the access lives in four
+`SECURITY DEFINER` functions, each gating on membership itself. The page guard
+is a convenience for rendering; a page that forgot to call it still cannot read
+or change anything.
+
+**Operators do not read school content.** Nothing in the area returns a pupil's
+name, marks, attendance, fees or messages. Running the platform means knowing a
+school has 340 pupils and three days of trial left — not what Chidi scored in
+Mathematics. Same boundary that stops a school admin reading a notification
+body.
+
+What it does offer: every school with its plan, access state, roll, staff count
+and billing dates; extending a trial; and moving a school between plans. A plan
+change that would leave a school over its cap is refused with both numbers,
+rather than letting the enrolment trigger surface it later on somebody else's
+screen. There is no "delete a school" button — dropping a tenant's whole record
+is a conversation followed by a considered SQL statement, not a click.
+
+Both mutations write to `private.platform_audit` from inside the function, so
+an operator cannot act without leaving a record, and the last 25 entries are
+shown in the area itself.
+
 ## Email and SMS
 
 Notifications are created by database triggers, so at the moment a notice comes

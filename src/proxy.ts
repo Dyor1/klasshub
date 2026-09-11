@@ -34,7 +34,11 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname === "/login" || pathname === "/register";
-  const isProtected = pathname.startsWith("/dashboard");
+  // /platform is guarded again inside the page, and every platform function
+  // re-checks membership in SQL. This is only here so an anonymous visitor is
+  // sent to sign in rather than rendering a shell first.
+  const isProtected =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/platform");
 
   if (!claims && isProtected) {
     const url = request.nextUrl.clone();

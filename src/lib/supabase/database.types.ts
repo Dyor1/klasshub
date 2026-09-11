@@ -2693,6 +2693,43 @@ export type Database = {
         }
         Returns: string
       }
+      platform_extend_trial: {
+        Args: { p_days: number; p_school: string }
+        Returns: string
+      }
+      platform_recent_actions: {
+        Args: { p_limit?: number }
+        Returns: {
+          action: string
+          actor_email: string
+          at: string
+          detail: Json
+          school_name: string
+        }[]
+      }
+      platform_schools: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          access: Database["public"]["Enums"]["school_access_state"]
+          created_at: string
+          id: string
+          max_students: number | null
+          name: string
+          paid_until: string | null
+          plan: Database["public"]["Enums"]["school_plan"]
+          slug: string
+          staff: number
+          students: number
+          trial_ends_at: string
+        }[]
+      }
+      platform_set_plan: {
+        Args: {
+          p_plan: Database["public"]["Enums"]["school_plan"]
+          p_school: string
+        }
+        Returns: undefined
+      }
       replace_grade_bands: { Args: { p_bands: Json }; Returns: undefined }
       report_card_term_context: {
         Args: {

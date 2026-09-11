@@ -53,3 +53,27 @@ export const TERMS = [
   { value: "second", label: "Second Term" },
   { value: "third", label: "Third Term" },
 ] as const;
+
+/** Gate for the platform area.
+ *
+ *  Membership is decided in the database by private.is_platform_operator(),
+ *  reached only through the SECURITY DEFINER functions the area uses — there
+ *  is no roster to read from the app and no claim to trust. A non-operator is
+ *  sent to their own dashboard rather than shown a refusal, because whether
+ *  the area exists is not something a school's admin needs to learn.
+ *
+ *  This is a convenience for rendering, not the security boundary. Every
+ *  platform function re-checks membership itself, so a page that forgot to
+ *  call this still cannot read or change anything. */
+export async function requirePlatformOperator(): Promise<Viewer> {
+  const viewer = await requireViewer();
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("platform_schools");
+
+  // 42501 is the function's own refusal. Any other error is a fault worth
+  // failing closed on rather than guessing about.
+  if (error) redirect("/dashboard");
+
+  return viewer;
+}
