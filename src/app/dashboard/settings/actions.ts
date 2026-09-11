@@ -3,6 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
+import {
+  FILE_BUCKET,
+  IMAGE_TYPES,
+  MAX_IMAGE_BYTES,
+  buildFilePath,
+  formatBytes,
+} from "@/lib/files";
 
 export type ScaleState = { error: string | null; ok?: boolean; saved?: number };
 
@@ -267,4 +274,77 @@ export async function resetGradingScale(): Promise<void> {
 
   revalidatePath("/dashboard/settings");
   revalidatePath("/dashboard/report-cards");
+}
+
+export type LogoState = { error: string | null; ok?: boolean; removed?: boolean };
+
+/** The school's own logo, used on report cards.
+ *
+ *  Stored as an object path rather than a URL: the bucket is private, so links
+ *  are signed at read time and expire. Persisting a URL would freeze a link
+ *  that outlives the file it points at. */
+export async function saveSchoolLogo(
+  _prev: LogoState,
+  formData: FormData
+): Promise<LogoState> {
+  const viewer = await requireViewer();
+  if (!viewer.isAdmin) {
+    return { error: "Only administrators can change the school logo." };
+  }
+
+  const supabase = await createClient();
+
+  const { data: school } = await supabase
+    .from("schools")
+    .select("logo_path")
+    .eq("id", viewer.schoolId)
+    .single();
+  const previous = school?.logo_path ?? null;
+
+  // Removing is its own explicit action, so a logo cannot be cleared by
+  // submitting the form without picking a file.
+  if (String(formData.get("remove") ?? "") === "true") {
+    if (previous) await supabase.storage.from(FILE_BUCKET).remove([previous]);
+    await supabase.from("schools").update({ logo_path: null }).eq("id", viewer.schoolId);
+    revalidatePath("/dashboard/settings");
+    revalidatePath("/dashboard/report-cards");
+    return { error: null, ok: true, removed: true };
+  }
+
+  const file = formData.get("logo");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "Choose an image file first." };
+  }
+  if (!IMAGE_TYPES.includes(file.type)) {
+    return { error: "Use a JPG, PNG or WebP image." };
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    return { error: `That image is ${formatBytes(file.size)}. Keep it under 2 MB.` };
+  }
+
+  const path = buildFilePath(viewer.schoolId, "branding", file.name);
+  const { error: uploadError } = await supabase.storage
+    .from(FILE_BUCKET)
+    .upload(path, file, { contentType: file.type, upsert: false });
+
+  if (uploadError) return { error: uploadError.message };
+
+  const { error } = await supabase
+    .from("schools")
+    .update({ logo_path: path })
+    .eq("id", viewer.schoolId);
+
+  if (error) {
+    // The row is the source of truth, so an orphaned object is worse than no
+    // upload: it would sit in the bucket referenced by nothing.
+    await supabase.storage.from(FILE_BUCKET).remove([path]);
+    return { error: error.message };
+  }
+
+  // Only once the new path is safely recorded.
+  if (previous) await supabase.storage.from(FILE_BUCKET).remove([previous]);
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard/report-cards");
+  return { error: null, ok: true };
 }

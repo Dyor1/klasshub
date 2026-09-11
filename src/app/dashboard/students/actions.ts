@@ -3,6 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer } from "@/lib/auth";
+import {
+  FILE_BUCKET,
+  IMAGE_TYPES,
+  MAX_IMAGE_BYTES,
+  buildFilePath,
+  formatBytes,
+} from "@/lib/files";
 
 export type FormState = { error: string | null; ok?: boolean };
 
@@ -29,8 +36,22 @@ export async function createStudent(
     return { error: "Gender must be male or female." };
   }
 
+  // Checked before anything is written. Validating after the insert would
+  // leave a pupil enrolled with a rejected photograph and an error on screen
+  // that makes it look as though nothing happened.
+  const photo = formData.get("photo");
+  const hasPhoto = photo instanceof File && photo.size > 0;
+  if (hasPhoto) {
+    if (!IMAGE_TYPES.includes(photo.type)) {
+      return { error: "The passport photo must be a JPG, PNG or WebP image." };
+    }
+    if (photo.size > MAX_IMAGE_BYTES) {
+      return { error: `That photo is ${formatBytes(photo.size)}. Keep it under 2 MB.` };
+    }
+  }
+
   const supabase = await createClient();
-  const { error } = await supabase.from("students").insert({
+  const { data: created, error } = await supabase.from("students").insert({
     school_id: viewer.schoolId,
     admission_number: admissionNumber,
     surname,
@@ -42,13 +63,37 @@ export async function createStudent(
     guardian_name: get("guardian_name") || null,
     guardian_phone: get("guardian_phone") || null,
     guardian_email: get("guardian_email") || null,
-  });
+  })
+    .select("id")
+    .single();
 
   if (error) {
     if (error.code === "23505") {
       return { error: `Admission number “${admissionNumber}” is already in use.` };
     }
     return { error: error.message };
+  }
+
+  // The photo is keyed by student id because storage RLS reads that segment to
+  // decide who may see it — which is why it can only be uploaded once the row
+  // exists and the id is known.
+  if (hasPhoto && created) {
+    const path = buildFilePath(viewer.schoolId, "student-photos", photo.name, created.id);
+    const { error: uploadError } = await supabase.storage
+      .from(FILE_BUCKET)
+      .upload(path, photo, { contentType: photo.type, upsert: false });
+
+    if (!uploadError) {
+      await supabase.from("students").update({ photo_url: path }).eq("id", created.id);
+    } else {
+      // The pupil is enrolled either way. Losing the enrolment over a failed
+      // photograph would be the worse outcome, so this reports rather than
+      // rolls back.
+      revalidatePath("/dashboard/students");
+      return {
+        error: `${surname} ${firstName} was enrolled, but the photo did not upload: ${uploadError.message}`,
+      };
+    }
   }
 
   revalidatePath("/dashboard/students");

@@ -1697,6 +1697,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          logo_path: string | null
           name: string
           paid_until: string | null
           pass_mark: number
@@ -1707,6 +1708,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          logo_path?: string | null
           name: string
           paid_until?: string | null
           pass_mark?: number
@@ -1717,6 +1719,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          logo_path?: string | null
           name?: string
           paid_until?: string | null
           pass_mark?: number

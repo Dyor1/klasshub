@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { FILE_BUCKET } from "@/lib/files";
 import { requireViewer, currentAcademicYear } from "@/lib/auth";
 import { PageHeader, Card } from "@/components/ui";
 import GradingScaleForm from "./GradingScaleForm";
+import LogoForm from "./LogoForm";
 import TermDatesForm from "./TermDatesForm";
 import PassMarkForm from "./PassMarkForm";
 import DeliveryRoutesForm from "./DeliveryRoutesForm";
@@ -24,7 +26,17 @@ export default async function SettingsPage() {
     .from("results")
     .select("id", { count: "exact", head: true });
 
-  const { data: school } = await supabase.from("schools").select("pass_mark").single();
+  const { data: school } = await supabase
+    .from("schools")
+    .select("pass_mark, logo_path")
+    .single();
+
+  // Signed rather than public: the bucket is private, so the logo gets a
+  // short-lived URL like every other file here.
+  const logoUrl = school?.logo_path
+    ? (await supabase.storage.from(FILE_BUCKET).createSignedUrl(school.logo_path, 60 * 60))
+        .data?.signedUrl ?? null
+    : null;
 
   const [{ data: routes }, { data: deliveries }, { count: reachableBySms }, { data: termDates }] =
     await Promise.all([
@@ -51,6 +63,14 @@ export default async function SettingsPage() {
         title="Settings"
         subtitle="School-wide configuration."
       />
+
+      <Card
+        title="School logo"
+        description="Appears on every report card this school prints. Without one the cards carry the KlassHub mark instead."
+        className="mb-6"
+      >
+        <LogoForm currentUrl={logoUrl} />
+      </Card>
 
       <Card
         title="Grading scale"

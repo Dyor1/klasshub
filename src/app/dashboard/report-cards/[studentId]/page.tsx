@@ -4,6 +4,7 @@ import { LogoMark } from "@/components/Logo";
 import { createClient } from "@/lib/supabase/server";
 import { requireViewer, currentAcademicYear, TERMS } from "@/lib/auth";
 import { EmptyState, btnGhost, btnPrimary } from "@/components/ui";
+import { FILE_BUCKET } from "@/lib/files";
 import PrintButton from "./PrintButton";
 
 export const metadata = { title: "Report card — KlassHub" };
@@ -31,7 +32,7 @@ export default async function ReportCardPage({
   // only their own record and only published marks.
   const { data: student } = await supabase
     .from("students")
-    .select("id, surname, first_name, other_names, admission_number, class_id, gender")
+    .select("id, surname, first_name, other_names, admission_number, class_id, gender, photo_url")
     .eq("id", studentId)
     .maybeSingle();
 
@@ -39,7 +40,7 @@ export default async function ReportCardPage({
 
   const [{ data: school }, { data: rows }, { data: bands }, { data: klass }] =
     await Promise.all([
-      supabase.from("schools").select("name, slug").single(),
+      supabase.from("schools").select("name, slug, logo_path").single(),
       supabase
         .from("results_ranked")
         .select(
@@ -80,6 +81,24 @@ export default async function ReportCardPage({
     p_term: term,
   });
   const ctx = Array.isArray(ctxRows) ? ctxRows[0] : ctxRows;
+
+  // Both live in the private bucket, so each needs a signed URL. An hour is
+  // ample for viewing or printing a card and short enough that a copied link
+  // is not a permanent window onto a child's photograph.
+  const [logoUrl, photoUrl] = await Promise.all([
+    school?.logo_path
+      ? supabase.storage
+          .from(FILE_BUCKET)
+          .createSignedUrl(school.logo_path, 60 * 60)
+          .then((r) => r.data?.signedUrl ?? null)
+      : Promise.resolve(null),
+    student.photo_url
+      ? supabase.storage
+          .from(FILE_BUCKET)
+          .createSignedUrl(student.photo_url, 60 * 60)
+          .then((r) => r.data?.signedUrl ?? null)
+      : Promise.resolve(null),
+  ]);
 
   const { data: subjects } = await supabase.from("subjects").select("id, name");
   const subjectName = new Map((subjects ?? []).map((s) => [s.id, s.name]));
@@ -209,7 +228,18 @@ export default async function ReportCardPage({
           {/* Masthead */}
           <header className="flex items-start justify-between gap-4 border-b-2 border-brand-900 pb-4">
             <div className="flex items-center gap-3">
-              <LogoMark className="h-12 w-12" />
+              {logoUrl ? (
+                // Plain img on purpose: the URL is signed and expires, so the
+                // image optimiser must not cache it behind its own link.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={logoUrl}
+                  alt=""
+                  className="h-12 w-12 shrink-0 object-contain"
+                />
+              ) : (
+                <LogoMark className="h-12 w-12" />
+              )}
               <div>
                 <h1 className="text-xl font-extrabold leading-tight text-ink">
                   {school?.name ?? "School"}
@@ -235,7 +265,12 @@ export default async function ReportCardPage({
           </header>
 
           {/* Student */}
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-2 border-b border-line py-4 text-sm sm:grid-cols-4">
+          {/* Details and passport sit side by side, the way a printed card
+              carries them — the photograph belongs beside the name, not
+              floating in the corner. Wrapped so the card still reads correctly
+              when there is no photo, which is the common case. */}
+          <div className="flex items-start gap-5 border-b border-line py-4">
+          <dl className="grid flex-1 grid-cols-2 gap-x-8 gap-y-2 text-sm sm:grid-cols-4">
             <div className="col-span-2">
               <dt className="text-[11px] uppercase tracking-wide text-ink-subtle">Student</dt>
               <dd className="font-bold text-ink">{fullName}</dd>
@@ -284,6 +319,21 @@ export default async function ReportCardPage({
               </>
             )}
           </dl>
+
+            {photoUrl && (
+              <div className="shrink-0">
+                {/* Signed, expiring URL — must not go through the image
+                    optimiser, which would cache it behind a link of its own
+                    that outlives the signature. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photoUrl}
+                  alt={`Passport photograph of ${fullName}`}
+                  className="h-24 w-20 rounded-lg border border-line object-cover"
+                />
+              </div>
+            )}
+          </div>
 
           {/* Subjects */}
           <table className="mt-5 w-full text-sm">

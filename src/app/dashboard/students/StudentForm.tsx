@@ -95,6 +95,20 @@ export default function StudentForm({
         </LabelledField>
       </div>
 
+      <LabelledField label="Passport photograph (optional)">
+        <input
+          name="photo"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="block w-full text-sm text-ink-muted file:mr-3 file:h-11 file:cursor-pointer file:rounded-xl file:border-0 file:bg-sunken file:px-4 file:text-sm file:font-semibold file:text-ink hover:file:bg-hover"
+        />
+        <span className="mt-1.5 block text-xs text-ink-subtle">
+          Appears on this pupil&apos;s report card. JPG, PNG or WebP, under 2 MB.
+          Stored privately — only staff, the pupil and their linked guardians
+          can ever see it.
+        </span>
+      </LabelledField>
+
       <div className="flex gap-2">
         <Submit />
         <button
