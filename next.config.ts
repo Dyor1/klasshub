@@ -1,6 +1,17 @@
 import type { NextConfig } from "next";
 import path from "node:path";
 
+/** robots.txt is advisory and only read at the site root; this header is
+ *  obeyed per-response and covers every path. Belt and braces, because a
+ *  preview deployment carries placeholder legal text and invented pupil
+ *  names. */
+const noIndexHeader = {
+  key: "X-Robots-Tag",
+  value: "noindex, nofollow, noarchive",
+};
+
+const isProductionDeploy = process.env.VERCEL_ENV === "production";
+
 /** Sent on every response.
  *
  *  This is a portal holding children's records, so the defaults are not good
@@ -41,7 +52,14 @@ const nextConfig: NextConfig = {
   // school records is not worth the deploy it unblocks.
   typescript: { ignoreBuildErrors: false },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      {
+        source: "/:path*",
+        headers: isProductionDeploy
+          ? securityHeaders
+          : [...securityHeaders, noIndexHeader],
+      },
+    ];
   },
 };
 

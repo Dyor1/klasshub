@@ -331,6 +331,43 @@ database. It also happens to be the closer of the two to Nigeria.
 
 If you ever move the Supabase project, move this with it.
 
+### Preview first
+
+The legal pages still carry unfilled placeholders and the database holds a demo
+school of invented pupils, so the first deploy should be a preview that nothing
+can find:
+
+```bash
+npx vercel login
+npx vercel            # preview deploy; prints a *.vercel.app URL
+```
+
+Three things make that URL safe to share and impossible to stumble on, and all
+three key off `VERCEL_ENV`, which Vercel sets for you:
+
+| | On preview | On production |
+|---|---|---|
+| `robots.txt` | `Disallow: /` | normal rules |
+| `X-Robots-Tag` header | `noindex, nofollow, noarchive` | absent |
+| Banner across the foot of every page | shown | hidden |
+
+The header matters as well as the file: `robots.txt` is advisory and only read
+at the site root, while the header is obeyed per response and covers every path.
+
+It fails closed. Anything that is not explicitly `production` is treated as
+not-production and blocked. If `VERCEL_ENV` ever goes missing on a real
+production deploy the site quietly goes un-indexed — a bad day, but a preview
+full of placeholder legal text turning up in Google is worse and much harder to
+undo.
+
+Set the same environment variables as below on the preview, minus
+`NEXT_PUBLIC_SITE_URL` — leave that unset and links derive from the preview
+host, which is what you want.
+
+```bash
+npx vercel --prod     # only once the pre-launch checklist below is clear
+```
+
 ### Steps
 
 1. **Import the repo** at vercel.com/new. Framework and build command are

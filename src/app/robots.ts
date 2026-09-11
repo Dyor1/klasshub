@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { isProduction } from "@/lib/deploy-env";
 
 const siteUrl = "https://klasshub.ng";
 
@@ -8,6 +9,14 @@ const siteUrl = "https://klasshub.ng";
  *  on redirects, and an invite token has no business sitting in a search
  *  index even expired. */
 export default function robots(): MetadataRoute.Robots {
+  // Anything that is not the production deployment refuses every crawler
+  // outright. A preview carries unfilled legal placeholders and fixture pupils
+  // with invented names; neither belongs in a search index, and getting a page
+  // *out* of one is far more work than keeping it out.
+  if (!isProduction) {
+    return { rules: { userAgent: "*", disallow: "/" } };
+  }
+
   return {
     rules: {
       userAgent: "*",
