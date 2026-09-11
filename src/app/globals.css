@@ -542,11 +542,24 @@ body {
   }
 }
 
-/* Printing strips all of it — see the print block above for why. */
+/* Printing strips all of it — see the print block above for why.
+   The variables are neutralised as well as the classes: several surfaces use
+   shadow-[var(--clay-press-top)] as an arbitrary utility rather than a clay
+   class, and a class-only rule silently misses those — including the report
+   card's own summary tiles. A transparent zero-size shadow rather than `none`,
+   because these appear inside comma-separated lists where `none` is invalid. */
 @media print {
+  :root {
+    --clay-drop: 0 0 #0000;
+    --clay-top: 0 0 #0000;
+    --clay-bottom: 0 0 #0000;
+    --clay-press-top: 0 0 #0000;
+  }
+
   .kh-clay,
   .kh-clay-brand,
-  .kh-clay-pastel {
+  .kh-clay-pastel,
+  .kh-clay-lift {
     box-shadow: none !important;
   }
 }

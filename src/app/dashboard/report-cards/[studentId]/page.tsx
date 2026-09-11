@@ -195,7 +195,7 @@ export default async function ReportCardPage({
           }
         />
       ) : (
-        <article className="kh-print-sheet relative mx-auto max-w-3xl overflow-hidden rounded-2xl border border-line-soft bg-card p-8 shadow-card">
+        <article className="kh-print-sheet kh-clay relative mx-auto max-w-3xl overflow-hidden rounded-3xl border border-line-soft bg-card p-8">
           {/* Watermark. Low enough not to fight the text, present enough that a
               photocopy is visibly a copy of something official. */}
           <div
@@ -339,7 +339,10 @@ export default async function ReportCardPage({
               },
               { label: "Overall grade", value: overallGrade?.grade ?? "—" },
             ].map((item) => (
-              <div key={item.label} className="rounded-xl bg-sunken px-3 py-2.5">
+              <div
+                key={item.label}
+                className="rounded-2xl bg-sunken px-3 py-2.5 shadow-[var(--clay-press-top)]"
+              >
                 <p className="text-[10px] uppercase tracking-wide text-ink-subtle">
                   {item.label}
                 </p>

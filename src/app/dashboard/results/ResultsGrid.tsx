@@ -236,7 +236,7 @@ export default function ResultsGrid({
             { label: "Highest", value: `${summary.top}%` },
             { label: "Lowest", value: `${summary.low}%` },
           ].map((s) => (
-            <div key={s.label} className="rounded-xl border border-line-soft bg-card px-4 py-3">
+            <div key={s.label} className="kh-clay rounded-2xl border border-line-soft bg-card px-4 py-3">
               <p className="text-lg font-extrabold tabular-nums text-ink">{s.value}</p>
               <p className="text-[11px] text-ink-subtle">{s.label}</p>
             </div>
@@ -251,7 +251,7 @@ export default function ResultsGrid({
         </p>
       )}
 
-      <div className="kh-scroll-x overflow-x-auto rounded-2xl border border-line-soft bg-card shadow-card">
+      <div className="kh-scroll-x kh-clay overflow-x-auto rounded-2xl border border-line-soft bg-card">
         <table className="w-full min-w-[720px] text-sm">
           <thead className="border-b border-line-soft bg-sunken">
             <tr>
@@ -308,7 +308,7 @@ export default function ResultsGrid({
                           // appends — otherwise every correction starts with a
                           // fight against the existing digits.
                           onFocus={(e) => e.currentTarget.select()}
-                          className={`h-10 w-24 rounded-lg border px-3 text-sm tabular-nums transition-colors focus:outline-none focus:ring-4 focus:ring-brand-500/12 ${
+                          className={`h-10 w-24 rounded-xl border px-3 text-sm tabular-nums shadow-[var(--clay-press-top)] transition-all focus:outline-none focus:ring-4 focus:ring-brand-500/12 ${
                             isOver
                               ? "border-amber-500 bg-amber-500/10 text-amber-800 dark:text-amber-200"
                               : isDirty
@@ -416,7 +416,7 @@ function ColumnHead({
               }
               if (e.key === "Escape") setOpen(false);
             }}
-            className="h-8 w-20 rounded-lg border border-line bg-card px-2 text-xs font-normal normal-case tabular-nums text-ink focus:border-brand-500 focus:outline-none"
+            className="h-8 w-20 rounded-xl border border-line bg-card px-2 text-xs font-normal normal-case tabular-nums text-ink shadow-[var(--clay-press-top)] focus:border-brand-500 focus:outline-none"
           />
           <button
             type="button"
