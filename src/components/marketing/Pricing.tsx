@@ -77,7 +77,7 @@ export default function Pricing() {
               style={{ animationDelay: `${i * 90}ms` }}
               className={`animate-rise relative flex flex-col rounded-2xl border p-7 transition-all duration-300 ${
                 plan.featured
-                  ? "border-brand-400/60 bg-card shadow-brand ring-2 ring-brand-500/25 lg:-mt-4 lg:pb-10 lg:pt-11"
+                  ? "border-brand-400/60 bg-card kh-clay-brand kh-clay-press ring-2 ring-brand-500/25 lg:-mt-4 lg:pb-10 lg:pt-11"
                   : "border-line bg-card shadow-card hover:-translate-y-1 hover:shadow-card-hover"
               }`}
             >
@@ -121,9 +121,9 @@ export default function Pricing() {
 
               <Link
                 href={plan.name === "Group" ? "/contact" : "/register"}
-                className={`mt-7 rounded-xl px-5 py-3 text-center text-sm font-semibold transition-all ${
+                className={`mt-7 rounded-2xl px-5 py-3 text-center text-sm font-semibold transition-all ${
                   plan.featured
-                    ? "bg-brand-gradient text-white shadow-brand hover:brightness-110"
+                    ? "bg-brand-gradient text-white kh-clay-brand kh-clay-press hover:brightness-110"
                     : "border border-line text-ink hover:bg-sunken"
                 }`}
               >

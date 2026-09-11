@@ -69,7 +69,7 @@ export default async function ExamDetailPage({
                   <input type="hidden" name="status" value="published" />
                   <button
                     type="submit"
-                    className="rounded-lg bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-brand hover:brightness-110"
+                    className="rounded-lg bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white kh-clay-brand kh-clay-press hover:brightness-110"
                   >
                     Publish
                   </button>

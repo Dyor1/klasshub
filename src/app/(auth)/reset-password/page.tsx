@@ -25,7 +25,7 @@ export default async function ResetPasswordPage() {
         <div className="mt-8">
           <Link
             href="/forgot-password"
-            className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-brand-gradient text-[15px] font-semibold text-white shadow-brand transition-all hover:brightness-110"
+            className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-brand-gradient text-[15px] font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110"
           >
             Request a new link
           </Link>

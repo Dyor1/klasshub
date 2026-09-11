@@ -22,7 +22,7 @@ function Apply({ count }: { count: number }) {
     <button
       type="submit"
       disabled={pending || count === 0}
-      className="h-11 rounded-xl bg-brand-gradient px-5 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+      className="h-11 rounded-2xl bg-brand-gradient px-5 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
     >
       {pending ? "Applying…" : count === 0 ? "Select students" : `Apply to ${count}`}
     </button>

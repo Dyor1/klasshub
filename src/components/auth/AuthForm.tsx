@@ -36,7 +36,7 @@ export function Field({
           required={required}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`h-12 w-full rounded-xl border border-line bg-card px-4 text-[15px] text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12 ${
+          className={`h-12 w-full rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  px-4 text-[15px] text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12 ${
             isPassword ? "pr-12" : ""
           }`}
         />
@@ -80,7 +80,7 @@ export function SubmitButton({ children }: { children: React.ReactNode }) {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-gradient text-[15px] font-semibold text-white shadow-brand transition-all hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-brand-gradient text-[15px] font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending && (
         <svg viewBox="0 0 24 24" className="h-4 w-4 animate-spin" fill="none">

@@ -56,7 +56,7 @@ export default function SiteHeader() {
           </Link>
           <Link
             href="/register"
-            className="rounded-lg bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110"
+            className="rounded-2xl bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110"
           >
             Register your school
           </Link>

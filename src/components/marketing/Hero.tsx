@@ -42,7 +42,7 @@ export default function Hero() {
             <div className="animate-rise mt-9 flex flex-col gap-3 [animation-delay:180ms] sm:flex-row">
               <Link
                 href="/register"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-7 py-4 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110 hover:shadow-lg active:scale-[0.99]"
+                className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-gradient px-7 py-4 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 hover:shadow-lg"
               >
                 Register your school
                 <svg
@@ -57,7 +57,7 @@ export default function Hero() {
               </Link>
               <a
                 href="#report-card"
-                className="inline-flex items-center justify-center rounded-xl border border-line bg-card/80 px-7 py-4 text-sm font-semibold text-ink backdrop-blur transition-colors hover:bg-sunken"
+                className="inline-flex items-center justify-center kh-clay kh-clay-press rounded-2xl border border-line bg-card/80 px-7 py-4 text-sm font-semibold text-ink backdrop-blur transition-colors hover:bg-sunken"
               >
                 See a report card
               </a>

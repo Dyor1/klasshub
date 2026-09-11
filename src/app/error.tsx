@@ -39,7 +39,7 @@ export default function Error({
       <div className="mt-9 flex flex-col gap-3 sm:flex-row">
         <button
           onClick={reset}
-          className="inline-flex h-12 items-center justify-center rounded-xl bg-brand-gradient px-7 text-[15px] font-semibold text-white shadow-brand transition-all hover:brightness-110"
+          className="inline-flex h-12 items-center justify-center rounded-2xl bg-brand-gradient px-7 text-[15px] font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110"
         >
           Try again
         </button>

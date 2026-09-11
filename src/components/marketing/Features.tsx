@@ -62,7 +62,7 @@ export default function Features() {
               key={feature.title}
               data-hue={feature.tone}
               style={{ animationDelay: `${i * 70}ms` }}
-              className="animate-rise group relative overflow-hidden rounded-2xl border border-line bg-card p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-[color-mix(in_oklab,var(--hue)_45%,transparent)] hover:shadow-card-hover"
+              className="kh-clay animate-rise group relative overflow-hidden rounded-3xl border border-line bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[color-mix(in_oklab,var(--hue)_45%,transparent)]"
             >
               {/* A wash in the card's own hue, revealed on hover. */}
               <span
@@ -71,7 +71,7 @@ export default function Features() {
                 style={{ background: "var(--hue)" }}
               />
               <div
-                className="relative flex h-11 w-11 items-center justify-center rounded-xl text-white shadow-sm transition-transform duration-300 group-hover:scale-105"
+                className="relative flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-[var(--clay-top),var(--clay-bottom),0_8px_14px_-8px_rgb(32_29_26/0.45)] transition-transform duration-300 group-hover:scale-105"
                 // Darkened from the raw hue. At full strength a white icon on
                 // sky or teal is 2.8:1 and 2.5:1, under the 3:1 WCAG wants for
                 // non-text graphics. 88% measures 3.8 and 3.5 — bright enough

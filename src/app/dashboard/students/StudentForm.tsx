@@ -13,7 +13,7 @@ function Submit() {
     <button
       type="submit"
       disabled={pending}
-      className="h-11 rounded-lg bg-brand-gradient px-5 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110 disabled:opacity-60"
+      className="h-11 rounded-lg bg-brand-gradient px-5 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 disabled:opacity-60"
     >
       {pending ? "Saving…" : "Enrol student"}
     </button>
@@ -40,7 +40,7 @@ export default function StudentForm({
     return (
       <button
         onClick={() => setOpen(true)}
-        className="h-11 rounded-lg bg-brand-gradient px-5 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110"
+        className="h-11 rounded-lg bg-brand-gradient px-5 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110"
       >
         Enrol a student
       </button>

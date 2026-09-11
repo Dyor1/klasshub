@@ -44,7 +44,7 @@ export default function HowItWorks() {
               className="animate-rise relative"
             >
               <div className="group h-full rounded-2xl border border-line bg-card p-7 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-card-hover">
-                <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-gradient text-lg font-extrabold text-white shadow-brand transition-transform duration-300 group-hover:scale-105">
+                <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-gradient text-lg font-extrabold text-white kh-clay-brand kh-clay-press transition-transform duration-300 group-hover:scale-105">
                   {item.step}
                 </span>
                 <h3 className="mt-5 text-lg font-bold text-ink">{item.title}</h3>

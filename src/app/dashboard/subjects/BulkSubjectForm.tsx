@@ -13,7 +13,7 @@ function Save() {
     <button
       type="submit"
       disabled={pending}
-      className="h-11 rounded-xl bg-brand-gradient px-5 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110 disabled:opacity-60"
+      className="h-11 rounded-2xl bg-brand-gradient px-5 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 disabled:opacity-60"
     >
       {pending ? "Adding…" : "Add all"}
     </button>
@@ -51,7 +51,7 @@ export default function BulkSubjectForm() {
           rows={8}
           required
           placeholder={"Mathematics, MTH\nEnglish Language, ENG\nBasic Science\nCivic Education"}
-          className="w-full rounded-xl border border-line bg-card px-4 py-3 font-mono text-sm leading-relaxed text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
+          className="w-full rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  px-4 py-3 font-mono text-sm leading-relaxed text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
         />
         <span className="mt-1.5 block text-xs text-ink-subtle">
           A code after a comma or tab is optional. Numbering, bullets and blank

@@ -15,7 +15,7 @@ const TOPICS = [
 ];
 
 const field =
-  "h-12 w-full rounded-xl border border-line bg-card px-4 text-[15px] text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12";
+  "h-12 w-full rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  px-4 text-[15px] text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12";
 
 function Send() {
   const { pending } = useFormStatus();
@@ -23,7 +23,7 @@ function Send() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex h-12 items-center justify-center rounded-xl bg-brand-gradient px-7 text-[15px] font-semibold text-white shadow-brand transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex h-12 items-center justify-center rounded-2xl bg-brand-gradient px-7 text-[15px] font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending ? "Sending…" : "Send message"}
     </button>
@@ -107,7 +107,7 @@ export default function ContactForm() {
           maxLength={5000}
           rows={6}
           placeholder="Your school's name helps us answer faster."
-          className="w-full rounded-xl border border-line bg-card px-4 py-3 text-[15px] leading-relaxed text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
+          className="w-full rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  px-4 py-3 text-[15px] leading-relaxed text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
         />
       </label>
 

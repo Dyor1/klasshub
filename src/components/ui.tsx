@@ -63,7 +63,7 @@ export function Card({
   return (
     <section
       data-hue={hue}
-      className={`rounded-2xl border border-line-soft p-6 shadow-card ${
+      className={`kh-clay rounded-2xl border border-line-soft p-6 ${
         tinted ? "kh-tint" : "bg-card"
       } ${className}`}
     >
@@ -127,13 +127,13 @@ export function StatCard({
   );
 
   const cls =
-    "flex items-start gap-4 rounded-2xl border border-line-soft bg-card p-5 shadow-card transition-all duration-200";
+    "kh-clay flex items-start gap-4 rounded-2xl border border-line-soft bg-card p-5 transition-all duration-200";
 
   return href ? (
     <Link
       href={href}
       data-hue={hue}
-      className={`${cls} hover:-translate-y-0.5 hover:border-line hover:shadow-card-hover`}
+      className={`${cls} hover:-translate-y-0.5 hover:border-line`}
     >
       {body}
     </Link>
@@ -203,8 +203,8 @@ export const inputClass =
 
 export const btnPrimary =
   "inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-gradient px-5 " +
-  "text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110 " +
-  "active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60";
+  "text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 " +
+  "disabled:cursor-not-allowed disabled:opacity-60";
 
 export const btnGhost =
   "inline-flex h-11 items-center justify-center rounded-xl border border-line bg-card " +
@@ -320,7 +320,7 @@ export function Chip({
   } as const;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ${tones[tone]}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize shadow-[var(--clay-top),var(--clay-bottom)] ${tones[tone]}`}
     >
       {children}
     </span>

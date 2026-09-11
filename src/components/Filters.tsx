@@ -84,7 +84,7 @@ export function SearchField({
           placeholder={placeholder}
           // Not auto-submitting: typing would fire a request per keystroke.
           data-no-auto-submit=""
-          className="h-11 w-full rounded-xl border border-line bg-card pl-10 pr-3 text-sm text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
+          className="h-11 w-full rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  pl-10 pr-3 text-sm text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
         />
       </span>
     </label>
@@ -113,7 +113,7 @@ export function SelectField({
       <select
         name={name}
         defaultValue={defaultValue ?? ""}
-        className="h-11 w-full rounded-xl border border-line bg-card px-3 text-sm text-ink transition-all focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
+        className="h-11 w-full rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  px-3 text-sm text-ink transition-all focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
       >
         {allLabel !== null && <option value="">{allLabel}</option>}
         {options.map((o) => (
@@ -144,7 +144,7 @@ export function DateField({
         type="date"
         name={name}
         defaultValue={defaultValue}
-        className="h-11 w-full rounded-xl border border-line bg-card px-3 text-sm text-ink transition-all focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
+        className="h-11 w-full rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  px-3 text-sm text-ink transition-all focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
       />
     </label>
   );
@@ -163,14 +163,14 @@ export function FilterActions({
     <div className="flex items-center gap-2">
       <button
         type="submit"
-        className="h-11 rounded-xl bg-brand-gradient px-5 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110"
+        className="h-11 rounded-2xl bg-brand-gradient px-5 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110"
       >
         Apply
       </button>
       {isFiltered && (
         <Link
           href={clearHref}
-          className="inline-flex h-11 items-center rounded-xl border border-line bg-card px-4 text-sm font-medium text-ink-muted transition-colors hover:bg-hover hover:text-ink"
+          className="inline-flex h-11 items-center rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  px-4 text-sm font-medium text-ink-muted transition-colors hover:bg-hover hover:text-ink"
         >
           Clear
         </Link>

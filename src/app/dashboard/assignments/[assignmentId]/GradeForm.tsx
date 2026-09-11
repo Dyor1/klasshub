@@ -13,7 +13,7 @@ function Save() {
     <button
       type="submit"
       disabled={pending}
-      className="h-10 rounded-lg bg-brand-gradient px-4 text-xs font-semibold text-white shadow-brand transition-all hover:brightness-110 disabled:opacity-60"
+      className="h-10 rounded-lg bg-brand-gradient px-4 text-xs font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 disabled:opacity-60"
     >
       {pending ? "Saving…" : "Save grade"}
     </button>

@@ -461,3 +461,92 @@ body {
   .animate-tally { opacity: 1; transform: none; }
   .animate-fill { transform: scaleX(1); }
 }
+
+/* ---------------------------------------------------------------------------
+   Clay surfaces.
+
+   The puffy look is three shadows, not one: a soft drop shadow underneath, a
+   bright inset along the top edge, and a darker inset along the bottom. That
+   pairing is what reads as a thick, moulded object rather than a flat rectangle
+   with a blur behind it.
+
+   Both insets have to flip per theme. A white top-highlight on a dark surface
+   is what makes most claymorphism look wrong in dark mode — the light has to
+   come from the same direction, but far weaker, or the object looks lit from
+   inside.
+
+   Deliberately NOT applied to the report card or the results grid. A report
+   card is a document that gets printed, and shadows cost toner and read as
+   smudges; a marks grid is dense data where puffy cells fight the numbers.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --clay-drop: 0 10px 22px -10px rgb(32 29 26 / 0.22), 0 4px 8px -4px rgb(32 29 26 / 0.10);
+  --clay-top: inset 0 2px 2px 0 rgb(255 255 255 / 0.75);
+  --clay-bottom: inset 0 -4px 6px -2px rgb(32 29 26 / 0.10);
+  --clay-press-top: inset 0 3px 6px -1px rgb(32 29 26 / 0.16);
+}
+
+[data-theme="dark"] {
+  --clay-drop: 0 10px 24px -10px rgb(0 0 0 / 0.62), 0 4px 8px -4px rgb(0 0 0 / 0.45);
+  /* A quarter of the light-mode highlight. Any brighter and the surface looks
+     backlit rather than moulded. */
+  --clay-top: inset 0 1px 1px 0 rgb(255 255 255 / 0.10);
+  --clay-bottom: inset 0 -4px 6px -2px rgb(0 0 0 / 0.35);
+  --clay-press-top: inset 0 3px 6px -1px rgb(0 0 0 / 0.5);
+}
+
+/* Neutral clay: cards, panels, inputs. */
+.kh-clay {
+  box-shadow: var(--clay-drop), var(--clay-top), var(--clay-bottom);
+}
+
+/* Coloured clay: the drop shadow picks up the button's own colour so a brand
+   button sits in a faint violet pool rather than a grey one. */
+.kh-clay-brand {
+  box-shadow:
+    0 12px 22px -10px rgb(79 70 229 / 0.55),
+    0 4px 8px -4px rgb(79 70 229 / 0.35),
+    inset 0 2px 2px 0 rgb(255 255 255 / 0.32),
+    inset 0 -4px 7px -2px rgb(49 38 140 / 0.45);
+}
+
+/* Pressed state: the top inset becomes the *dark* one, so the surface reads as
+   pushed in. Paired with a 1px nudge rather than a scale — scaling a clay
+   object makes the shadow slide, which looks like it detached. */
+.kh-clay-press:active {
+  transform: translateY(1px);
+  box-shadow: var(--clay-drop), var(--clay-press-top);
+}
+.kh-clay-brand.kh-clay-press:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 6px 12px -8px rgb(79 70 229 / 0.5),
+    inset 0 4px 8px -2px rgb(49 38 140 / 0.55);
+}
+
+/* Soft pastel fills for decorative tiles. Mixed against the card surface so
+   the same class works on both themes without a second definition. */
+.kh-clay-pastel {
+  background: color-mix(in oklab, var(--hue) 16%, var(--surface-card));
+  box-shadow: var(--clay-top), var(--clay-bottom);
+}
+[data-theme="dark"] .kh-clay-pastel {
+  background: color-mix(in oklab, var(--hue) 26%, var(--surface-card));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kh-clay-press:active,
+  .kh-clay-brand.kh-clay-press:active {
+    transform: none;
+  }
+}
+
+/* Printing strips all of it — see the print block above for why. */
+@media print {
+  .kh-clay,
+  .kh-clay-brand,
+  .kh-clay-pastel {
+    box-shadow: none !important;
+  }
+}

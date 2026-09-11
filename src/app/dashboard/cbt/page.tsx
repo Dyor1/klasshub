@@ -115,7 +115,7 @@ export default async function CbtPage({
                           <input type="hidden" name="exam_id" value={e.id} />
                           <button
                             type="submit"
-                            className="rounded-lg bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110"
+                            className="rounded-lg bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110"
                           >
                             {attempt ? "Resume" : "Start test"}
                           </button>

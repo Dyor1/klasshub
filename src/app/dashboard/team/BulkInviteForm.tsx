@@ -13,7 +13,7 @@ function Send() {
     <button
       type="submit"
       disabled={pending}
-      className="h-11 rounded-xl bg-brand-gradient px-5 text-sm font-semibold text-white shadow-brand transition-all hover:brightness-110 disabled:opacity-60"
+      className="h-11 rounded-2xl bg-brand-gradient px-5 text-sm font-semibold text-white kh-clay-brand kh-clay-press transition-all hover:brightness-110 disabled:opacity-60"
     >
       {pending ? "Inviting…" : "Send invitations"}
     </button>
@@ -118,7 +118,7 @@ export default function BulkInviteForm() {
             rows={6}
             required
             placeholder={"ada@school.edu.ng\nchinedu@school.edu.ng, fatima@school.edu.ng"}
-            className="w-full rounded-xl border border-line bg-card px-4 py-3 font-mono text-sm leading-relaxed text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
+            className="w-full rounded-2xl border border-line bg-card shadow-[var(--clay-press-top)]  px-4 py-3 font-mono text-sm leading-relaxed text-ink transition-all placeholder:text-ink-subtle focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
           />
           <span className="mt-1.5 block text-xs text-ink-subtle">
             Commas, semicolons, spaces or new lines all work, so a list copied
