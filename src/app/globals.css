@@ -209,6 +209,35 @@ body {
  * they travel with the content, while the shadows are `scroll` so they stay
  * pinned and get revealed as the covers move away. No JavaScript, no resize
  * observer, and it is correct at every width. */
+
+/* Let the page shrink to the window.
+ *
+ * <body> is a flex column, so every page's top-level element is a flex item.
+ * Those containers are `mx-auto`, and an auto margin on the cross axis cancels
+ * the default stretch: instead of filling the window the item is sized to its
+ * own content. The results grid and the operator table both set a min-width, so
+ * their pages sat permanently wider than the window and the whole document
+ * scrolled sideways.
+ *
+ * The horizontal scroller around each table cannot help. It shrinks to fit its
+ * parent, and the parent was the thing that would not shrink — so the scroller
+ * was never narrower than its contents and so never scrolled.
+ *
+ * width rather than max-width: `max-width: 100%` would lose to the `max-w-7xl`
+ * utility on specificity, since a class outranks an element selector. Setting
+ * width leaves both `mx-auto` centring and the 7xl cap intact — on a wide
+ * screen the container is still 1280px and still centred.
+ *
+ * min-width:0 as well, so a flex item can drop below its content's min-content
+ * width; on its own it was not enough, because auto-margin sizing ignores it.
+ *
+ * Fixing it here rather than on each container means a new page with a wide
+ * table is correct without having to know any of this. */
+body > * {
+  width: 100%;
+  min-width: 0;
+}
+
 .kh-scroll-x {
   background-image:
     linear-gradient(to right, var(--surface-card) 30%, transparent),
