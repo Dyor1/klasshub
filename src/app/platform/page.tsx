@@ -40,9 +40,14 @@ export default async function PlatformPage() {
   const supabase = await createClient();
 
   // Started before the gate is awaited so the two requests overlap. The round
-  // trip is what costs time here — roughly 300ms each against a database whose
-  // actual query work is negligible — so doing them one after the other is
-  // most of the page's latency.
+  // trip is what costs time here, not the queries, whose work is negligible.
+  //
+  // How much it buys depends entirely on where the server is. Running locally
+  // it is worth about 300ms a query, because the request crosses from here to
+  // eu-west-1 and back. Deployed it is worth almost nothing: vercel.json pins
+  // the functions to dub1, which is the same region as the database, so the
+  // hop is a millisecond or two. Do not read the local figure as a production
+  // one — it was measured on a laptop several thousand miles from the data.
   //
   // Safe to start before knowing whether this account may see it: the function
   // checks operator membership in SQL itself, so a non-operator gets a refusal
