@@ -14,10 +14,19 @@ function LoginForm() {
   const params = useSearchParams();
   const next = params.get("next") ?? "/dashboard";
   const justReset = params.get("reset") === "done";
+  const justSignedOut = params.get("signedout") === "1";
 
   return (
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="next" value={next} />
+      {justSignedOut && (
+        <p
+          role="status"
+          className="rounded-xl border border-line bg-sunken px-4 py-3 text-sm text-ink-muted"
+        >
+          Signed out and session cleared. Sign in again below.
+        </p>
+      )}
       {justReset && (
         <p
           role="status"

@@ -40,7 +40,7 @@ export async function proxy(request: NextRequest) {
 
   // getClaims verifies the token, unlike getSession which must not be trusted
   // in server code. `data` is null when there is no valid session.
-  const { data } = await supabase.auth.getClaims();
+  const { data, error: claimsError } = await supabase.auth.getClaims();
   const claims = data?.claims;
 
   const { pathname } = request.nextUrl;
@@ -50,6 +50,19 @@ export async function proxy(request: NextRequest) {
   // sent to sign in rather than rendering a shell first.
   const isProtected =
     pathname.startsWith("/dashboard") || pathname.startsWith("/platform");
+
+  // Development only. A redirect loop is invisible from the outside — the
+  // browser just gives up — so the one thing worth seeing is which rule fired
+  // and whether the session survived the hop.
+  if (process.env.NODE_ENV !== "production") {
+    const wrote = response.cookies.getAll().map((c) => c.name);
+    console.log(
+      `[proxy] ${pathname} claims=${claims ? "yes" : "no"}` +
+        (claimsError ? ` claimsError=${claimsError.message}` : "") +
+        ` cookiesIn=${request.cookies.getAll().length}` +
+        (wrote.length ? ` refreshed=[${wrote.join(",")}]` : "")
+    );
+  }
 
   /** A redirect that keeps whatever the session refresh just wrote. */
   const redirectTo = (url: URL) => {
