@@ -60,6 +60,19 @@ export async function sendContactMessage(
   if (res.ok) return { error: null, sent: true };
 
   const data = await res.json().catch(() => ({}));
+
+  // Server-side only. The visitor gets a sentence they can act on; whoever is
+  // running the thing needs the status code, because the two likeliest causes
+  // are indistinguishable from the front end: 404 means the function was never
+  // deployed, 403 means CONTACT_SECRET does not match the one set on it.
+  console.error(
+    `[contact] Edge Function returned ${res.status}` +
+      (res.status === 404
+        ? " — the `contact` function is not deployed (supabase functions deploy contact --no-verify-jwt)"
+        : res.status === 403
+          ? " — CONTACT_SECRET here does not match the function secret"
+          : "")
+  );
   return {
     error:
       typeof data?.error === "string"
