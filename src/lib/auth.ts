@@ -89,17 +89,26 @@ export const TERMS = [
  *  This is a convenience for rendering, not the security boundary. Every
  *  platform function re-checks membership itself, so a page that forgot to
  *  call this still cannot read or change anything. */
-export async function requirePlatformOperator(): Promise<void> {
+export async function requirePlatformOperator() {
   const supabase = await createClient();
 
   const { data } = await supabase.auth.getClaims();
   if (!data?.claims?.sub) redirect("/login?next=/platform");
 
-  const { error } = await supabase.rpc("platform_schools");
+  const { data: schools, error } = await supabase.rpc("platform_schools");
 
-  // 42501 is the function's own refusal. Any other error is a fault worth
-  // failing closed on rather than guessing about. Non-operators go to
-  // /dashboard rather than seeing a refusal, because whether this area exists
-  // is not something a school's admin needs to learn.
-  if (error) redirect("/dashboard");
+  // 42501 is the function's own refusal: this account is not on the roster, so
+  // it goes to its own dashboard rather than being shown a refusal, because
+  // whether this area exists is not something a school's admin needs to learn.
+  //
+  // Only that code. Redirecting on *any* error means a timeout or a dropped
+  // connection is reported to a real operator as though their access had been
+  // taken away, and bounces them out of the tool with no way to tell the
+  // difference. Other errors are returned for the caller to show.
+  if (error?.code === "42501") redirect("/dashboard");
+
+  // Returned rather than discarded: the page needs exactly this list, and
+  // fetching it here only to throw it away meant querying every school twice
+  // on every render.
+  return { schools, error };
 }

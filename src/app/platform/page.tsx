@@ -37,21 +37,39 @@ function Icon({ d }: { d: string }) {
 }
 
 export default async function PlatformPage() {
-  await requirePlatformOperator();
   const supabase = await createClient();
 
-  // The errors are kept, not dropped. A failed read returns null data, and
-  // rendering that as "no schools" or "nothing yet" states something false
-  // about the business rather than admitting the page could not load — which
-  // is how an audit trail ends up looking empty on a screen that promises
-  // nothing goes unrecorded.
-  const [
-    { data: schools, error: schoolsError },
-    { data: audit, error: auditError },
-  ] = await Promise.all([
-    supabase.rpc("platform_schools"),
-    supabase.rpc("platform_recent_actions", { p_limit: 25 }),
-  ]);
+  // Started before the gate is awaited so the two requests overlap. The round
+  // trip is what costs time here — roughly 300ms each against a database whose
+  // actual query work is negligible — so doing them one after the other is
+  // most of the page's latency.
+  //
+  // Safe to start before knowing whether this account may see it: the function
+  // checks operator membership in SQL itself, so a non-operator gets a refusal
+  // rather than data, and the gate redirects before it is ever read. The
+  // promise resolves with an error rather than rejecting, so nothing is left
+  // unhandled when the gate redirects out of here.
+  // Promise.resolve is load-bearing, not decoration. rpc() returns a lazy
+  // PostgrestFilterBuilder, not a running request: it is a thenable that only
+  // sends anything once something calls .then on it. Assigning it to a
+  // variable and awaiting it later therefore starts it *later*, which is
+  // exactly the sequential behaviour this is meant to avoid. Promise.resolve
+  // calls .then now, so the request is genuinely in flight while the gate
+  // below does its own round trip.
+  const auditPromise = Promise.resolve(
+    supabase.rpc("platform_recent_actions", { p_limit: 25 })
+  );
+
+  // The gate already fetches the school list to decide whether this account is
+  // an operator, so it hands the rows over rather than the page asking for
+  // them a second time.
+  const { schools, error: schoolsError } = await requirePlatformOperator();
+
+  // The error is kept, not dropped. A failed read returns null data, and
+  // rendering that as "nothing yet" states something false — an audit trail
+  // claiming no action was ever taken, on a screen that promises nothing goes
+  // unrecorded.
+  const { data: audit, error: auditError } = await auditPromise;
 
   const rows = schools ?? [];
   const totals = {
